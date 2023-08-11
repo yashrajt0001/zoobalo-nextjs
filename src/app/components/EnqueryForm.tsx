@@ -12,7 +12,10 @@ const EnqueryForm = () => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         try {
-          const { status } = await axios.post('http://localhost:3000/api/enquery', { phone, message })
+          const { status } = await axios.post(
+            "https://main.dli063wki6i24.amplifyapp.com/api/enquery",
+            { phone, message }
+          );
           if (status === 200) {
             setResultText({success: true, message: 'Thank you for let us know!'})
           }
