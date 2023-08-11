@@ -47,7 +47,10 @@ function App() {
                   FAST DELIVERY
                 </div>
               </h1>
-              <a className="cursor-pointer max-w-fit flex items-center gap-3 px-5 py-3 rounded-2xl text-white bg-orange-500 mt-10 font-bold ml-2">
+              <a
+                href="https://wa.me/919509919001"
+                className="cursor-pointer max-w-fit flex items-center gap-3 px-5 py-3 rounded-2xl text-white bg-orange-500 mt-10 font-bold ml-2"
+              >
                 <div className="text-lg">Book now</div>
                 <Image src={wa} alt="" height={30} width={30} />
               </a>
@@ -160,7 +163,7 @@ function App() {
 
       {/* contact section */}
 
-      <EnqueryForm/>
+      <EnqueryForm />
 
       {/* footer Section  */}
       <div
