@@ -13,7 +13,7 @@ const EnqueryForm = () => {
         e.preventDefault()
         try {
           const { status } = await axios.post(
-            "https://main.dli063wki6i24.amplifyapp.com/api/enquery",
+            "/api/enquery",
             { phone, message }
           );
           if (status === 200) {
