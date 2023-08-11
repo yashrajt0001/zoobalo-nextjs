@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 
-export const sequelize = new Sequelize(process.env.DATABASE_NAME as string, process.env.USER as string, process.env.PASSWORD as string, {
-    host: process.env.HOST,
-    dialect: 'mysql'
-})
+export const sequelize = new Sequelize("zoobalo", "admin", "zoobalo123", {
+  host: "zoobalo-db.caanvcmlhm9m.us-east-1.rds.amazonaws.com",
+  dialect: "mysql",
+});
