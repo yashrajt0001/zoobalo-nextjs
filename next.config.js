@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    experimental: { appDir: true, serverComponentsExternalPackages: ['sequelize'] }
-}
+const nextConfig = {}
 
 module.exports = nextConfig
