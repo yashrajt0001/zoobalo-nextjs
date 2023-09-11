@@ -9,7 +9,7 @@ interface HowItWorksItemProps {
 
 const HowItWorksItem: FC<HowItWorksItemProps> = ({image, title, desc}) => {
   return (
-    <div className="text-center flex flex-col gap-2 w-72">
+    <div className="text-center flex flex-col gap-2 w-72 mb-16 sm:mb-0">
       <div className="mb-2 flex justify-center">
         <div className="rounded-full bg-[#22aa00] p-5 text-center w-fit">
           <Image
