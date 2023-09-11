@@ -7,7 +7,7 @@ const HowItWorks = () => {
       <div className="text-center text-[2.3rem] font-extrabold text-[#ff5823] mb-20">
         <h2>How It Works?</h2>
       </div>
-      <div className="sm:flex justify-between px-20">
+      <div className="sm:flex justify-between sm:px-20 mx-auto sm:mx-0">
         <HowItWorksItem
           image="/QR.png"
           title="Scan Or Whatsapp"

@@ -9,7 +9,7 @@ import tick from '../assets/images/check.png'
 export const MainSection = () => {
   return (
     <>
-      <div className="w-full h-screen">
+      <div className="w-full sm:h-screen">
         <div className="flex justify-center">
           <div className="sm:w-[30%] text-4xl text-center font-bold text-orange-600 pt-4">
             <h1>Your Favourite Tiffin </h1>
@@ -17,7 +17,7 @@ export const MainSection = () => {
           </div>
         </div>
 
-        <div className="sm:flex mt-24 ml-8 sm:gap-5">
+        <div className="sm:flex mt-24 sm:ml-8 sm:gap-5">
           <div className="sm:w-[32%] text-center flex flex-col justify-center items-center mb-8 sm:mb-0">
             <Image src={Waiters} alt="logo" className="w-64 h-64 " />
             <div className="w-[80%]">
