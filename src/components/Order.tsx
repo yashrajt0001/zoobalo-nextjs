@@ -5,10 +5,10 @@ interface OrderProps {}
 
 const Order: FC<OrderProps> = ({}) => {
   return (
-    <div className="bg-[#ffded3] rounded-3xl pt-16 pl-20 w-[90%] mx-auto pb-10">
+    <div id="contact" className="bg-[#ffded3] rounded-3xl pt-16 pl-20 w-[90%] mx-auto pb-10">
       <div>{/* <Image src="/" alt=""/> */}</div>
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <h3 className="sm:text-[2.3rem] text-xl font-sans font-bold">
             Order on whatsapp
           </h3>
@@ -18,7 +18,7 @@ const Order: FC<OrderProps> = ({}) => {
           </div>
           <div className="text-lg">or</div>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <div className="sm:text-[2.7rem] text-xl font-sans font-bold">Scan QR code</div>
           <Image src="/QRcode.jpeg" width={100} height={100} alt=""/>
         </div>

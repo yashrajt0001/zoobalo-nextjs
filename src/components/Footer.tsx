@@ -10,7 +10,7 @@ const Footer: FC<FooterProps> = ({}) => {
       <div>{/* <Image src='/' fill alt=''/> */}</div>
       <div className="sm:flex justify-between">
         <div className="sm:max-w-xs flex sm:block">
-          <div className="sm:text-[2.3rem] text-lg font-bold mb-4">
+          <div className="sm:text-[2.3rem] text-lg font-bold mb-4 leading-10">
             The best you can get at an affordable price
           </div>
           <div>

@@ -7,7 +7,7 @@ import tiffin from "../assets/images/tiffin.png";
 export const Hero = () => {
   return (
     <>
-      <div className="w-full sm:h-screen mb-16 sm:mb-0">
+      <div id='home' className="w-full sm:h-screen mb-16 sm:mb-0">
         {/* NavBar */}
 
         <div className="flex justify-between">
@@ -18,22 +18,25 @@ export const Hero = () => {
               className="w-40 h-44 sm:w-40 sm:h-40 ml-5 -mt-8"
             />
             <div className="hidden sm:flex gap-10 pt-8 ml-7 text-lg">
-              <h1>Home</h1>
-              <h1>About us</h1>
-              <h1>Contact us</h1>
+              <a href="#home">Home</a>
+              <a href="#about">About us</a>
+              <a href="#contact">Contact us</a>
             </div>
           </div>
-          <div className="pt-7 mr-10">
-            <button className="text-white py-3 px-4 bg-orange-500 rounded-2xl flex">
+          <div className="pt-7 mr-8">
+            <a
+              href="https://wa.me/919509919001"
+              className="text-white py-3 px-4 bg-orange-500 rounded-2xl flex"
+            >
               <Image src={whatsapp} alt="logo" className="w-6 h-6 mr-3" />
               Book Now
-            </button>
+            </a>
           </div>
         </div>
 
         {/* Main Hero Section  */}
 
-        <div className="flex-col sm:flex justify-between pt-20">
+        <div className="flex-col sm:flex justify-between pt-10">
           <div className="sm:w-[45%] ml-14">
             <h1 className="text-orange-600 text-6xl">
               Delicacies Delivered to You:{" "}
@@ -43,10 +46,13 @@ export const Hero = () => {
               Explore our tempting thali menus, order effortlessly via WhatsApp,
               enjoy speedy delivery, and savor exclusive specials.
             </p>
-            <button className="text-white py-3 px-4 bg-orange-500 rounded-2xl flex mt-12 sm:mt-6">
-              <Image src={whatsapp} alt="logo" className="w-6 h-6 mr-3" />
-              Book Now
-            </button>
+              <a
+                href="https://wa.me/919509919001"
+                className="text-white py-3 px-4 bg-orange-500 rounded-2xl flex mt-12 sm:mt-6 w-fit"
+              >
+                <Image src={whatsapp} alt="logo" className="w-6 h-6 mr-3" />
+                Book Now
+              </a>
           </div>
 
           <div className="mt-24 sm:mt-0">
