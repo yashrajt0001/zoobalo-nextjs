@@ -9,7 +9,7 @@ const Order: FC<OrderProps> = ({}) => {
       <div>{/* <Image src="/" alt=""/> */}</div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1">
-          <h3 className="text-[2.3rem] font-sans font-bold">
+          <h3 className="sm:text-[2.3rem] text-xl font-sans font-bold">
             Order on whatsapp
           </h3>
           <div className=" flex gap-3 ">
@@ -19,7 +19,7 @@ const Order: FC<OrderProps> = ({}) => {
           <div className="text-lg">or</div>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="text-[2.7rem] font-sans font-bold">Scan QR code</div>
+          <div className="sm:text-[2.7rem] text-xl font-sans font-bold">Scan QR code</div>
           <Image src="/QRcode.jpeg" width={100} height={100} alt=""/>
         </div>
       </div>
