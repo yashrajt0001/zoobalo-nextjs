@@ -36,7 +36,7 @@ export const Hero = () => {
 
         {/* Main Hero Section  */}
 
-        <div className="flex-col sm:flex justify-between pt-10">
+        <div className="sm:flex justify-between pt-10">
           <div className="sm:w-[45%] ml-14">
             <h1 className="text-orange-600 text-6xl">
               Delicacies Delivered to You:{" "}
@@ -55,7 +55,7 @@ export const Hero = () => {
               </a>
           </div>
 
-          <div className="mt-24 sm:mt-0">
+          <div className="mt-24">
             <Image
               src={tiffin}
               alt="tiffin"
