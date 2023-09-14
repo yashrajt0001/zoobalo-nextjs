@@ -12,7 +12,7 @@ export const Hero = () => {
         <div className="sm:flex justify-between pt-16 sm:pt-20">
           <div className="sm:w-[45%] ml-14">
             <h1 className="text-[#FF5823] text-6xl">
-              Delicacies Delivered to You:{" "}
+              Delicious Delivered to You:{" "}
               <span className="text-[#22AA00]">Your Daily Tiffin Solution</span>
             </h1>
             <p className="hidden sm:block mt-6">
