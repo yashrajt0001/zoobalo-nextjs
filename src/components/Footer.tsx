@@ -6,7 +6,7 @@ interface FooterProps {}
 
 const Footer: FC<FooterProps> = ({}) => {
   return (
-    <div className="bg-[#f5f8f2] pt-14 px-16 mt-20">
+    <div id='contact' className="bg-[#f5f8f2] pt-14 px-16 mt-20">
       <div>{/* <Image src='/' fill alt=''/> */}</div>
       <div className="sm:flex justify-between">
         <div className="sm:max-w-xs flex sm:block">
