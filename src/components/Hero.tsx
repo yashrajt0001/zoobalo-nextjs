@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/images/logo.jpg";
+import logo1 from "../assets/images/logo1.png";
 import whatsapp from "../assets/images/whatsapp.png";
 import Image from "next/image";
 import tiffin from "../assets/images/tiffin.png";
@@ -13,11 +13,11 @@ export const Hero = () => {
         <div className="flex justify-between">
           <div className="flex">
             <Image
-              src={logo}
+              src={logo1}
               alt="logo"
-              className="w-40 h-44 sm:w-40 sm:h-40 ml-5 -mt-8"
+              className="w-28 h-20 sm:w-36 sm:h-20 ml-8 sm:mt-3 mt-4"
             />
-            <div className="hidden sm:flex gap-10 pt-8 ml-7 text-lg">
+            <div className="hidden sm:flex gap-10 pt-9 ml-12 text-lg font-medium">
               <a href="#home">Home</a>
               <a href="#about">About us</a>
               <a href="#contact">Contact us</a>
@@ -26,7 +26,7 @@ export const Hero = () => {
           <div className="pt-7 mr-8">
             <a
               href="https://wa.me/919509919001"
-              className="text-white py-3 px-4 bg-orange-500 rounded-2xl flex"
+              className="text-white py-3 px-4 bg-[#FF5823] rounded-2xl flex"
             >
               <Image src={whatsapp} alt="logo" className="w-6 h-6 mr-3" />
               Book Now
@@ -36,19 +36,19 @@ export const Hero = () => {
 
         {/* Main Hero Section  */}
 
-        <div className="sm:flex justify-between pt-10">
+        <div className="sm:flex justify-between pt-16 sm:pt-20">
           <div className="sm:w-[45%] ml-14">
-            <h1 className="text-orange-600 text-6xl">
+            <h1 className="text-[#FF5823] text-6xl">
               Delicacies Delivered to You:{" "}
-              <span className="text-green-600">Your Daily Tiffin Solution</span>
+              <span className="text-[#22AA00]">Your Daily Tiffin Solution</span>
             </h1>
-            <p className="hidden sm:block mt-4">
+            <p className="hidden sm:block mt-6">
               Explore our tempting thali menus, order effortlessly via WhatsApp,
-              enjoy speedy delivery, and savor exclusive specials.
+              best tiffin facility in Udaipur, quality food at your fingertips.
             </p>
               <a
                 href="https://wa.me/919509919001"
-                className="text-white py-3 px-4 bg-orange-500 rounded-2xl flex mt-12 sm:mt-6 w-fit"
+                className="text-white py-3 px-4 bg-[#FF5823] rounded-2xl flex mt-12 sm:mt-10 w-fit"
               >
                 <Image src={whatsapp} alt="logo" className="w-6 h-6 mr-3" />
                 Book Now
