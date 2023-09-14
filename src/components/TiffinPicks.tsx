@@ -1,5 +1,5 @@
 import React from 'react'
-import TiffinItem from './TiffinItem'
+import { ChevronRight } from 'lucide-react';
 
 const TiffinPicks = () => {
     return (
@@ -13,8 +13,40 @@ const TiffinPicks = () => {
           </h2>
         </div>
         <div className="flex gap-10">
-          <TiffinItem image="thali1" title="Student thali" price="60" />
-          <TiffinItem image="thali2" title="Special thali" price="80" />
+          <a
+            href=""
+            className={`relative rounded-3xl min-h-[320px] min-w-[280px] bg-thali1 bg-cover bg-left-bottom`}
+          >
+            <div className="bottom-5 left-5 absolute">
+              <div className="py-3">
+                <div className="text-white font-semibold text-2xl">Student thali</div>
+                <div className="text-yellow-300 font font-semibold">
+                  Rs. 60
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <span className="text-white">Book Now</span>
+                <ChevronRight className="text-white" />
+              </div>
+            </div>
+          </a>
+          <a
+            href=""
+            className={`relative rounded-3xl min-h-[320px] min-w-[280px] bg-thali2 bg-cover bg-left-bottom`}
+          >
+            <div className="bottom-5 left-5 absolute">
+              <div className="py-3">
+                <div className="text-white font-semibold text-2xl">Special thali</div>
+                <div className="text-yellow-300 font font-semibold">
+                  Rs. 80
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <span className="text-white">Book Now</span>
+                <ChevronRight className="text-white" />
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     );
