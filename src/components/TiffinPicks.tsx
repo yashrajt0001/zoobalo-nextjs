@@ -14,15 +14,15 @@ const TiffinPicks = () => {
         </div>
         <div className="flex gap-10">
           <a
-            href=""
+            href="https://wa.me/919509919001"
             className={`relative rounded-3xl min-h-[320px] min-w-[280px] bg-thali1 bg-cover bg-left-bottom`}
           >
             <div className="bottom-5 left-5 absolute">
               <div className="py-3">
-                <div className="text-white font-semibold text-2xl">Student thali</div>
-                <div className="text-yellow-300 font font-semibold">
-                  Rs. 60
+                <div className="text-white font-semibold text-2xl">
+                  Student thali
                 </div>
+                <div className="text-yellow-300 font font-semibold">Rs. 60</div>
               </div>
               <div className="flex gap-2">
                 <span className="text-white">Book Now</span>
@@ -31,15 +31,15 @@ const TiffinPicks = () => {
             </div>
           </a>
           <a
-            href=""
+            href="https://wa.me/919509919001"
             className={`relative rounded-3xl min-h-[320px] min-w-[280px] bg-thali2 bg-cover bg-left-bottom`}
           >
             <div className="bottom-5 left-5 absolute">
               <div className="py-3">
-                <div className="text-white font-semibold text-2xl">Special thali</div>
-                <div className="text-yellow-300 font font-semibold">
-                  Rs. 80
+                <div className="text-white font-semibold text-2xl">
+                  Special thali
                 </div>
+                <div className="text-yellow-300 font font-semibold">Rs. 80</div>
               </div>
               <div className="flex gap-2">
                 <span className="text-white">Book Now</span>

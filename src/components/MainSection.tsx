@@ -11,14 +11,14 @@ export const MainSection = () => {
     <>
       <div id="about" className="w-full sm:h-screen">
         <div className="flex justify-center">
-          <div className="sm:w-[30%] text-4xl text-center font-bold text-[#FF5823] pt-4">
-            <h1>Your Favourite Tiffin </h1>
-            <h1 className="mt-3">Delivery Partner</h1>
+          <div className="sm:w-[70%] text-4xl text-center font-bold text-[#FF5823] pt-2">
+            <h1>Best tiffin service</h1>
+            <h1 className="mt-3">in udaipur</h1>
           </div>
         </div>
 
-        <div className="sm:flex mt-12 sm:mt-20 sm:ml-8 sm:gap-5">
-          <div className="sm:w-[32%] text-center flex flex-col justify-center items-center mb-8 sm:mb-0">
+        <div className="sm:flex mt-6 sm:mt-14 sm:ml-8 sm:gap-5">
+          <div className="sm:w-[32%] text-center flex flex-col justify-center items-center mb-4 sm:mb-0">
             <Image src={Waiters} alt="logo" className="w-64 h-64 " />
             <div className="w-[80%]">
               <h1 className="text-[#22AA00] text-xl font-bold">Diverse Food</h1>
@@ -29,16 +29,15 @@ export const MainSection = () => {
             </div>
           </div>
 
-          <div className="sm:w-[32%] text-center flex flex-col justify-center items-center mb-16 sm:mb-0">
+          <div className="sm:w-[32%] text-center flex flex-col justify-center items-center mb-12 sm:mb-0">
             <Image src={takeAway} alt="logo" className="w-64 h-64" />
             <div className="w-[80%] mt-4">
               <h1 className="text-[#22AA00] text-xl font-bold">
-                Quality Food
+                Fast delivery
               </h1>
               <p className="text-black font-medium mt-4">
-                At Zoobalo, we respect your changing plans and offer the
-                flexibility to cancel your food order before it&apos;s out for
-                delivery.
+                Timely delivery for fresh, hot meals at your doorstep, backed by
+                best tiffin service in Udaipur.
               </p>
             </div>
           </div>
@@ -47,22 +46,23 @@ export const MainSection = () => {
             <Image src={orderFood} alt="logo" className="w-56 h-56" />
             <div className="w-[80%] mt-6">
               <h1 className="text-[#22AA00] text-xl font-bold">
-                Best Tiffins
+                Cancel anytime
               </h1>
               <p className="text-black font-medium mt-4">
-                Timely delivery for fresh, hot meals at your doorstep, backed by
-                best tiffin service in Udaipur.
+                At Zoobalo, we respect your changing plans and offer the
+                flexibility to cancel your food order before it&apos;s out for
+                delivery.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="sm:flex w-full sm:h-screen sm:mb-16">
+      <div className="sm:flex w-full sm:h-screen sm:mb-8 sm:mt-6">
         <div className=" hidden sm:w-[50%] sm:h-full sm:flex justify-center items-center">
           <Image src={thali} alt="thali" className="w-[24rem] h-[30rem]" />
         </div>
-        <div className="sm:w-[50%] ml-6 sm:ml-0 h-full py-44 pt-32">
+        <div className="sm:w-[50%] ml-6 sm:ml-0 h-full py-20 sm:py-26">
           <h1 className="text-4xl font-bold text-[#FF5823]">Why choose us?</h1>
           <div className="flex-col">
             <div className="flex items-center mt-14">

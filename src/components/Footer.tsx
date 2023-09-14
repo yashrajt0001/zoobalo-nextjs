@@ -6,33 +6,39 @@ interface FooterProps {}
 
 const Footer: FC<FooterProps> = ({}) => {
   return (
-    <div id='contact' className="bg-[#f5f8f2] py-14 px-16 mt-20">
+    <div id="contact" className="bg-[#f5f8f2] pt-12 pb-6 px-8 mt-20">
       <div>{/* <Image src='/' fill alt=''/> */}</div>
       <div className="sm:flex justify-between">
-        <div className="sm:max-w-xs flex sm:block">
-          <div className="sm:text-[2.3rem] text-lg font-bold mb-4 leading-10">
+        <div className="sm:max-w-xs max-w-full justify-between flex sm:block">
+          <div className="sm:text-[2.5rem] text-2xl font-bold max-w-[220px] sm:pb-4 sm:max-w-fit sm:leading-10">
             The best you can get at an affordable price
           </div>
-          <div>
-            <Image src='/QRcode.jpeg' alt="qr" width={100} height={100}/>
-            <div className="text-xs mt-4 sm:mt-0">Scan this QR code</div>
+          <div className="flex items-center flex-col w-fit">
+            <img src="/QRcode.jpeg" alt="qr" className=" w-20 aspect-square" />
+            <div className="text-xs mt-2">Scan this QR code</div>
           </div>
         </div>
         <div className="mt-10 sm:mt-0">
           <div className="font-bold mb-3 text-xl">Contact us</div>
           <ul className="font-semibold flex flex-col gap-1">
-            <li className="flex gap-2 mb-2 sm:mb-0 mt-2 sm:mt-0">
+            <a
+              href="https://wa.me/919509919001"
+              className="flex gap-2 mb-2 sm:mb-0 mt-2 sm:mt-0"
+            >
               <Image src="/whatsapp.svg" width={30} height={30} alt="" />
               <div>9509919001</div>
-            </li>
-            <li className="flex gap-2 mb-2 sm:mb-0">
+            </a>
+            <a
+              href="https://www.instagram.com/zoobalo/"
+              className="flex gap-2 mb-2 sm:mb-0"
+            >
               <Image src="/instagram.webp" width={30} height={30} alt="" />
               <div>zoobalo</div>
-            </li>
-            <li className="flex gap-2">
+            </a>
+            <a className="flex gap-2">
               <Image src="/phone.png" width={30} height={30} alt="" />
               <div>9509919001</div>
-            </li>
+            </a>
           </ul>
         </div>
         <div className="mt-10 sm:mt-0">
@@ -52,7 +58,7 @@ const Footer: FC<FooterProps> = ({}) => {
           </ul>
         </div>
       </div>
-      <div className="flex justify-between mt-10">
+      <div className="flex justify-between mt-10 sm:text-base text-[7px]">
         <span>Copyright © 2023. Zoobalo. All rights reserved.</span>
         <span>Privacy Policy Terms and Services</span>
       </div>

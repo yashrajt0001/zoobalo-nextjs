@@ -5,7 +5,7 @@ interface OrderProps {}
 
 const Order: FC<OrderProps> = ({}) => {
   return (
-    <div className="bg-[#ffded3] rounded-3xl py-16 w-[90%] mx-auto">
+    <div className="bg-[#ffded3] rounded-3xl py-12 sm:py-14 w-[90%] mx-auto">
       <div>{/* <Image src="/" alt=""/> */}</div>
       <div className="flex sm:flex-row flex-col items-center justify-evenly gap-2">
         <div className="flex flex-col gap-4 items-center">
