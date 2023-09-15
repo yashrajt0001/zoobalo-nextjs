@@ -12,8 +12,7 @@ export const MainSection = () => {
       <div id="about" className="w-full">
         <div className="flex justify-center">
           <div className="sm:w-[70%] text-4xl text-center font-bold text-[#FF5823] pt-2">
-            <h1>Best tiffin service</h1>
-            <h1 className="mt-3">in udaipur</h1>
+            <img src="https://fontmeme.com/permalink/230915/ffa0729296ad4e7311fcadd60b293ad5.png" alt="अब टिफ़िन की टेंशन ख़तम" className="w-[70%] mx-auto" />
           </div>
         </div>
 
@@ -31,7 +30,7 @@ export const MainSection = () => {
 
           <div className="sm:w-[32%] text-center flex flex-col justify-center items-center mb-12 sm:mb-0">
             <Image src={takeAway} alt="logo" className="w-64 h-64" />
-            <div className="w-[80%] mt-4">
+            <div className="w-[80%] mt-4 sm:mt-0">
               <h1 className="text-[#22AA00] text-xl font-bold">
                 Fast delivery
               </h1>
@@ -42,7 +41,7 @@ export const MainSection = () => {
             </div>
           </div>
 
-          <div className="sm:w-[32%]  text-center flex flex-col justify-center items-center sm:mb-0">
+          <div className="sm:w-[32%]  text-center flex flex-col justify-center items-center sm:mb-0 sm:mt-7">
             <Image src={orderFood} alt="logo" className="w-56 h-56" />
             <div className="w-[80%] mt-6">
               <h1 className="text-[#22AA00] text-xl font-bold">
