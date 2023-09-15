@@ -6,7 +6,7 @@ import tiffin from "../assets/images/tiffin.png";
 export const Hero = () => {
   return (
     <>
-      <div id="home" className="w-full sm:h-screen mb-16 sm:mb-0">
+      <div id="home" className="w-full mb-16 sm:mb-20">
         {/* Main Hero Section  */}
 
         <div className="sm:flex justify-between pt-16 sm:pt-20">
