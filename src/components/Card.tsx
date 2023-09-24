@@ -10,7 +10,7 @@ interface userInterface {
     mobile: string;
     address: string;
     balance: number;
-  }
+  };
 }
 
 export const Card: FC<userInterface> = ({ user }) => {
@@ -19,40 +19,41 @@ export const Card: FC<userInterface> = ({ user }) => {
   const [address, setAddress] = useState(user.address);
   const [mob, setMob] = useState(user.mobile);
   const [balance, setBalance] = useState(user.balance.toString());
-  const [loader, setLoader] = useState(false)
-  const [error, setError] = useState('')
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      setLoader(true)
-      await axios.post('http://localhost:5000/updateUser', {
-        id: user.id,
-        name,
-        address,
-        mobile: mob,
-        balance: parseInt(balance)
-      }, {
-        headers: {
-          'auth-token': localStorage.getItem('auth-token')
+      setLoader(true);
+      await axios.post(
+        "http://3.85.77.226:5000/updateUser",
+        {
+          id: user.id,
+          name,
+          address,
+          mobile: mob,
+          balance: parseInt(balance),
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
         }
-      })
-
+      );
     } catch (error: any) {
-      setError(error.response.data)
+      setError(error.response.data);
     } finally {
-      setLoader(false)
-      setShow(false)
+      setLoader(false);
+      setShow(false);
     }
-  }
+  };
 
   return (
     <div className="flex">
       <div className="w-[50%] p-6 bg-lime-200 rounded-xl h-[40%]">
         <h1 className="mt-2 text-2xl font-bold">{user.name}</h1>
-        <h1 className="mt-2 text-lg">
-          {user.address}
-        </h1>
+        <h1 className="mt-2 text-lg">{user.address}</h1>
         <h1 className="mt-2">
           Mob No: <span className="ml-2">{user.mobile}</span>{" "}
         </h1>
@@ -69,7 +70,10 @@ export const Card: FC<userInterface> = ({ user }) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className={`${show ? "ml-32 flex flex-col gap-3" : "hidden"}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`${show ? "ml-32 flex flex-col gap-3" : "hidden"}`}
+      >
         <h1 className="text-3xl mt-5">Update:</h1>
         {error && <div className="text-red-500">{error}</div>}
         <input
@@ -104,7 +108,7 @@ export const Card: FC<userInterface> = ({ user }) => {
           type="submit"
           className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"
         >
-          {loader && <Loader2 className="animate-spin mr-2"/>}Update
+          {loader && <Loader2 className="animate-spin mr-2" />}Update
         </button>
       </form>
     </div>

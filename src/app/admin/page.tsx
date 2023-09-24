@@ -45,7 +45,7 @@ const page = () => {
     try {
       setUserloader(true);
       await axios.post(
-        "http://localhost:5000/createUser",
+        "http://3.85.77.226:5000/createUser",
         {
           name: userDetails.name,
           address: userDetails.address,
@@ -81,7 +81,7 @@ const page = () => {
     try {
       setDelBoyLoader(true);
       await axios.post(
-        "http://localhost:5000/createDelBoy",
+        "http://3.85.77.226:5000/createDelBoy",
         {
           name: delBoyDetails.name,
           email: delBoyDetails.email,
