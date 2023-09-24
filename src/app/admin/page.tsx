@@ -1,16 +1,21 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import logo1 from "../../assets/images/logo1.png";
 import Link from "next/link";
 import axios from "axios";
-import { ShowLogin } from '../../components/ShowLogin' 
+import { ShowLogin } from "../../components/ShowLogin";
+import { Loader2 } from "lucide-react";
 
 const page = () => {
-
   const [login, setLogin] = useState(true);
 
+  useEffect(() => {
+    setLogin(!localStorage.getItem("auth-token"));
+  }, []);
+
+  const [showError, setShowError] = useState<undefined | string>(undefined);
   const [userDetails, setUserDetails] = useState({
     name: "",
     address: "",
@@ -23,7 +28,8 @@ const page = () => {
     password: "",
   });
 
-  const [showError, setShowError] = useState<undefined | string>(undefined);
+  const [userloader, setUserloader] = useState(false);
+  const [delBoyLoader, setDelBoyLoader] = useState(false);
 
   const handleUserSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -36,25 +42,32 @@ const page = () => {
       return setShowError("Please enter details!");
     }
 
-    await axios.post(
-      "http://localhost:5000/createUser",
-      {
-        name: userDetails.name,
-        address: userDetails.address,
-        phone: userDetails.phone,
-        balance: userDetails.balance,
-      },
-      {
-        headers: {
-          'auth-token': localStorage.getItem('auth-token')
+    try {
+      setUserloader(true);
+      await axios.post(
+        "http://localhost:5000/createUser",
+        {
+          name: userDetails.name,
+          address: userDetails.address,
+          mobile: userDetails.phone,
+          balance: parseInt(userDetails.balance),
         },
-      }
-    );
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setUserloader(false);
+    }
 
-    setUserDetails({name: '', address: '', balance: '', phone: ''})
+    setUserDetails({ name: "", address: "", balance: "", phone: "" });
   };
 
-  const handleDelBoySubmit = (e: FormEvent) => {
+  const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (
       !userDetails.name ||
@@ -62,13 +75,36 @@ const page = () => {
       !userDetails.phone ||
       !userDetails.balance
     ) {
-      setShowError("Please enter details!");
+      return setShowError("Please enter details!");
+    }
+
+    try {
+      setDelBoyLoader(true);
+      await axios.post(
+        "http://localhost:5000/createDelBoy",
+        {
+          name: delBoyDetails.name,
+          email: delBoyDetails.email,
+          password: delBoyDetails.password,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setDelBoyLoader(false);
     }
   };
   return (
     <>
-      {login ? <ShowLogin /> :
-        <div>
+      {login ? (
+        <ShowLogin setLogin={setLogin} />
+      ) : (
+        <div className="mb-10">
           <div className="bg-white border-b border-slate-200 sticky top-0 flex justify-between px-8 sm:px-12 py-6 z-10">
             <div className="flex items-center justify-center">
               <Image src={logo1} alt="logo" className="w-28 h-12" />
@@ -147,8 +183,9 @@ const page = () => {
               />
               <button
                 type="submit"
-                className="p-2 rounded-lg text-xl text-white bg-green-500 w-[22%]"
+                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
               >
+                {userloader && <Loader2 className=" animate-spin mr-2" />}{" "}
                 Create
               </button>
             </form>
@@ -202,15 +239,16 @@ const page = () => {
               />
               <button
                 type="submit"
-                className="p-2 rounded-lg text-xl text-white bg-green-500 w-[22%]"
+                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
               >
+                {delBoyLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
                 Create
               </button>
             </form>
           </div>
         </div>
-      }
-      </>
+      )}
+    </>
   );
 };
 

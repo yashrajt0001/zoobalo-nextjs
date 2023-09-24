@@ -1,13 +1,21 @@
+import axios from 'axios';
 import React,{useState} from 'react'
 
-export const ShowLogin = () => {
+export const ShowLogin = ({setLogin}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [error, setError] = useState('')
 
-    const handleLogin = () => {
-        if (email && password) {
-            setLoggedIn(true);
+    const handleLogin = async () => {
+        try {
+            if (!email || !password) {
+                setError('Please enter email and password')
+            }
+            const { data } = await axios.post('http://localhost:5000/adminLogin', { email, password })
+            localStorage.setItem('auth-token', data.token)
+            setLogin(false)
+        } catch (error) {
+            setError(error.response.data)
         }
     };
 
@@ -22,16 +30,23 @@ export const ShowLogin = () => {
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                        setEmail(e.target.value)
+                        setError(false)
+                    }}
                 className='p-2 outline-none border-b-[1.5px] border-purple-300 w-[70%]'
             />
             <input
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                        setPassword(e.target.value)
+                        setError(false)
+                    }}
                 className='p-2 outline-none mb-10 border-b-[1.5px] border-purple-300 w-[70%]'
-            />
+                />
+                {error && <div className='text-red-500 text-lg'>{error}</div>}
             <button onClick={handleLogin} className='p-3 text-[1.25rem] font-semibold w-[60%] bg-purple-400 rounded-xl text-white'>Submit</button>
             </div>
         </div>

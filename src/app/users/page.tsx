@@ -9,25 +9,27 @@ const page = () => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const {data} = await axios.get('http://localhost:5000/getAllUsers')
+      const { data } = await axios.get('http://localhost:5000/getAllUsers', {
+        headers: {
+        'auth-token': localStorage.getItem('auth-token')
+        }
+      })
       setUsers(data)
     }
-
     getUsers()
   }, [])
   
 
   return (
-    <div className='ml-10'>
-      <h1 className=' mt-6 text-3xl mb-5'>All Users: </h1>
-      <Card />
-      {
-        users.map(() => {
-          return <Card />
-        })
-      }
+    <div className="ml-10">
+      <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
+      <div className='flex flex-col gap-3'>
+        {users.map((user) => {
+          return <Card user={user} />;
+        })}
+      </div>
     </div>
-  )
+  );
 }
 
 export default page
