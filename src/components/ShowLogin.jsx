@@ -1,3 +1,5 @@
+"use client"
+
 import axios from "axios";
 import React, { useState } from "react";
 
@@ -11,7 +13,7 @@ export const ShowLogin = ({ setLogin }) => {
       if (!email || !password) {
         setError("Please enter email and password");
       }
-      const { data } = await axios.post("http://3.85.77.226:5000/adminLogin", {
+      const { data } = await axios.post("/api/adminLogin", {
         email,
         password,
       });

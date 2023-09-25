@@ -27,7 +27,7 @@ export const Card: FC<userInterface> = ({ user }) => {
     try {
       setLoader(true);
       await axios.post(
-        "http://3.85.77.226:5000/updateUser",
+        "/api/updateUser",
         {
           id: user.id,
           name,

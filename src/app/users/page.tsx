@@ -9,7 +9,7 @@ const page = () => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const { data } = await axios.get("http://3.85.77.226:5000/getAllUsers", {
+      const { data } = await axios.get("/api/getAllUsers", {
         headers: {
           "auth-token": localStorage.getItem("auth-token"),
         },

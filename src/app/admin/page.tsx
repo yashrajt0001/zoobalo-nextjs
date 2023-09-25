@@ -45,7 +45,7 @@ const page = () => {
     try {
       setUserloader(true);
       await axios.post(
-        "http://3.85.77.226:5000/createUser",
+        "/api/createUser",
         {
           name: userDetails.name,
           address: userDetails.address,
@@ -70,10 +70,9 @@ const page = () => {
   const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (
-      !userDetails.name ||
-      !userDetails.address ||
-      !userDetails.phone ||
-      !userDetails.balance
+      !delBoyDetails.name ||
+      !delBoyDetails.email ||
+      !delBoyDetails.password
     ) {
       return setShowError("Please enter details!");
     }
@@ -81,7 +80,7 @@ const page = () => {
     try {
       setDelBoyLoader(true);
       await axios.post(
-        "http://3.85.77.226:5000/createDelBoy",
+        "/api/createDelBoy",
         {
           name: delBoyDetails.name,
           email: delBoyDetails.email,
