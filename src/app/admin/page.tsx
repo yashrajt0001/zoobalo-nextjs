@@ -1,9 +1,7 @@
 "use client";
 
 import React, { FormEvent, useEffect, useState } from "react";
-import Image from "next/image";
-import logo1 from "../../assets/images/logo1.png";
-import Link from "next/link";
+
 import axios from "axios";
 import { ShowLogin } from "../../components/ShowLogin";
 import { Loader2 } from "lucide-react";
@@ -103,15 +101,7 @@ const page = () => {
       {login ? (
         <ShowLogin setLogin={setLogin} />
       ) : (
-        <div className="mb-10">
-          <div className="bg-white border-b border-slate-200 sticky top-0 flex justify-between px-8 sm:px-12 py-6 z-10">
-            <div className="flex items-center justify-center">
-              <Image src={logo1} alt="logo" className="w-28 h-12" />
-              <div className="hidden sm:flex items-center  gap-10 ml-12 text-lg font-medium">
-                <Link href="/users">Users</Link>
-              </div>
-            </div>
-          </div>
+          <div className="mb-10">
           <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
             Hi! <span className="text-green-500">Admin</span>{" "}
           </h1>
