@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import React, { FC, FormEvent, useState } from "react";
 
 interface userInterface {
@@ -57,15 +58,19 @@ export const Card: FC<userInterface> = ({ user }) => {
         <h1 className="mt-2">
           Mob No: <span className="ml-2">{user.mobile}</span>{" "}
         </h1>
-        <div className="mt-5 flex gap-3">
+        <div className="mt-5 flex gap-4 items-center">
           <button
             onClick={() => setShow(true)}
             className="p-3 bg-white font-bold rounded-xl"
           >
             Update
           </button>
-          <button className="p-3 bg-white font-bold rounded-xl">
+         <Link href={`/admin/users/${user.id}`}><button className="p-3 bg-white font-bold rounded-xl">
             Show History
+          </button></Link> 
+          <button className="py-[0.6rem] px-3 bg-white font-bold rounded-xl w-[30%] flex gap-3 items-center">
+            Set Priority
+            <input type="text" className="w-[25%] border-[2px] text-center outline-none" />
           </button>
         </div>
       </div>
