@@ -11,12 +11,12 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  mobile     String
-  address    String
-  orders     Order[]
-  balance    Int
+  id       Int       @id @default(autoincrement())
+  name     String
+  mobile   String
+  address  String
+  orders   Order[]
+  balance  Int
 }
 
 model Order {
@@ -32,6 +32,23 @@ model Order {
 enum roles {
   admin
   delBoy
+}
+
+model Priority {
+  id       Int  @id @default(autoincrement())
+  priority Int
+  userId   Int
+} 
+
+enum action {
+  login
+  logout
+}
+
+model login {
+  id     Int      @id @default(autoincrement())
+  date   DateTime
+  action action
 }
 
 model moderator {
