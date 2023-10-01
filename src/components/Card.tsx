@@ -65,12 +65,20 @@ export const Card: FC<userInterface> = ({ user }) => {
           >
             Update
           </button>
-         <Link href={`/admin/users/${user.id}`}><button className="p-3 bg-white font-bold rounded-xl">
-            Show History
-          </button></Link> 
+          <Link
+            href={`/admin/user?userId=${user.id}&name=${user.name}&mobile=${user.mobile}`}
+          >
+            <button className="p-3 bg-white font-bold rounded-xl">
+              Show History
+            </button>
+          </Link>
           <button className="py-[0.6rem] px-3 bg-white font-bold rounded-xl w-[30%] flex gap-3 items-center">
             Set Priority
-            <input type="text" className="w-[25%] border-[2px] text-center outline-none" />
+            <input
+              data-userid={user.id}
+              type="text"
+              className="priority-input w-[25%] border-[2px] text-center outline-none"
+            />
           </button>
         </div>
       </div>

@@ -17,6 +17,7 @@ model User {
   address  String
   orders   Order[]
   balance  Int
+  priority today_delivery?
 }
 
 model Order {
@@ -34,11 +35,13 @@ enum roles {
   delBoy
 }
 
-model Priority {
-  id       Int  @id @default(autoincrement())
-  priority Int
-  userId   Int
-} 
+model today_delivery {
+  id          Int     @id @default(autoincrement())
+  priority    Int
+  user        User    @relation(fields: [userId], references: [id])
+  userId      Int     @unique
+  isDelivered Boolean
+}
 
 enum action {
   login
@@ -47,7 +50,7 @@ enum action {
 
 model login {
   id     Int      @id @default(autoincrement())
-  date   DateTime
+  date   DateTime @default(now())
   action action
 }
 
