@@ -16,14 +16,13 @@ export async function POST(req: Request) {
     await prisma.today_delivery.deleteMany({});
     await body.map(async(item: any) => {
       console.log('func ran')
-      const today_delivery = await prisma.today_delivery.create({
+      prisma.today_delivery.create({
         data: {
           userId: parseInt(item.userId),
           priority: parseInt(item.priority),
           isDelivered: false,
         },
-      });
-      console.log(today_delivery)
+      }).then((data)=> console.log(data))
     });
     return new Response("OK");
   // } catch (error: any) {
