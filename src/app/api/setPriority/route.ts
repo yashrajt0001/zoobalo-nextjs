@@ -4,7 +4,7 @@ const jwtSecret = "secret123";
 const { verify } = jwt;
 
 export async function POST(req: Request) {
-  try {
+  // try {
     const authToken = req.headers.get("auth-token");
     if (!authToken) {
       return new Response("please provide auth token", { status: 400 });
@@ -15,16 +15,18 @@ export async function POST(req: Request) {
     console.log(body)
     await prisma.today_delivery.deleteMany({});
     body.map(async (item: any) => {
-      await prisma.today_delivery.create({
+      console.log('func ran')
+      const today_delivery = await prisma.today_delivery.create({
         data: {
           userId: parseInt(item.userId),
           priority: parseInt(item.priority),
           isDelivered: false,
         },
       });
+      console.log(today_delivery)
     });
     return new Response("OK");
-  } catch (error: any) {
-    return new Response(error, { status: 400 });
-  }
+  // } catch (error: any) {
+  //   return new Response(error, { status: 400 });
+  // }
 }
