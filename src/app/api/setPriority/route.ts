@@ -12,6 +12,7 @@ export async function POST(req: Request) {
     verify(authToken, jwtSecret);
 
     const body = await req.json();
+    console.log(body)
     await prisma.today_delivery.deleteMany({});
     body.map(async (item: any) => {
       await prisma.today_delivery.create({

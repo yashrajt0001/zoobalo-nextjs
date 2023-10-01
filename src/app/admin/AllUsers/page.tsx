@@ -40,10 +40,11 @@ const page = () => {
 
     try {
       setIsSubmitLoading(true);
+      console.log(data)
       await axios.post("/api/setPriority", data, {
         headers: {
-          'auth-token': localStorage.getItem('auth-token')
-        }
+          "auth-token": localStorage.getItem("auth-token"),
+        },
       });
     } catch (error) {
       console.log(error);
