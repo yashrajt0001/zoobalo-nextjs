@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log(body)
     await prisma.today_delivery.deleteMany({});
-    await body.map((item: any) => {
+    await body.map(async(item: any) => {
       console.log('func ran')
-      const today_delivery = prisma.today_delivery.create({
+      const today_delivery = await prisma.today_delivery.create({
         data: {
           userId: parseInt(item.userId),
           priority: parseInt(item.priority),
