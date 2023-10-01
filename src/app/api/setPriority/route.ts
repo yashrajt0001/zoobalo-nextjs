@@ -16,13 +16,7 @@ export async function POST(req: Request) {
     await prisma.today_delivery.deleteMany({});
     await body.map(async(item: any) => {
       console.log('func ran')
-      prisma.today_delivery.create({
-        data: {
-          userId: parseInt(item.userId),
-          priority: parseInt(item.priority),
-          isDelivered: false,
-        },
-      }).then((data)=> console.log(data))
+      await prisma.$executeRaw`insert into today_delivery (priority, userId, isDelivered) values (${item.priority}, ${item.userId}, false)`
     });
     return new Response("OK");
   // } catch (error: any) {
