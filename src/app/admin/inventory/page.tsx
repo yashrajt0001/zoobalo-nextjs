@@ -37,7 +37,7 @@ const page = () => {
         <h1 className="w-[20%] text-center">Picked</h1>
         <h1 className="w-[20%] text-center">Due</h1>
       </div>
-      {history?.map((user: any) => (
+      {history.length > 1 && history.map((user: any) => (
         <TodaysCard
           key={user?.id}
           name={user?.User?.name}
