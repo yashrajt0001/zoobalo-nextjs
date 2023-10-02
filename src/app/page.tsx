@@ -5,12 +5,12 @@ import { MainSection } from '@/components/MainSection'
 import { Navbar } from '@/components/Navbar';
 import Order from '@/components/Order';
 import TiffinPicks from '@/components/TiffinPicks';
-import Script from 'next/script'
+// import Script from 'next/script'
 
 export default function Home() {
   return (
     <div>
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-1HFXCRPML6" />
+      {/* <Script src="https://www.googletagmanager.com/gtag/js?id=G-1HFXCRPML6" />
       <Script id="google-analytics">
         {`
           window.dataLayer = window.dataLayer || [];
@@ -19,7 +19,7 @@ export default function Home() {
 
           gtag('config', 'G-1HFXCRPML6');
         `}
-      </Script>
+      </Script> */}
 
       {/* NavBar */}
 

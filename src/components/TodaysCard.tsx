@@ -1,4 +1,6 @@
-import React, { FC } from "react";
+"use client"
+
+import { FC } from "react";
 
 interface TodaysCardProps {
   name: string;
