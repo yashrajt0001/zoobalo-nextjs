@@ -3,6 +3,8 @@ const jwtSecret = "secret123";
 import prisma from "@/lib/prisma";
 const { verify } = jwt;
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const authToken = req.headers.get("auth-token");
