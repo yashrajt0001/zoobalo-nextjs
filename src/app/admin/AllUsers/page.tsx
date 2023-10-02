@@ -65,10 +65,10 @@ const page = () => {
           })}
           <button
             onClick={handleSubmit}
-            className="text-white py-2 px-4 bg-green-400 rounded-lg w-fit my-6"
+            className="flex justify-center items-center text-white py-2 px-4 bg-green-400 rounded-lg w-fit my-6"
           >
             {isSubmitLoading && (
-              <Loader2 className="animate-spin w-4 h-4 text-white" />
+              <Loader2 className="animate-spin w-4 h-4 mr-2 text-white" />
             )}
             Submit
           </button>

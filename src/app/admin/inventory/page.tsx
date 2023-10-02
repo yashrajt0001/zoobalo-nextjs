@@ -8,7 +8,7 @@ const page = () => {
   const [history, setHistory] = useState<any>([]);
 
   useEffect(() => {
-    async function getHistory() {
+    const getHistory = async()=>{
       try {
         const { data } = await axios.get("/api/getHistory", {
           headers: {
@@ -36,6 +36,7 @@ const page = () => {
       </div>
       {history.map((user: any) => (
         <TodaysCard
+          key={user.id}
           name={user.User.name}
           mobile={user.User.mobile}
           delivered={user.delivered}
