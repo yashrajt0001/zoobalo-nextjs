@@ -33,17 +33,19 @@ const page = () => {
         <h1 className="w-[20%] text-center">Picked</h1>
         <h1 className="w-[20%] text-center">Due</h1>
       </div>
-      {isFetchloading ? <Loader2 className="w-8 h-8 animate-spin" /> :
-          history.map((user: any) => (
-            <TodaysCard
-              key={user.id}
-              name={user.User.name}
-              mobile={user.User.mobile}
-              delivered={user.delivered}
-              picked={user.picked}
-            />
-          ))
-        }
+      {isFetchloading ? (
+        <Loader2 className="w-8 h-8 animate-spin" />
+      ) : (
+        history && history.map((user: any) => (
+          <TodaysCard
+            key={user.id}
+            name={user.User.name}
+            mobile={user.User.mobile}
+            delivered={user.delivered}
+            picked={user.picked}
+          />
+        ))
+      )}
     </div>
   );
 };
