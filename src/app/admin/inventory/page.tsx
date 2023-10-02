@@ -9,7 +9,6 @@ const page = () => {
 
   useEffect(() => {
     const getHistory = async()=>{
-      try {
         const { data } = await axios.get("/api/getHistory", {
           headers: {
             "auth-token": localStorage.getItem("auth-token"),
@@ -17,9 +16,6 @@ const page = () => {
         });
         setHistory(data);
         console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
     }
     getHistory();
   }, []);
