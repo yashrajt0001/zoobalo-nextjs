@@ -14,4 +14,4 @@ export async function GET(req: NextRequest) {
     } catch (error: any) {
         return new Response(error)
     }
-} 
+}
