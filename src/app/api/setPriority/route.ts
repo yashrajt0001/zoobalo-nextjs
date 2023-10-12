@@ -19,13 +19,15 @@ export async function POST(req: Request) {
     await body.map(async(item: any) => {
       console.log('func ran')
       // await prisma.$executeRaw`insert into today_delivery (priority, userId, isDelivered) values (${parseInt(item.priority)}, ${parseInt(item.userId)}, false)`
-      await prisma.today_delivery.create({
+      const result = await prisma.today_delivery.create({
         data: {
           userId: parseInt(item.userId),
           priority: parseInt(item.priority),
           isDelivered: false
         }
       })
+
+      console.log(result)
     });
     return new Response("OK");
   } catch (error: any) {
