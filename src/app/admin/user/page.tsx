@@ -32,6 +32,7 @@ const page = ({ params }: PageInterface) => {
       <h1 className="text-3xl text-green-500">{name}</h1>
       <h1 className="text-2xl text-orange-500 mt-1">{mobile}</h1>
       <div className="flex mt-6 px-16 text-2xl font-semibold">
+        <h1 className="w-[25%] text-center">Time</h1>
         <h1 className="w-[25%] text-center">Date</h1>
         <h1 className="w-[25%] text-center">Delivered</h1>
         <h1 className="w-[25%] text-center">Picked</h1>

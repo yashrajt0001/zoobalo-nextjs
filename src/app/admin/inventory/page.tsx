@@ -22,11 +22,19 @@ const page = () => {
     };
     getHistory();
   }, []);
+
+  const dateTime = new Date()
+  const date = dateTime.getDate()
+  const month = dateTime.getMonth() + 1
+  const year = dateTime.getFullYear()
+
+  const todayDate = `${date}/${month}/${year}`
+
   return (
     <div className="pt-8 px-8 bg-[#F6F6F6] min-h-screen">
-      <h1 className="text-3xl text-green-500">28/09/2023</h1>
-
+      <h1 className="text-3xl text-green-500">{todayDate}</h1>
       <div className="flex mt-6 px-16 text-2xl font-semibold">
+        <h1 className="w-[20%] text-center">Time</h1>
         <h1 className="w-[20%] text-center">User</h1>
         <h1 className="w-[20%] text-center">Mobile</h1>
         <h1 className="w-[20%] text-center">Delivered</h1>
@@ -43,6 +51,7 @@ const page = () => {
             mobile={user.User.mobile}
             delivered={user.delivered}
             picked={user.picked}
+            dateTime={user.dateTime}
           />
         ))
       )}
