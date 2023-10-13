@@ -14,7 +14,6 @@ export async function POST(req: Request) {
     verify(authToken, jwtSecret);
 
     const body = await req.json();
-    console.log(body)
     await prisma.today_delivery.deleteMany({});
     await body.map(async(item: any) => {
       // await prisma.$executeRaw`insert into today_delivery (priority, userId, isDelivered) values (${parseInt(item.priority)}, ${parseInt(item.userId)}, false)`
