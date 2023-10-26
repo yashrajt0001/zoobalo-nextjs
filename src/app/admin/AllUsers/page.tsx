@@ -9,6 +9,7 @@ const page = () => {
   const [users, setUsers] = useState([]);
   const [isFetchloading, setIsFetchloading] = useState(true);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isSubmitDefaultLoading, setIsSubmitDefaultLoading] = useState(false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -53,9 +54,27 @@ const page = () => {
     }
   };
 
+  const handleDefaultSubmit = async () => {
+    try {
+      setIsSubmitDefaultLoading(true)
+      await axios.get('/api/setPriority/default', {
+        headers: {
+          "auth-token": localStorage.getItem('auth-token')
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitDefaultLoading(false)
+    }
+  };
+
   return (
     <div className="ml-10">
-      <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
+      <div className="flex justify-between w-1/2 items-center">
+        <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
+        <button onClick={handleDefaultSubmit} className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2">{isSubmitDefaultLoading && <Loader2 className="h-5 w-5 animate-spin"/>} Submit default</button>
+      </div>
       {isFetchloading ? (
         <Loader2 className="animate-spin w-8 h-8" />
       ) : (

@@ -5,7 +5,7 @@ const { verify } = jwt;
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const authToken = req.headers.get("auth-token");
     if (!authToken) {
@@ -13,16 +13,10 @@ export async function POST(req: Request) {
     }
     verify(authToken, jwtSecret);
 
-    const body = await req.json();
-    await prisma.today_delivery.deleteMany({});
-    await body.map(async(item: any) => {
-      await prisma.today_delivery.create({
-        data: {
-          userId: parseInt(item.userId),
-          priority: parseInt(item.priority),
-          isDelivered: false
-        }
-      })
+    await prisma.today_delivery.updateMany({
+      data: {
+        isDelivered: false,
+      },
     });
     return new Response("OK");
   } catch (error: any) {
