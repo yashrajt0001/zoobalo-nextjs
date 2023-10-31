@@ -203,10 +203,10 @@ const page = () => {
                     className="p-5 w-full"
                     value={userDetails.type}
                 >
-                  <option value="morning">morning</option>
-                  <option value="evening">evening</option>
+                  <option value="morning">Morning</option>
+                  <option value="evening">Evening</option>
                   <option value="both">
-                    both
+                    Both
                   </option>
                 </select>
               </div>
