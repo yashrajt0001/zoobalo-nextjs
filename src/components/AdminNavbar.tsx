@@ -1,4 +1,6 @@
-import { FC } from 'react'
+"use client";
+
+import { FC } from "react";
 import Image from "next/image";
 import logo1 from "../assets/images/logo1.png";
 import Link from "next/link";
@@ -18,6 +20,6 @@ const AdminNavbar: FC<adminNavbarProps> = ({}) => {
       </div>
     </div>
   );
-}
+};
 
-export default AdminNavbar
+export default AdminNavbar;

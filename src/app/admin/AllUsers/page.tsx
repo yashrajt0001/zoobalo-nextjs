@@ -10,6 +10,8 @@ const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(true);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isSubmitDefaultLoading, setIsSubmitDefaultLoading] = useState(false);
+  const [searchinput, setSearchinput] = useState("");
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -20,6 +22,7 @@ const page = () => {
       });
       setIsFetchloading(false);
       setUsers(data);
+      setResults(data);
     };
     getUsers();
   }, []);
@@ -41,7 +44,7 @@ const page = () => {
 
     try {
       setIsSubmitLoading(true);
-      console.log(data)
+      console.log(data);
       await axios.post("/api/setPriority", data, {
         headers: {
           "auth-token": localStorage.getItem("auth-token"),
@@ -56,30 +59,63 @@ const page = () => {
 
   const handleDefaultSubmit = async () => {
     try {
-      setIsSubmitDefaultLoading(true)
-      await axios.get('/api/setPriority/default', {
+      setIsSubmitDefaultLoading(true);
+      await axios.get("/api/setPriority/default", {
         headers: {
-          "auth-token": localStorage.getItem('auth-token')
-        }
-      })
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setIsSubmitDefaultLoading(false)
+      setIsSubmitDefaultLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (results != undefined) {
+      const finalResults = users.filter((result:any) => {
+        return (
+          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !==
+          -1
+        );
+      });
+
+      setResults(finalResults);
+    }
+  }, [searchinput]);
+
   return (
-    <div className="ml-10">
+    <div className="ml-10 mt-4">
+      <div className="flex items-center justify-center w-[30%]">
+        <input
+          type="text"
+          value={searchinput}
+          onChange={(e) => setSearchinput(e.target.value)}
+          placeholder="Search a User"
+          className="p-2 border border-gray-200 rounded-lg w-full outline-none"
+        />
+      </div>
       <div className="flex justify-between w-1/2 items-center">
         <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
-        <button onClick={handleDefaultSubmit} className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2">{isSubmitDefaultLoading && <Loader2 className="h-5 w-5 animate-spin"/>} Submit default</button>
+        <button
+          onClick={handleDefaultSubmit}
+          className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
+        >
+          {isSubmitDefaultLoading && (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          )}{" "}
+          Submit default
+        </button>
       </div>
       {isFetchloading ? (
         <Loader2 className="animate-spin w-8 h-8" />
       ) : (
         <div className="flex flex-col gap-3">
-          {users.map((user, index) => {
+          {!searchinput && users.map((user, index) => {
+            return <Card user={user} key={index} />;
+          })}
+          {searchinput && results.map((user, index) => {
             return <Card user={user} key={index} />;
           })}
           <button
