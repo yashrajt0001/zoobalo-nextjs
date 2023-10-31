@@ -19,6 +19,8 @@ const page = () => {
     address: "",
     phone: "",
     balance: "",
+    location: "",
+    type: "both"
   });
   const [delBoyDetails, setDelBoyDetails] = useState({
     name: "",
@@ -35,7 +37,8 @@ const page = () => {
       !userDetails.name ||
       !userDetails.address ||
       !userDetails.phone ||
-      userDetails.balance == undefined
+      userDetails.balance == undefined || 
+      !userDetails.type
     ) {
       return setShowError("Please enter details!");
     }
@@ -49,6 +52,8 @@ const page = () => {
           address: userDetails.address,
           mobile: userDetails.phone,
           balance: parseInt(userDetails.balance),
+          location: userDetails.location,
+          type: userDetails.type
         },
         {
           headers: {
@@ -62,7 +67,7 @@ const page = () => {
       setUserloader(false);
     }
 
-    setUserDetails({ name: "", address: "", balance: "", phone: "" });
+    setUserDetails({ name: "", address: "", balance: "", phone: "", location: "", type: "both" });
   };
 
   const handleDelBoySubmit = async (e: FormEvent) => {
@@ -101,7 +106,7 @@ const page = () => {
       {login ? (
         <ShowLogin setLogin={setLogin} />
       ) : (
-          <div className="mb-10">
+        <div className="mb-10">
           <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
             Hi! <span className="text-green-500">Admin</span>{" "}
           </h1>
@@ -170,6 +175,41 @@ const page = () => {
                 placeholder="User's Balance"
                 className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
+              <input
+                type="text"
+                value={userDetails.location}
+                name="location"
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setUserDetails({
+                    ...userDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Location"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
+                <select
+                  onChange={(e) => {
+                    setShowError(undefined);
+                    setUserDetails({
+                      ...userDetails,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  name="type"
+                  id="type"
+                    className="p-5 w-full"
+                    value={userDetails.type}
+                >
+                  <option value="morning">morning</option>
+                  <option value="evening">evening</option>
+                  <option value="both">
+                    both
+                  </option>
+                </select>
+              </div>
               <button
                 type="submit"
                 className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"

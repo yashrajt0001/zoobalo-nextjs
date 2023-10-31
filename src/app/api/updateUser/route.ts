@@ -11,8 +11,8 @@ export async function POST(req: Request) {
       }
       verify(authToken, jwtSecret);
       const body = await req.json();
-    const { name, mobile, address, balance, id } = body;
-    if (!name || !mobile || !address || balance == undefined) {
+    const { name, mobile, address, balance, id, location, type } = body;
+    if (!name || !mobile || !address || balance == undefined || !type) {
       return new Response('invalid payload')
     }
 
@@ -22,6 +22,8 @@ export async function POST(req: Request) {
         mobile,
         address,
         balance,
+        location,
+        type
       },
       where: {
         id,

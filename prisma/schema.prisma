@@ -11,13 +11,22 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       Int             @id @default(autoincrement())
   name     String
   mobile   String
   address  String
   orders   Order[]
   balance  Int
   priority today_delivery?
+  due      Int?            @default(0)
+  location String?
+  type     type?
+}
+
+enum type {
+  morning
+  evening
+  both
 }
 
 model Order {
@@ -34,6 +43,7 @@ enum roles {
   admin
   delBoy
 }
+
 
 model today_delivery {
   id          Int     @id @default(autoincrement())

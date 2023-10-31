@@ -1,4 +1,6 @@
 "use client";
+
+import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +13,8 @@ interface userInterface {
     mobile: string;
     address: string;
     balance: number;
+    location: string;
+    type: type
   };
 }
 
@@ -19,7 +23,9 @@ export const Card: FC<userInterface> = ({ user }) => {
   const [name, setName] = useState(user.name);
   const [address, setAddress] = useState(user.address);
   const [mob, setMob] = useState(user.mobile);
+  const [location, setLocation] = useState(user.location);
   const [balance, setBalance] = useState(user.balance.toString());
+  const [type, setType] = useState(user.type) 
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState("");
 
@@ -35,6 +41,8 @@ export const Card: FC<userInterface> = ({ user }) => {
           address,
           mobile: mob,
           balance: parseInt(balance),
+          location,
+          type
         },
         {
           headers: {
@@ -117,6 +125,28 @@ export const Card: FC<userInterface> = ({ user }) => {
           value={balance}
           onChange={(e) => setBalance(e.target.value)}
         />
+        <input
+          type="text"
+          placeholder="Location"
+          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
+          <select
+            onChange={(e) => {
+              setType(e.target.value as type)
+            }}
+            name="type"
+            id="type"
+            className="p-5 w-full"
+            value={type}
+          >
+            <option value="morning">morning</option>
+            <option value="evening">evening</option>
+            <option value="both">both</option>
+          </select>
+        </div>
         <button
           type="submit"
           className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"

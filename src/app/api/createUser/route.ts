@@ -10,8 +10,8 @@ export async function POST(req: Request) {
     }
     verify(authToken, jwtSecret);
     const body = await req.json();
-    const { name, mobile, address, balance } = body;
-    if (!name || !mobile || !address || balance == undefined) {
+    const { name, mobile, address, balance, location,type } = body;
+    if (!name || !mobile || !address || balance == undefined || !type) {
       return new Response("Please enter details", { status: 400 });
     }
 
@@ -21,6 +21,8 @@ export async function POST(req: Request) {
         mobile,
         address,
         balance,
+        location,
+        type
       },
     });
     return new Response("ok");
