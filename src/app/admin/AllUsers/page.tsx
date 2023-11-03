@@ -44,7 +44,6 @@ const page = () => {
 
     try {
       setIsSubmitLoading(true);
-      console.log(data);
       await axios.post("/api/setPriority", data, {
         headers: {
           "auth-token": localStorage.getItem("auth-token"),
@@ -74,62 +73,74 @@ const page = () => {
 
   useEffect(() => {
     if (results != undefined) {
-      const finalResults = users.filter((result:any) => {
+      const finalResults = users.filter((result: any) => {
         return (
-          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !==
-          -1
+          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
         );
       });
-
       setResults(finalResults);
+    }
+
+    if (!searchinput) {
+      setResults(users);
     }
   }, [searchinput]);
 
   return (
-    <div className="ml-10 mt-4">
-      <div className="flex items-center justify-center w-[30%]">
-        <input
-          type="text"
-          value={searchinput}
-          onChange={(e) => setSearchinput(e.target.value)}
-          placeholder="Search a User"
-          className="p-2 border border-gray-200 rounded-lg w-full outline-none"
-        />
-      </div>
-      <div className="flex justify-between w-1/2 items-center">
-        <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
-        <button
-          onClick={handleDefaultSubmit}
-          className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-        >
-          {isSubmitDefaultLoading && (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          )}{" "}
-          Submit default
-        </button>
-      </div>
-      {isFetchloading ? (
-        <Loader2 className="animate-spin w-8 h-8" />
-      ) : (
-        <div className="flex flex-col gap-3">
-          {!searchinput && users.map((user, index) => {
-            return <Card user={user} key={index} />;
-          })}
-          {searchinput && results.map((user, index) => {
-            return <Card user={user} key={index} />;
-          })}
+    <>
+     <div className="ml-10 mt-4">
+        <div className="flex items-center justify-center w-[30%]">
+          <input
+            type="text"
+            value={searchinput}
+            onChange={(e) => setSearchinput(e.target.value)}
+            placeholder="Search a User"
+            className="p-2 border border-gray-200 rounded-lg w-full outline-none"
+          />
+        </div>
+        <div className="flex justify-between w-1/2 items-center">
+          <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
           <button
-            onClick={handleSubmit}
-            className="flex justify-center items-center text-white py-2 px-4 bg-green-400 rounded-lg w-fit my-6"
+            onClick={handleDefaultSubmit}
+            className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
           >
-            {isSubmitLoading && (
-              <Loader2 className="animate-spin w-4 h-4 mr-2 text-white" />
-            )}
-            Submit
+            {isSubmitDefaultLoading && (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            )}{" "}
+            Submit default
           </button>
         </div>
-      )}
-    </div>
+        {isFetchloading ? (
+          <Loader2 className="animate-spin w-8 h-8" />
+        ) : (
+          <div className="flex flex-col gap-3">
+            {results.map((user: any, index) => {
+              return (
+                <Card
+                  id={user.id}
+                  key={index}
+                  _name={user.name}
+                  _address={user.address}
+                  _balance={user.balance.toString()}
+                  _location={user.location}
+                  _mobile={user.mobile}
+                  _type={user.type}
+                />
+              );
+            })}
+            <button
+              onClick={handleSubmit}
+              className="flex justify-center items-center text-white py-2 px-4 bg-green-400 rounded-lg w-fit my-6"
+            >
+              {isSubmitLoading && (
+                <Loader2 className="animate-spin w-4 h-4 mr-2 text-white" />
+              )}
+              Submit
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

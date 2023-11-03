@@ -4,31 +4,47 @@ import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import React, { FC, FormEvent, useState } from "react";
+import React, { FC, FormEvent, useState, useEffect } from "react";
 
 interface userInterface {
-  user: {
-    id: string;
-    name: string;
-    mobile: string;
-    address: string;
-    balance: number;
-    location: string;
-    type: type
-  };
+  id: string;
+  _name: string;
+  _mobile: string;
+  _address: string;
+  _balance: string;
+  _location: string;
+  _type: type;
 }
 
-export const Card: FC<userInterface> = ({ user }) => {
-  const [show, setShow] = useState(false);
-  const [name, setName] = useState(user.name);
-  const [address, setAddress] = useState(user.address);
-  const [mob, setMob] = useState(user.mobile);
-  const [location, setLocation] = useState(user.location);
-  const [balance, setBalance] = useState(user.balance.toString());
-  const [type, setType] = useState(user.type) 
+export const Card: FC<userInterface> = ({
+  id,
+  _name,
+  _mobile,
+  _address,
+  _balance,
+  _location,
+  _type,
+}) => {
+  const [show, setShow] = useState<null | boolean>(null);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState("");
+  const [name, setName] = useState<null | string>(null);
+  const [address, setAddress] = useState<null | string>(null);
+  const [mob, setMob] = useState<null | string>(null);
+  const [location, setLocation] = useState<null | string>(null);
+  const [balance, setBalance] = useState<null | string>(null);
+  const [type, setType] = useState<null | type>(null);
 
+  useEffect(() => {
+    setName(_name)
+    setLocation(_location ?? "")
+    setMob(_mobile)
+    setAddress(_address)
+    setBalance(_balance)
+    setType(_type)
+  })
+  
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -36,13 +52,13 @@ export const Card: FC<userInterface> = ({ user }) => {
       await axios.post(
         "/api/updateUser",
         {
-          id: user.id,
+          id: id,
           name,
           address,
           mobile: mob,
-          balance: parseInt(balance),
+          balance: parseInt(balance!),
           location,
-          type
+          type,
         },
         {
           headers: {
@@ -61,21 +77,21 @@ export const Card: FC<userInterface> = ({ user }) => {
   return (
     <div className="flex">
       <div className="w-[50%] p-6 bg-lime-200 rounded-xl h-[40%]">
-        <h1 className="mt-2 text-2xl font-bold">{user.name}</h1>
-        <h1 className="mt-2 text-lg">{user.address}</h1>
+        <h1 className="mt-2 text-2xl font-bold">{name}</h1>
+        <h1 className="mt-2 text-lg">{address}</h1>
         <h1 className="mt-2">
-          Mob No: <span className="ml-2">{user.mobile}</span>{" "}
+          Mob No: <span className="ml-2">{mob}</span>{" "}
         </h1>
         <div className="mt-5 flex gap-4 items-center">
           <button
-            onClick={() => setShow(true)}
+            onClick={() => {
+              setShow(true);
+            }}
             className="p-3 bg-white font-bold rounded-xl"
           >
             Update
           </button>
-          <Link
-            href={`/admin/user?userId=${user.id}&name=${user.name}&mobile=${user.mobile}`}
-          >
+          <Link href={`/admin/user?userId=${id}&name=${name}&mobile=${mob}`}>
             <button className="p-3 bg-white font-bold rounded-xl">
               Show History
             </button>
@@ -83,7 +99,7 @@ export const Card: FC<userInterface> = ({ user }) => {
           <button className="py-[0.6rem] px-3 bg-white font-bold rounded-xl w-[30%] flex gap-3 items-center">
             Set Priority
             <input
-              data-userid={user.id}
+              data-userid={id}
               type="text"
               className="priority-input w-[25%] border-[2px] text-center outline-none"
             />
@@ -101,46 +117,46 @@ export const Card: FC<userInterface> = ({ user }) => {
           type="text"
           placeholder="Name"
           className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-          value={name}
+          value={name!}
           onChange={(e) => setName(e.target.value)}
         />
         <input
           type="text"
           placeholder="Address"
           className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-          value={address}
+          value={address!}
           onChange={(e) => setAddress(e.target.value)}
         />
         <input
           type="tel"
           placeholder="Phone Number"
           className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-          value={mob}
+          value={mob!}
           onChange={(e) => setMob(e.target.value)}
         />
         <input
           type="number"
           placeholder="User's Balance"
           className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-          value={balance}
+          value={balance!}
           onChange={(e) => setBalance(e.target.value)}
         />
         <input
           type="text"
           placeholder="Location"
           className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-          value={location}
+          value={location!}
           onChange={(e) => setLocation(e.target.value)}
         />
         <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
           <select
             onChange={(e) => {
-              setType(e.target.value as type)
+              setType(e.target.value as type);
             }}
             name="type"
             id="type"
             className="p-5 w-full"
-            value={type}
+            value={type!}
           >
             <option value="morning">morning</option>
             <option value="evening">evening</option>
