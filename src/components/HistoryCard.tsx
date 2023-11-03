@@ -17,7 +17,6 @@ const HistoryCard: FC<HistoryCardProps> = ({ user }) => {
   let minutes: number | string = parsedDate.getMinutes();
   const ampm = hours >= 12 ? "pm" : "am";
   hours = hours % 12;
-  console.log(hours);
   hours = hours ? hours : 12; // the hour '0' should be '12'
   minutes = minutes < 10 ? "0" + minutes : minutes;
   const time = hours + ":" + minutes + " " + ampm;

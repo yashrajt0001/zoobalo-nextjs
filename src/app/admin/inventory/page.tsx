@@ -16,7 +16,6 @@ const page = () => {
           "auth-token": localStorage.getItem("auth-token"),
         },
       });
-      console.log(data)
       setIsFetchloading(false);
       setHistory(data);
     };

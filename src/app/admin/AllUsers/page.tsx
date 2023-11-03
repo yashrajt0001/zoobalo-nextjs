@@ -21,6 +21,7 @@ const page = () => {
         },
       });
       setIsFetchloading(false);
+      data.map((user: any) => user["show"] = true)
       setUsers(data);
       setResults(data);
     };
@@ -73,15 +74,26 @@ const page = () => {
 
   useEffect(() => {
     if (results != undefined) {
-      const finalResults = users.filter((result: any) => {
-        return (
-          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
-        );
-      });
-      setResults(finalResults);
+      users.map((user: any) => {
+        if (user.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1) {
+          user.show = true
+        } else {
+          user.show = false
+        }
+      })
+      
+      // const finalResults = users.filter((result: any) => {
+      //   return (
+      //     result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
+      //   );
+      // });
+      setResults(users);
     }
 
     if (!searchinput) {
+      users.map((user: any) => {
+          user.show = true;
+      });
       setResults(users);
     }
   }, [searchinput]);
@@ -117,6 +129,7 @@ const page = () => {
             {results.map((user: any, index) => {
               return (
                 <Card
+                  className={`flex ${user.show ? '' : 'hidden'}`}
                   id={user.id}
                   key={index}
                   _name={user.name}

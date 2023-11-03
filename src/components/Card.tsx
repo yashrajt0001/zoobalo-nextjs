@@ -4,9 +4,9 @@ import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import React, { FC, FormEvent, useState, useEffect } from "react";
+import React, { FC, FormEvent, useState, useEffect, HTMLAttributes } from "react";
 
-interface userInterface {
+interface userInterface extends HTMLAttributes<HTMLDivElement> {
   id: string;
   _name: string;
   _mobile: string;
@@ -24,6 +24,7 @@ export const Card: FC<userInterface> = ({
   _balance,
   _location,
   _type,
+  className
 }) => {
   const [show, setShow] = useState<null | boolean>(null);
   const [loader, setLoader] = useState(false);
@@ -75,7 +76,7 @@ export const Card: FC<userInterface> = ({
   };
 
   return (
-    <div className="flex">
+    <div className={className}>
       <div className="w-[50%] p-6 bg-lime-200 rounded-xl h-[40%]">
         <h1 className="mt-2 text-2xl font-bold">{name}</h1>
         <h1 className="mt-2 text-lg">{address}</h1>
