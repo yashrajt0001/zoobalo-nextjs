@@ -1,5 +1,6 @@
 import { SendHorizontal } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { FC } from "react";
 
 interface FooterProps {}
@@ -60,7 +61,7 @@ const Footer: FC<FooterProps> = ({}) => {
       </div>
       <div className="flex justify-between mt-10 sm:text-base text-[7px]">
         <span>Copyright © 2023. Zoobalo. All rights reserved.</span>
-        <span>Privacy Policy Terms and Services</span>
+        <Link href='privacyPolicy' className="text-sky-700">Privacy policy</Link>
       </div>
     </div>
   );

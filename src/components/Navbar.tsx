@@ -9,9 +9,9 @@ export const Navbar = () => {
     <div className="flex items-center justify-center">
       <Image src={logo1} alt="logo" className="w-28 h-12" />
       <div className="hidden sm:flex items-center  gap-10 ml-12 text-lg font-medium">
-        <a href="#home">Home</a>
-        <a href="#about">About us</a>
-        <a href="#contact">Contact us</a>
+        <a href="/#home">Home</a>
+        <a href="/#about">About us</a>
+        <a href="/#contact">Contact us</a>
       </div>
     </div>
     <div className="">

@@ -24,7 +24,6 @@ export default function Home() {
       {/* NavBar */}
 
       <div>
-        <Navbar />
         <Hero />
         <MainSection />
         <TiffinPicks />
