@@ -61,7 +61,14 @@ const Footer: FC<FooterProps> = ({}) => {
       </div>
       <div className="flex justify-between mt-10 sm:text-base text-[7px]">
         <span>Copyright © 2023. Zoobalo. All rights reserved.</span>
-        <Link href='privacyPolicy' className="text-sky-700">Privacy policy</Link>
+        <div className="flex gap-8">
+          <Link href="privacyPolicy" className="text-sky-700">
+            Privacy policy
+          </Link>
+          <Link href="refundPolicy" className="text-sky-700">
+            Refund policy
+          </Link>
+        </div>
       </div>
     </div>
   );
