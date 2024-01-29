@@ -63,7 +63,7 @@ const Footer: FC<FooterProps> = ({}) => {
         <span>Copyright © 2023. Zoobalo. All rights reserved.</span>
         <div className="flex gap-8">
           <Link href="privacyPolicy" className="text-sky-700">
-            Privacy policy
+            Terms & conditions
           </Link>
           <Link href="refundPolicy" className="text-sky-700">
             Refund policy

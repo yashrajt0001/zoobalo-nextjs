@@ -16,7 +16,7 @@ export default function privacyPolicy() {
                  <span style={{ fontSize: 26 }}>
                    <span data-custom-class="title">
                      <bdt className="block-component" />
-                     <bdt className="question">PRIVACY POLICY</bdt>
+                     <bdt className="question">TERMS & CONDITIONS</bdt>
                      <bdt className="statement-end-if-in-editor" />
                    </span>
                  </span>
