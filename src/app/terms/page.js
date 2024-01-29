@@ -1,4 +1,4 @@
-export default function privacyPolicy() {
+export default function terms() {
    return (
      <>
        <div className="py-10 px-20">
