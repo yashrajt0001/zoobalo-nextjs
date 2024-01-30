@@ -68,6 +68,9 @@ const Footer: FC<FooterProps> = ({}) => {
           <Link href="refundPolicy" className="text-sky-700">
             Refund policy
           </Link>
+          <Link href="shippingPolicy" className="text-sky-700">
+            Shipping policy
+          </Link>
         </div>
       </div>
     </div>
