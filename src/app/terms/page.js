@@ -3,7 +3,7 @@ export default function terms() {
      <>
        <div className="py-10 px-20">
          <span className="document-previewer-logo-d16635" />
-         <div className="document-previewer-wrapper-a717db">
+         <div className="document-previewer-wrapper-a717db" />
            <style
              dangerouslySetInnerHTML={{
                __html:
@@ -4363,7 +4363,6 @@ export default function terms() {
            </div>
            <strong></strong>
          </div>
-       </div>
      </>
    );
 }

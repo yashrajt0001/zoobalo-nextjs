@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer';
 import { Hero } from '@/components/Hero'
 import HowItWorks from '@/components/HowItWorks';
-import { MainSection } from '@/components/MainSection'
+import { MainSection } from '@/components/MainSection';
 import { Navbar } from '@/components/Navbar';
 import Order from '@/components/Order';
 import TiffinPicks from '@/components/TiffinPicks';
@@ -20,10 +20,8 @@ export default function Home() {
           gtag('config', 'G-1HFXCRPML6');
         `}
       </Script> */}
-
-
+      
       <div>
-        
         <Navbar />
         <Hero />
         <MainSection />
