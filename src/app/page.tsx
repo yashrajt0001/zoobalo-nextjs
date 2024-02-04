@@ -21,9 +21,10 @@ export default function Home() {
         `}
       </Script> */}
 
-      {/* NavBar */}
 
       <div>
+        
+        <Navbar />
         <Hero />
         <MainSection />
         <TiffinPicks />
