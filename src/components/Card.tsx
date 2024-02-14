@@ -4,7 +4,13 @@ import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import React, { FC, FormEvent, useState, useEffect, HTMLAttributes } from "react";
+import React, {
+  FC,
+  FormEvent,
+  useState,
+  useEffect,
+  HTMLAttributes,
+} from "react";
 
 interface userInterface extends HTMLAttributes<HTMLDivElement> {
   id: string;
@@ -24,7 +30,7 @@ export const Card: FC<userInterface> = ({
   _balance,
   _location,
   _type,
-  className
+  className,
 }) => {
   const [show, setShow] = useState<null | boolean>(null);
   const [loader, setLoader] = useState(false);
@@ -37,15 +43,14 @@ export const Card: FC<userInterface> = ({
   const [type, setType] = useState<null | type>(null);
 
   useEffect(() => {
-    setName(_name)
-    setLocation(_location ?? "")
-    setMob(_mobile)
-    setAddress(_address)
-    setBalance(_balance)
-    setType(_type)
-  })
-  
-  
+    setName(_name);
+    setLocation(_location ?? "");
+    setMob(_mobile);
+    setAddress(_address);
+    setBalance(_balance);
+    setType(_type);
+  });
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -79,10 +84,12 @@ export const Card: FC<userInterface> = ({
     <div className={className}>
       <div className="w-[50%] p-6 bg-lime-200 rounded-xl h-[40%]">
         <h1 className="mt-2 text-2xl font-bold">{name}</h1>
-        <h1 className="mt-2 text-lg">{address}</h1>
+        <h1 className="mt-2 text-lg">Address: {address}</h1>
+        <h1 className="mt-2 text-lg">Balance: {balance}</h1>
         <h1 className="mt-2">
           Mob No: <span className="ml-2">{mob}</span>{" "}
         </h1>
+        <h1 className="mt-2 text-lg">Tiffin Time: {type}</h1>
         <div className="mt-5 flex gap-4 items-center">
           <button
             onClick={() => {
@@ -93,18 +100,12 @@ export const Card: FC<userInterface> = ({
             Update
           </button>
           <Link href={`/admin/user?userId=${id}&name=${name}&mobile=${mob}`}>
-            <button className="p-3 bg-white font-bold rounded-xl">
+            <button
+              className="p-3 bg-white font-bold rounded-xl"
+            >
               Show History
             </button>
           </Link>
-          <button className="py-[0.6rem] px-3 bg-white font-bold rounded-xl w-[30%] flex gap-3 items-center">
-            Set Priority
-            <input
-              data-userid={id}
-              type="text"
-              className="priority-input w-[25%] border-[2px] text-center outline-none"
-            />
-          </button>
         </div>
       </div>
 
