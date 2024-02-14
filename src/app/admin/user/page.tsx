@@ -20,9 +20,13 @@ const page = ({ params }: PageInterface) => {
 
   useEffect(() => {
     const getUserHistory = async () => {
-        const {data} = await axios.get(`/api/getUserHistory?userId=${userId}`);
-      setUsers(data)
-      console.log(data)
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/orderLogs/user/get/${userId}`, {
+        headers: {
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+      });
+      setUsers(data);
+      console.log(data);
     };
     getUserHistory()
   }, []);

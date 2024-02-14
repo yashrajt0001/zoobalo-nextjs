@@ -2,17 +2,21 @@ import { FC } from 'react'
 
 interface HistoryCardProps {
   user: {
-    id: number
-    userId: number
-    date: string
-    dateTime: string
-    delivered: number
-    picked: number
+    createdAt: string
+    deliveredTiffin: number
+    pickedTiffin: number
   }
 }
 
 const HistoryCard: FC<HistoryCardProps> = ({ user }) => {
-  const parsedDate = new Date(user.dateTime);
+  const parsedDate = new Date(user.createdAt);
+  const dateObject = new Date(parsedDate);
+
+const month = dateObject.toLocaleString('default', { month: 'short' }); // Get abbreviated month name
+const day = dateObject.getDate(); // Get day of the month
+const year = dateObject.getFullYear(); // Get full year
+
+const formattedDate = `${month} ${day} ${year}`;
   let hours = parsedDate.getHours();
   let minutes: number | string = parsedDate.getMinutes();
   const ampm = hours >= 12 ? "pm" : "am";
@@ -23,10 +27,10 @@ const HistoryCard: FC<HistoryCardProps> = ({ user }) => {
   return (
     <div className="mt-5 bg-white rounded-xl flex text-2xl py-5 px-16">
       <h1 className="w-[25%] text-center">{time}</h1>
-      <h1 className="w-[25%] text-center">{user.date}</h1>
-      <h1 className="w-[25%] text-center">{user.delivered}</h1>
-      <h1 className="w-[25%] text-center">{user.picked}</h1>
-      <h1 className="w-[25%] text-center">{user.delivered - user.picked}</h1>
+      <h1 className="w-[25%] text-center">{formattedDate}</h1>
+      <h1 className="w-[25%] text-center">{user.deliveredTiffin}</h1>
+      <h1 className="w-[25%] text-center">{user.pickedTiffin}</h1>
+      <h1 className="w-[25%] text-center">{user.deliveredTiffin - user.pickedTiffin}</h1>
     </div>
   );
 }

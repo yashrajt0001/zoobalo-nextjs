@@ -11,23 +11,29 @@ const page = () => {
 
   useEffect(() => {
     const getHistory = async () => {
-      const { data } = await axios.get("/api/getHistory", {
-        headers: {
-          "auth-token": localStorage.getItem("auth-token"),
-        },
-      });
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/deliveries/get`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
       setIsFetchloading(false);
-      setHistory(data);
+      const res = data.filter((order:any) => {
+        return order.isDelivered == true
+      })
+      setHistory(res);
     };
     getHistory();
   }, []);
 
-  const dateTime = new Date()
-  const date = dateTime.getDate()
-  const month = dateTime.getMonth() + 1
-  const year = dateTime.getFullYear()
+  const dateTime = new Date();
+  const date = dateTime.getDate();
+  const month = dateTime.getMonth() + 1;
+  const year = dateTime.getFullYear();
 
-  const todayDate = `${date}/${month}/${year}`
+  const todayDate = `${date}/${month}/${year}`;
 
   return (
     <div className="pt-8 px-8 bg-[#F6F6F6] min-h-screen">
@@ -43,14 +49,15 @@ const page = () => {
       {isFetchloading ? (
         <Loader2 className="w-8 h-8 animate-spin" />
       ) : (
-        history && history.map((user: any) => (
+        history &&
+        history.map((user: any) => (
           <TodaysCard
             key={user.id}
-            name={user.User.name}
-            mobile={user.User.mobile}
+            name={user.user.name}
+            mobile={user.user.phone}
             delivered={user.delivered}
             picked={user.picked}
-            dateTime={user.dateTime}
+            dateTime={user.createdAt}
           />
         ))
       )}
