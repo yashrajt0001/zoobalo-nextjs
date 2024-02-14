@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import axios from "axios";
 import React, { useState } from "react";
@@ -13,14 +13,17 @@ export const ShowLogin = ({ setLogin }) => {
       if (!email || !password) {
         setError("Please enter email and password");
       }
-      const { data } = await axios.post(`${process.env.HOST}/admin/login`, {
-        email,
-        password
-      });
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/login`,
+        {
+          email,
+          password,
+        }
+      );
       localStorage.setItem("auth-token", data.token);
       setLogin(false);
     } catch (error) {
-      setError(error.response.data);
+      console.log(error);
     }
   };
 
