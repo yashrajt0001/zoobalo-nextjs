@@ -13,9 +13,9 @@ export const ShowLogin = ({ setLogin }) => {
       if (!email || !password) {
         setError("Please enter email and password");
       }
-      const { data } = await axios.post("/api/adminLogin", {
+      const { data } = await axios.post(`${process.env.HOST}/admin/login`, {
         email,
-        password,
+        password
       });
       localStorage.setItem("auth-token", data.token);
       setLogin(false);
