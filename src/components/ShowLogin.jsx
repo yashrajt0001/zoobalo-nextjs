@@ -13,7 +13,7 @@ export const ShowLogin = ({ setLogin }) => {
       if (!email || !password) {
         setError("Please enter email and password");
       }
-      const { data } = await axios.post(`${process.env.HOST}/admin/login`, {
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/admin/login`, {
         email,
         password
       });

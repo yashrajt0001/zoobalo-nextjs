@@ -21,8 +21,8 @@ const AdminNavbar: FC<adminNavbarProps> = ({}) => {
         <Image src={logo1} alt="logo" className="w-28 h-12" />
         <div className="hidden sm:flex items-center  gap-10 ml-12 text-lg font-medium">
           <Link href="/admin">Home</Link>
-          {login && <Link href="/admin/AllUsers">Users</Link>}
-          {login && <Link href="/admin/inventory">Today's tiffin</Link>}
+          {!login && <Link href="/admin/AllUsers">Users</Link>}
+          {!login && <Link href="/admin/inventory">Today's tiffin</Link>}
         </div>
       </div>
     </div>
