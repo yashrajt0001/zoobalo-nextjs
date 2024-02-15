@@ -2,9 +2,9 @@ import React from 'react'
 
 const page = () => {
     return (
-      <div className='flex flex-col px-20 py-10'>
-            
-     
+<div className='flex flex-col px-20 py-10'>
+      
+
 <h1 className='mb-3 text-xl font-bold'>Refund Policy for Zoobalo</h1>
 
 <div className='mb-3'>Effective Date: 19/01/2024</div>
@@ -46,7 +46,7 @@ const page = () => {
 <h2 className='mb-3 text-l font-semibold'>Changes to the Refund Policy:</h2>
 
 <div className='mb-12'>-We reserve the right to modify this refund policy at any time. Any changes will be effective immediately upon posting the updated policy on our website or within the app.</div>
-<div className='mb-3'>By using Zoobalo and making purchases through our integrated payment gateway, users acknowledge and agree to abide by the terms and conditions of this Refund Policy.</div>
+<div className='mb-3'>By using Zoobalo and making purchases through our integrated payment gateway, users acknowledge and agree to abide by the privacy and policy of this Refund Policy.</div>
 <div></div>
 <div className='mb-3'>Thank you for your understanding and cooperation.</div>
 <div></div>
@@ -55,7 +55,7 @@ const page = () => {
 <div>Zoobalo (Sushibh Empires Private Limited)</div>
 <div>siddharthsk0005@gmail.com</div>
 <a className='text-sky-600' href='https://zoobalo.com'>www.zoobalo.com</a>
-             </div>
+        </div>
   )
 }
 
