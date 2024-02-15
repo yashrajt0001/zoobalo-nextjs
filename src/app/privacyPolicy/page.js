@@ -1,6 +1,10 @@
+import Footer from "@/components/Footer";
+import { Navbar } from "@/components/Navbar";
+
 export default function privacyPolicy() {
   return (
     <>
+      <Navbar />
       <div className="py-10 px-20">
         <span className="document-previewer-logo-d16635" />
         <div className="document-previewer-wrapper-a717db" />
@@ -4520,6 +4524,7 @@ export default function privacyPolicy() {
 
         </div>
       </div>
+      <Footer />
     </>
   );
 }
