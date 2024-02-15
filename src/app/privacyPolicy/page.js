@@ -4417,7 +4417,7 @@ export default function privacyPolicy() {
         <div>siddharthsk0005@gmail.com</div>
         <a className='text-sky-600' href='https://zoobalo.com'>www.zoobalo.com</a>
       </div>
-      <div className='flex justify-center items-center py-10'>
+      <div className='flex justify-center items-center py-10 px-20'>
         <div className='flex flex-col gap-10'>
           <h1 className='mb-4 text-lg font-bold'>*Shipping Policy for Zoobalo (Daily meal service):*</h1>
 
