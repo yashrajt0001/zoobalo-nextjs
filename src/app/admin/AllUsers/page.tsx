@@ -13,6 +13,7 @@ const page = () => {
   const [searchinput, setSearchinput] = useState("");
   const [results, setResults] = useState([]);
   const [showPending, setShowPending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(UserContext);
   // if (!context) {
@@ -121,6 +122,32 @@ const page = () => {
     setResults(res);
   };
 
+  const handleDeliveryBoyAssign = () => {
+    setIsLoading(true);
+    const subscribedUsers = allUsers.filter((user: any) => {
+      return (
+        user.order.length > 0 &&
+        (user.order[0].status == true ||
+          (user.order.length > 1 && user.order[1].status == true))
+      );
+    });
+    subscribedUsers.map(async (user: any) => {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
+        {
+          userId: user.id,
+          agentId: 1,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    });
+    setIsLoading(false);
+  };
+
   return (
     <>
       <div className="ml-10 mt-4 pb-8">
@@ -169,6 +196,19 @@ const page = () => {
               Pending Deliveries
             </button>
           </div>
+        </div>
+
+        <div>
+          <button
+            onClick={handleDeliveryBoyAssign}
+            disabled={isLoading}
+            className={`bg-orange-500 mt-4 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2 ${
+              isLoading ? "bg-[#949494]" : "bg-orange-500"
+            } `}
+          >
+            Assign Delivery
+            {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+          </button>
         </div>
         <div className="flex justify-between w-1/2 items-center">
           <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
