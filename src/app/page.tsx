@@ -1,16 +1,16 @@
-"use client"
-import Footer from '@/components/Footer';
-import { Hero } from '@/components/Hero'
-import HowItWorks from '@/components/HowItWorks';
-import { MainSection } from '@/components/MainSection';
-import { Navbar } from '@/components/Navbar';
-import Order from '@/components/Order';
-import TiffinPicks from '@/components/TiffinPicks';
+"use client";
+import Footer from "@/components/Footer";
+import { Hero } from "@/components/Hero";
+import HowItWorks from "@/components/HowItWorks";
+import { MainSection } from "@/components/MainSection";
+import { Navbar } from "@/components/Navbar";
+import Order from "@/components/Order";
+import TiffinPicks from "@/components/TiffinPicks";
 // import Script from 'next/script'
 
 export default function Home() {
   return (
-    <div>
+    <>
       {/* <Script src="https://www.googletagmanager.com/gtag/js?id=G-1HFXCRPML6" />
       <Script id="google-analytics">
         {`
@@ -21,16 +21,13 @@ export default function Home() {
           gtag('config', 'G-1HFXCRPML6');
         `}
       </Script> */}
-      
-      <div>
-        <Navbar />
-        <Hero />
-        <MainSection />
-        <TiffinPicks />
-        <HowItWorks />
-        <Order />
-        <Footer />
-      </div>
-    </div>
+          <Navbar />
+          <Hero />
+          <MainSection />
+          <TiffinPicks />
+          <HowItWorks />
+          <Order />
+          <Footer />
+    </>
   );
 }

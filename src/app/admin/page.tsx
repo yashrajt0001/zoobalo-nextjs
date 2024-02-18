@@ -8,6 +8,8 @@ import { Loader2 } from "lucide-react";
 
 const page = () => {
   const [login, setLogin] = useState(true);
+  const [timing, setTiming] = useState("MORNING");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setLogin(!localStorage.getItem("auth-token"));
@@ -20,7 +22,7 @@ const page = () => {
     phone: "",
     balance: "",
     location: "",
-    type: "both"
+    type: "both",
   });
   const [delBoyDetails, setDelBoyDetails] = useState({
     name: "",
@@ -37,7 +39,7 @@ const page = () => {
       !userDetails.name ||
       !userDetails.address ||
       !userDetails.phone ||
-      userDetails.balance == undefined || 
+      userDetails.balance == undefined ||
       !userDetails.type
     ) {
       return setShowError("Please enter details!");
@@ -53,7 +55,7 @@ const page = () => {
           mobile: userDetails.phone,
           balance: parseInt(userDetails.balance),
           location: userDetails.location,
-          type: userDetails.type
+          type: userDetails.type,
         },
         {
           headers: {
@@ -67,7 +69,14 @@ const page = () => {
       setUserloader(false);
     }
 
-    setUserDetails({ name: "", address: "", balance: "", phone: "", location: "", type: "both" });
+    setUserDetails({
+      name: "",
+      address: "",
+      balance: "",
+      phone: "",
+      location: "",
+      type: "both",
+    });
   };
 
   const handleDelBoySubmit = async (e: FormEvent) => {
@@ -101,15 +110,61 @@ const page = () => {
       setDelBoyLoader(false);
     }
   };
+
+  const handleGenerate = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/queueDelivery/create`,
+        {
+          time : timing
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+      setIsLoading(false);
+    }
+    catch (error: any) {
+      setShowError(error.response.data);
+    }
+  };
+
   return (
     <>
       {login ? (
         <ShowLogin setLogin={setLogin} />
       ) : (
         <div className="mb-10">
-          <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
-            Hi! <span className="text-green-500">Admin</span>{" "}
-          </h1>
+          <div className="flex items-center">
+            <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
+              Hi! <span className="text-green-500">Admin</span>{" "}
+            </h1>
+
+            <div className="ml-16 mt-5 flex">
+              <select
+                onChange={(e) => setTiming(e.target.value)}
+                value={timing}
+                className="py-2 px-4 text-center"
+              >
+                <option value="MORNING">MORNING</option>
+                <option value="EVENING">EVENING</option>
+              </select>
+              <button
+                  onClick={handleGenerate}
+                  disabled={isLoading}
+                  className={`flex items-center px-3 py-2 rounded-lg text-xl text-white ml-8 ${isLoading ? 'bg-[#949494]' : 'bg-green-500'}`}
+              >
+                  Generate
+                  {isLoading &&
+                    <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+              </button>
+            </div>
+          </div>
+
           {showError && (
             <div className="text-red-500 ml-12 text-2xl mt-4">{showError}</div>
           )}
@@ -200,14 +255,12 @@ const page = () => {
                   }}
                   name="type"
                   id="type"
-                    className="p-5 w-full"
-                    value={userDetails.type}
+                  className="p-5 w-full"
+                  value={userDetails.type}
                 >
                   <option value="morning">Morning</option>
                   <option value="evening">Evening</option>
-                  <option value="both">
-                    Both
-                  </option>
+                  <option value="both">Both</option>
                 </select>
               </div>
               <button

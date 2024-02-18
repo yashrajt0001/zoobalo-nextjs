@@ -1,9 +1,10 @@
 "use client";
 
 import { Card } from "@/components/Card";
+import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 const page = () => {
   const [users, setUsers] = useState([]);
@@ -12,6 +13,25 @@ const page = () => {
   const [searchinput, setSearchinput] = useState("");
   const [results, setResults] = useState([]);
   const [showPending, setShowPending] = useState(false);
+
+  const context = useContext(UserContext);
+  // if (!context) {
+  //   return null; // or handle the loading state or error state
+  // }
+  const {
+    location,
+    setLocation,
+    name,
+    setName,
+    address,
+    setAddress,
+    mob,
+    setMob,
+    balance,
+    setBalance,
+    timing,
+    setTiming,
+  } = context as UserContextType;
 
   useEffect(() => {
     const getUsers = async () => {
@@ -24,7 +44,7 @@ const page = () => {
         }
       );
       setIsFetchloading(false);
-      data.map((user: any) => (user["show"] = true));
+      // data.map((user: any) => (user["show"] = true));
       const subscribedUsers = data.filter((user: any) => {
         return user.order.length > 0;
       });
@@ -37,18 +57,15 @@ const page = () => {
 
   useEffect(() => {
     if (results != undefined) {
-      results.map((user: any) => {
-        if (user.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1) {
-          user.show = true;
-        } else {
-          user.show = false;
-        }
+      const finalResults = results.filter((result: any) => {
+        return (
+          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
+        );
       });
-      setResults(results);
+      setResults(finalResults);
     }
 
     if (!searchinput) {
-      allUsers.map((user: any) => (user["show"] = true));
       setResults(allUsers);
     }
   }, [searchinput]);
@@ -96,11 +113,11 @@ const page = () => {
       }
     );
     setIsFetchloading(false);
-    data.map((user: any) => (user["show"] = true));
+    console.log(data);
+    // data.map((user: any) => (user["show"] = true));
     const res = data.filter((order: any) => {
       return order.isDelivered == false;
     });
-    console.log(res);
     setResults(res);
   };
 
@@ -159,33 +176,98 @@ const page = () => {
         {isFetchloading ? (
           <Loader2 className="animate-spin w-8 h-8" />
         ) : !showPending ? (
-          <div className="flex flex-col gap-3">
-            {results.map((user: any, index) => {
-              return (
-                <Card
-                  className={`flex ${user.show ? "" : "hidden"}`}
-                  id={user.id}
-                  key={index}
-                  _name={user?.name}
-                  _address={user?.address}
-                  _balance={user?.balance?.toString()}
-                  _location={user?.location}
-                  _mobile={user?.phone}
-                  _type={
-                    user?.order?.length > 1
-                      ? "both"
-                      : user?.order[0]?.tiffinTime.toLowerCase()
-                  }
+          <div className="flex w-full">
+            <div className="flex flex-col gap-3 w-[50%]">
+              {results.map((user: any, index) => {
+                return (
+                  <Card
+                    className={`flex`}
+                    id={user.id}
+                    key={index}
+                    _name={user?.name}
+                    _address={user?.address}
+                    _balance={user?.balance?.toString()}
+                    _location={user?.location}
+                    _mobile={user?.phone}
+                    _type={
+                      user?.order?.length > 1
+                        ? "both"
+                        : user?.order[0]?.tiffinTime.toLowerCase()
+                    }
+                  />
+                );
+              })}
+            </div>
+
+            {name != "" && (
+              <div className="w-[40%] ml-12 flex flex-col gap-3 -mt-14">
+                <h1 className="text-3xl">Update:</h1>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                  // value={name!}
+                  // onChange={(e) => setName(e.target.value)}
                 />
-              );
-            })}
+                <input
+                  type="text"
+                  placeholder="Address"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                  // value={address!}
+                  // onChange={(e) => setAddress(e.target.value)}
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                  // value={mob!}
+                  // onChange={(e) => setMob(e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="User's Balance"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                  // value={balance!}
+                  // onChange={(e) => setBalance(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Location"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                  // value={location!}
+                  // onChange={(e) => setLocation(e.target.value)}
+                />
+                <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
+                  <select
+                    // onChange={(e) => {
+                    //   setType(e.target.value as type);
+                    // }}
+                    name="type"
+                    id="type"
+                    className="p-5 w-full"
+                    // value={type!}
+                  >
+                    <option value="MORNING">MORNING</option>
+                    <option value="EVENING">EVENING</option>
+                    <option value="BOTH">BOTH</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"
+                >
+                  {/* {loader && <Loader2 className="animate-spin mr-2" />} */}
+                  Update
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex flex-col gap-3">
             {results.map((user: any, index) => {
               return (
                 <Card
-                  className={`flex ${user.show ? "" : "hidden"}`}
+                  className={`flex w-[50%]`}
                   id={user.id}
                   key={index}
                   _name={user?.user?.name}
