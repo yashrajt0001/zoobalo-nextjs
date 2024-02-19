@@ -8,6 +8,7 @@ interface TodaysCardProps {
   delivered: number;
   dateTime: string
   picked: number;
+  due: number
 }
 
 export const TodaysCard: FC<TodaysCardProps> = ({
@@ -15,7 +16,8 @@ export const TodaysCard: FC<TodaysCardProps> = ({
   delivered,
   mobile,
   picked,
-  dateTime
+  dateTime,
+  due
 }) => {
   const parsedDate = new Date(dateTime)
   let hours = parsedDate.getHours()
@@ -32,7 +34,7 @@ export const TodaysCard: FC<TodaysCardProps> = ({
       <h1 className="w-[20%] text-center">{mobile}</h1>
       <h1 className="w-[20%] text-center">{delivered}</h1>
       <h1 className="w-[20%] text-center">{picked}</h1>
-      <h1 className="w-[20%] text-center">{delivered - picked}</h1>
+      <h1 className="w-[20%] text-center">{due}</h1>
     </div>
   );
 };

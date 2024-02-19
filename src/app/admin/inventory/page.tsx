@@ -12,18 +12,16 @@ const page = () => {
   useEffect(() => {
     const getHistory = async () => {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/deliveries/get`,
+        `${process.env.NEXT_PUBLIC_HOST}/orderLogs/today`,
         {
           headers: {
             "auth-token": localStorage.getItem("auth-token"),
           },
         }
       );
+      console.log(data)
       setIsFetchloading(false);
-      const res = data.filter((order:any) => {
-        return order.isDelivered == true
-      })
-      setHistory(res);
+      setHistory(data);
     };
     getHistory();
   }, []);
@@ -36,7 +34,7 @@ const page = () => {
   const todayDate = `${date}/${month}/${year}`;
 
   return (
-    <div className="pt-8 px-8 bg-[#F6F6F6] min-h-screen">
+    <div className="p-8 bg-[#F6F6F6] min-h-screen">
       <h1 className="text-3xl text-green-500">{todayDate}</h1>
       <div className="flex mt-6 px-16 text-2xl font-semibold">
         <h1 className="w-[20%] text-center">Time</h1>
@@ -55,9 +53,10 @@ const page = () => {
             key={user.id}
             name={user.user.name}
             mobile={user.user.phone}
-            delivered={user.delivered}
-            picked={user.picked}
+            delivered={user.deliveredTiffin}
+            picked={user.pickedTiffin}
             dateTime={user.createdAt}
+            due={user.user.dueTiffin}
           />
         ))
       )}
