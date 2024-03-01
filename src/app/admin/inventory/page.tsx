@@ -14,13 +14,14 @@ const page = () => {
   useEffect(() => {
     const getHistory = async () => {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/deliveries/get`,
+        `${process.env.NEXT_PUBLIC_HOST}/orderLogs/today`,
         {
           headers: {
             "auth-token": localStorage.getItem("auth-token"),
           },
         }
       );
+      console.log(data);
       setIsFetchloading(false);
       console.log(data);
       const res = data.filter((order: any) => {
@@ -70,6 +71,7 @@ const page = () => {
               delivered={user.delivered}
               picked={user.picked}
               dateTime={user.createdAt}
+              due={user.user.dueTiffin}
             />
           ))
         )}
