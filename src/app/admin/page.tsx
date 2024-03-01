@@ -18,11 +18,7 @@ const page = () => {
   const [showError, setShowError] = useState<undefined | string>(undefined);
   const [userDetails, setUserDetails] = useState({
     name: "",
-    address: "",
     phone: "",
-    balance: "",
-    location: "",
-    type: "both",
   });
   const [delBoyDetails, setDelBoyDetails] = useState({
     name: "",
@@ -33,51 +29,51 @@ const page = () => {
   const [userloader, setUserloader] = useState(false);
   const [delBoyLoader, setDelBoyLoader] = useState(false);
 
-  const handleUserSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (
-      !userDetails.name ||
-      !userDetails.address ||
-      !userDetails.phone ||
-      userDetails.balance == undefined ||
-      !userDetails.type
-    ) {
-      return setShowError("Please enter details!");
-    }
+  // const handleUserSubmit = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   if (
+  //     !userDetails.name ||
+  //     !userDetails.address ||
+  //     !userDetails.phone ||
+  //     userDetails.balance == undefined ||
+  //     !userDetails.type
+  //   ) {
+  //     return setShowError("Please enter details!");
+  //   }
 
-    try {
-      setUserloader(true);
-      await axios.post(
-        "/api/createUser",
-        {
-          name: userDetails.name,
-          address: userDetails.address,
-          mobile: userDetails.phone,
-          balance: parseInt(userDetails.balance),
-          location: userDetails.location,
-          type: userDetails.type,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      setShowError(error.response.data);
-    } finally {
-      setUserloader(false);
-    }
+  //   try {
+  //     setUserloader(true);
+  //     await axios.post(
+  //       "/api/createUser",
+  //       {
+  //         name: userDetails.name,
+  //         address: userDetails.address,
+  //         mobile: userDetails.phone,
+  //         balance: parseInt(userDetails.balance),
+  //         location: userDetails.location,
+  //         type: userDetails.type,
+  //       },
+  //       {
+  //         headers: {
+  //           "auth-token": localStorage.getItem("auth-token"),
+  //         },
+  //       }
+  //     );
+  //   } catch (error: any) {
+  //     setShowError(error.response.data);
+  //   } finally {
+  //     setUserloader(false);
+  //   }
 
-    setUserDetails({
-      name: "",
-      address: "",
-      balance: "",
-      phone: "",
-      location: "",
-      type: "both",
-    });
-  };
+  //   setUserDetails({
+  //     name: "",
+  //     address: "",
+  //     balance: "",
+  //     phone: "",
+  //     location: "",
+  //     type: "both",
+  //   });
+  // };
 
   const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -117,7 +113,7 @@ const page = () => {
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/queueDelivery/create`,
         {
-          time : timing
+          time: timing,
         },
         {
           headers: {
@@ -127,10 +123,40 @@ const page = () => {
       );
       console.log(data);
       setIsLoading(false);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       setShowError(error.response.data);
     }
+  };
+
+  const handleCreate = async () => {
+    if (!userDetails.name || !userDetails.phone) {
+      return setShowError("Please enter details!");
+    }
+    setUserloader(true);
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/user/create`,
+        {
+          name: userDetails.name,
+          phone: userDetails.phone,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setUserloader(false);
+    }
+
+    setUserDetails({
+      name: "",
+      phone: "",
+    });
   };
 
   return (
@@ -154,13 +180,14 @@ const page = () => {
                 <option value="EVENING">EVENING</option>
               </select>
               <button
-                  onClick={handleGenerate}
-                  disabled={isLoading}
-                  className={`flex items-center px-3 py-2 rounded-lg text-xl text-white ml-8 ${isLoading ? 'bg-[#949494]' : 'bg-green-500'}`}
+                onClick={handleGenerate}
+                disabled={isLoading}
+                className={`flex items-center px-3 py-2 rounded-lg text-xl text-white ml-8 ${
+                  isLoading ? "bg-[#949494]" : "bg-green-500"
+                }`}
               >
-                  Generate
-                  {isLoading &&
-                    <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+                Generate
+                {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
               </button>
             </div>
           </div>
@@ -169,10 +196,7 @@ const page = () => {
             <div className="text-red-500 ml-12 text-2xl mt-4">{showError}</div>
           )}
           <div className="flex">
-            <form
-              onSubmit={handleUserSubmit}
-              className="ml-16 flex flex-col gap-3 w-[40%]"
-            >
+            <div className="ml-16 flex flex-col gap-3 w-[40%]">
               <h1 className="text-3xl mt-5">Create a User:</h1>
               <input
                 type="text"
@@ -189,23 +213,10 @@ const page = () => {
                 className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
               <input
-                type="text"
-                value={userDetails.address}
-                name="address"
-                onChange={(e) => {
-                  setShowError(undefined);
-                  setUserDetails({
-                    ...userDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Address"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
                 type="tel"
                 value={userDetails.phone}
                 name="phone"
+                maxLength={10}
                 onChange={(e) => {
                   setShowError(undefined);
                   setUserDetails({
@@ -214,63 +225,15 @@ const page = () => {
                   });
                 }}
                 placeholder="Phone Number"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
-              <input
-                type="number"
-                value={userDetails.balance}
-                name="balance"
-                onChange={(e) => {
-                  setShowError(undefined);
-                  setUserDetails({
-                    ...userDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="User's Balance"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                value={userDetails.location}
-                name="location"
-                onChange={(e) => {
-                  setShowError(undefined);
-                  setUserDetails({
-                    ...userDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Location"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
-                <select
-                  onChange={(e) => {
-                    setShowError(undefined);
-                    setUserDetails({
-                      ...userDetails,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                  name="type"
-                  id="type"
-                  className="p-5 w-full"
-                  value={userDetails.type}
-                >
-                  <option value="morning">Morning</option>
-                  <option value="evening">Evening</option>
-                  <option value="both">Both</option>
-                </select>
-              </div>
               <button
-                type="submit"
-                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+                onClick={handleCreate}
+                className="flex mt-8 items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
               >
-                {userloader && <Loader2 className=" animate-spin mr-2" />}{" "}
-                Create
+                {userloader && <Loader2 className="animate-spin mr-2" />} Create
               </button>
-            </form>
+            </div>
 
             <form
               onSubmit={handleDelBoySubmit}

@@ -234,71 +234,67 @@ const page = () => {
                         ? "both"
                         : user?.order[0]?.tiffinTime.toLowerCase()
                     }
+                    _isSubscribed={user?.order.length == 0 ? false : true}
                   />
                 );
               })}
             </div>
 
             {name != "" && (
-              <div className="w-[40%] ml-12 flex flex-col gap-3 -mt-14">
-                <h1 className="text-3xl">Update:</h1>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                  // value={name!}
-                  // onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Address"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                  // value={address!}
-                  // onChange={(e) => setAddress(e.target.value)}
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                  // value={mob!}
-                  // onChange={(e) => setMob(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="User's Balance"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                  // value={balance!}
-                  // onChange={(e) => setBalance(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Location"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                  // value={location!}
-                  // onChange={(e) => setLocation(e.target.value)}
-                />
-                <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
-                  <select
-                    // onChange={(e) => {
-                    //   setType(e.target.value as type);
-                    // }}
-                    name="type"
-                    id="type"
-                    className="p-5 w-full"
-                    // value={type!}
+              <div className="w-[40%] ml-12 -mt-14">
+                <div className="sticky top-24 z-10 bg-white flex flex-col gap-3">
+                  <h1 className="text-3xl">Update:</h1>
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={name!}
+                    // onChange={(e) => setName(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Address"
+                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={address!}
+                    // onChange={(e) => setAddress(e.target.value)}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={mob!}
+                    // onChange={(e) => setMob(e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="User's Balance"
+                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={balance!}
+                    // onChange={(e) => setBalance(e.target.value)}
+                  />
+                  <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
+                    <select
+                      // onChange={(e) => {
+                      //   setType(e.target.value as type);
+                      // }}
+                      name="type"
+                      id="type"
+                      className="p-5 w-full"
+                      value={timing!}
+                    >
+                      <option value="MORNING">MORNING</option>
+                      <option value="EVENING">EVENING</option>
+                      <option value="BOTH">BOTH</option>
+                    </select>
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"
                   >
-                    <option value="MORNING">MORNING</option>
-                    <option value="EVENING">EVENING</option>
-                    <option value="BOTH">BOTH</option>
-                  </select>
+                    {/* {loader && <Loader2 className="animate-spin mr-2" />} */}
+                    Update
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"
-                >
-                  {/* {loader && <Loader2 className="animate-spin mr-2" />} */}
-                  Update
-                </button>
               </div>
             )}
           </div>
@@ -316,6 +312,7 @@ const page = () => {
                   _location={user?.user?.address}
                   _mobile={user?.user?.phone}
                   _type={user?.order?.tiffinTime}
+                  _isSubscribed={user?.order?.length == 0 ? false : true}
                 />
               );
             })}
