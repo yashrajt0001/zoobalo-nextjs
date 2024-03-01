@@ -23,19 +23,15 @@ const page = () => {
       );
       console.log(data);
       setIsFetchloading(false);
-      console.log(data);
-      const res = data.filter((order: any) => {
-        return order.isDelivered == true;
-      });
       let totalDelivered = 0;
       let totalPicked = 0;
-      res.map((order: any) => {
+      data.map((order: any) => {
         totalDelivered = totalDelivered + order.deliveredTiffin;
         totalPicked = totalPicked + order.pickedTiffin;
       });
       setTotalTiffinDelivered(totalDelivered);
       setTotalTiffinPicked(totalPicked);
-      setHistory(res);
+      setHistory(data);
     };
     getHistory();
   }, []);
@@ -68,8 +64,8 @@ const page = () => {
               key={user.id}
               name={user.user.name}
               mobile={user.user.phone}
-              delivered={user.delivered}
-              picked={user.picked}
+              delivered={user.deliveredTiffin}
+              picked={user.pickedTiffin}
               dateTime={user.createdAt}
               due={user.user.dueTiffin}
             />
