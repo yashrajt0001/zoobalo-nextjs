@@ -14,6 +14,7 @@ const page = () => {
   const [results, setResults] = useState([]);
   const [showPending, setShowPending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalUsers, setTotalUsers] = useState(0);
 
   const context = useContext(UserContext);
   // if (!context) {
@@ -51,6 +52,7 @@ const page = () => {
       });
       setUsers(subscribedUsers);
       setResults(data);
+      setTotalUsers(data.length);
       setAllUsers(data);
     };
     getUsers();
@@ -64,10 +66,12 @@ const page = () => {
         );
       });
       setResults(finalResults);
+      setTotalUsers(finalResults.length);
     }
 
     if (!searchinput) {
       setResults(allUsers);
+      setTotalUsers(allUsers.length);
     }
   }, [searchinput]);
 
@@ -77,6 +81,7 @@ const page = () => {
       return user.order[0].NextMeal.isCancel == true;
     });
     setResults(cancelledUsers);
+    setTotalUsers(cancelledUsers.length);
   };
 
   const handleSubscribe = () => {
@@ -85,6 +90,7 @@ const page = () => {
       return user.order.length > 0;
     });
     setResults(subscribedUsers);
+    setTotalUsers(subscribedUsers.length);
   };
 
   const handlePaused = () => {
@@ -93,6 +99,7 @@ const page = () => {
       return user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
+    setTotalUsers(pausedUsers.length);
   };
 
   const handleUnsubscribed = () => {
@@ -101,6 +108,7 @@ const page = () => {
       return user.order.length == 0;
     });
     setResults(unsubscribedUsers);
+    setTotalUsers(unsubscribedUsers.length);
   };
 
   const handlePendingDeliveries = async () => {
@@ -120,6 +128,7 @@ const page = () => {
       return order.isDelivered == false;
     });
     setResults(res);
+    setTotalUsers(res.length);
   };
 
   const handleDeliveryBoyAssign = () => {
@@ -211,7 +220,7 @@ const page = () => {
           </button>
         </div>
         <div className="flex justify-between w-1/2 items-center">
-          <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
+          <h1 className=" mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
         </div>
         {isFetchloading ? (
           <Loader2 className="animate-spin w-8 h-8" />
@@ -235,6 +244,7 @@ const page = () => {
                         : user?.order[0]?.tiffinTime.toLowerCase()
                     }
                     _isSubscribed={user?.order.length == 0 ? false : true}
+                    _isPaused={user.order.length>0 && user.order[0].NextMeal.isPause ? true : false}
                   />
                 );
               })}
@@ -313,6 +323,7 @@ const page = () => {
                   _mobile={user?.user?.phone}
                   _type={user?.order?.tiffinTime}
                   _isSubscribed={user?.order?.length == 0 ? false : true}
+                  _isPaused={user.order.length>0 && user.order[0].NextMeal.isPause ? true : false}
                 />
               );
             })}

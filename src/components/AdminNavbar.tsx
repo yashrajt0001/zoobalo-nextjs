@@ -23,6 +23,7 @@ const AdminNavbar: FC<adminNavbarProps> = ({}) => {
           <Link href="/admin">Home</Link>
           {!login && <Link href="/admin/AllUsers">Users</Link>}
           {!login && <Link href="/admin/inventory">Today's tiffin</Link>}
+          {!login && <Link href="/admin/feedbacks">Feedbacks</Link>}
         </div>
       </div>
     </div>
