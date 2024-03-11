@@ -240,7 +240,7 @@ const page = () => {
                         ? true
                         : false
                     }
-                    nextMealArray = {user.order.length > 0 ? user.order[0].NextMeal : []}
+                    nextMeal = {user.order.length > 0 ? user.order[0].NextMeal : {}}
                   />
                 );
               })}
@@ -324,7 +324,7 @@ const page = () => {
                       ? true
                       : false
                   }
-                  nextMealArray = {user.order.length > 0 ? user.order[0].NextMeal : []}
+                  nextMeal = {user.order.length > 0 ? user.order[0].NextMeal : {}}
                 />
               );
             })}

@@ -19,8 +19,9 @@ const page = ({ params }: PageInterface) => {
   const [userDetails, setUserDetails] = useState({
     packageId: null,
     noOfDays: null,
-    time: "",
-    address: "",
+    time: "MORNING",
+    morningAddress: "",
+    eveningAddress: "",
     altNo: "",
   });
 
@@ -29,10 +30,13 @@ const page = ({ params }: PageInterface) => {
 
   const handleAddSubscription = async () => {
     if (
-      !userDetails.address ||
+      ((userDetails.time == "MORNING" || userDetails.time == "BOTH") &&
+        !userDetails.morningAddress) ||
+      ((userDetails.time == "EVENING" || userDetails.time == "BOTH") &&
+        !userDetails.eveningAddress) ||
       !userDetails.noOfDays ||
       !userDetails.packageId ||
-      !userDetails.time
+      userDetails.time == ""
     ) {
       return setShowError("Please enter details!");
     }
@@ -41,11 +45,12 @@ const page = ({ params }: PageInterface) => {
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/admin/user/subscription`,
         {
-          userId: id,
-          tiffinPackageId: userDetails.packageId,
-          days: userDetails.noOfDays,
+          userId: parseInt(id as string),
+          tiffinPackageId: parseInt(userDetails.packageId),
+          days: parseInt(userDetails.noOfDays),
           tiffinTime: userDetails.time,
-          address: userDetails.address,
+          morningAddress: userDetails.morningAddress,
+          eveningAddress: userDetails.eveningAddress,
           alternateNumber: userDetails.altNo,
         },
         {
@@ -56,6 +61,7 @@ const page = ({ params }: PageInterface) => {
       );
       console.log(data);
     } catch (error: any) {
+      console.log(error.response.data);
       setShowError(error.response.data);
     } finally {
       setUserloader(false);
@@ -64,8 +70,9 @@ const page = ({ params }: PageInterface) => {
     setUserDetails({
       packageId: null,
       noOfDays: null,
-      time: "",
-      address: "",
+      time: "MORNING",
+      morningAddress: "",
+      eveningAddress: "",
       altNo: "",
     });
   };
@@ -121,20 +128,39 @@ const page = ({ params }: PageInterface) => {
           <option value="EVENING">EVENING</option>
           <option value="BOTH">BOTH</option>
         </select>
-        <input
-          type="text"
-          value={userDetails.address || ""}
-          name="address"
-          onChange={(e) => {
-            setShowError(undefined);
-            setUserDetails({
-              ...userDetails,
-              [e.target.name]: e.target.value,
-            });
-          }}
-          placeholder="Address of the User"
-          className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+        {(userDetails.time == "MORNING" || userDetails.time == "BOTH") && (
+          <input
+            type="text"
+            value={userDetails.morningAddress || ""}
+            name="morningAddress"
+            onChange={(e) => {
+              setShowError(undefined);
+              setUserDetails({
+                ...userDetails,
+                [e.target.name]: e.target.value,
+              });
+            }}
+            placeholder="Morning Address of the User"
+            className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        )}
+
+        {(userDetails.time == "EVENING" || userDetails.time == "BOTH") && (
+          <input
+            type="text"
+            value={userDetails.eveningAddress || ""}
+            name="eveningAddress"
+            onChange={(e) => {
+              setShowError(undefined);
+              setUserDetails({
+                ...userDetails,
+                [e.target.name]: e.target.value,
+              });
+            }}
+            placeholder="Evening Address of the User"
+            className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        )}
 
         <input
           type="tel"
