@@ -2,6 +2,9 @@
 
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import { type } from "@prisma/client";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
+import moment from "moment-timezone";
 import Link from "next/link";
 import React, {
   FC,
@@ -21,6 +24,7 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _type: type;
   _isSubscribed: boolean;
   _isPaused: boolean;
+  nextMealArray: any;
 }
 
 export const Card: FC<userInterface> = ({
@@ -34,26 +38,25 @@ export const Card: FC<userInterface> = ({
   className,
   _isSubscribed,
   _isPaused,
+  nextMealArray,
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // async function getPausedDates {
-    // const res = await axios.get(`${process.env.HOST}/user/detail`, {
-    //   headers: {
-    //     'auth-token': await localStorage.getItem('auth-token'),
-    //   },
-    // });
-    // const pauseTime = res.data.user.order[0].NextMeal.PauseTime.map(
-    //   (d: any) => {
-    //     let day = moment(d.date).tz("Asia/Kolkata");
-    //     const formattedDate = day.format();
-    //     return formattedDate.split("T")[0];
-    //   }
-    // );
-    // setPausedDates(pauseTime);
-    // }
-  }, []);
+    async function getPausedDates() {
+      if (nextMealArray.length!=0) {
+        const pauseTime = nextMealArray.PauseTime.map((d: any) => {
+          let day = moment(d.date).tz("Asia/Kolkata");
+          const formattedDate = day.format();
+          return formattedDate.split("T")[0];
+        });
+        setPausedDates(pauseTime);
+        console.log("pauseTime: ", pauseTime);
+      }
+    }
+    getPausedDates();
+  }, [nextMealArray]);
 
   const context = useContext(UserContext);
   const {
@@ -79,6 +82,27 @@ export const Card: FC<userInterface> = ({
     setTiming(_type);
   };
 
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/user/delete`,
+        {
+          userId: id,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      console.log(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={className}>
       <div className="w-[100%] p-6 bg-lime-200 rounded-xl">
@@ -92,7 +116,11 @@ export const Card: FC<userInterface> = ({
         {_isPaused && (
           <div className="mt-2">
             <h1 className="text-lg">Paused Dates:</h1>
-            <div className="h-12 overflow-y-auto mt-2">{}</div>
+            <div className="h-12 overflow-y-auto mt-2 pb-1">
+              {pausedDates.map((date: any) => (
+                <h1 className="text-lg">{date}</h1>
+              ))}
+            </div>
           </div>
         )}
         <div className="mt-5 flex gap-4 items-center">
@@ -117,6 +145,18 @@ export const Card: FC<userInterface> = ({
                 Add Subscription
               </button>
             </Link>
+          )}
+          {!_isSubscribed && (
+            <button
+              onClick={handleDelete}
+              disabled={isLoading}
+              className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
+                isLoading ? "bg-[#949494]" : "bg-red-400 text-white"
+              }`}
+            >
+              Delete
+              {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+            </button>
           )}
         </div>
       </div>

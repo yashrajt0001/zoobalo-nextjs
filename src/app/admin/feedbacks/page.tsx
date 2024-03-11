@@ -1,92 +1,141 @@
 "use client";
+import { FeedBackCard } from "@/components/FeedBackCard";
+import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import { Federant } from "next/font/google";
+import React, { useContext, useEffect, useState } from "react";
 
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(false);
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showError, setShowError] = useState<undefined | string>(undefined);
+
+  const context = useContext(UserContext);
+  const {
+    feedbackId,
+    feedbackTitle,
+    feedbackBody,
+    setFeedbackId,
+    setFeedbackBody,
+    setFeedbackTitle,
+  } = context as UserContextType;
+
+  useEffect(() => {
+    const getFeedbacks = async () => {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/feedback`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      setIsFetchloading(false);
+      setResults(data);
+      console.log(data);
+    };
+    getFeedbacks();
+  }, []);
+
+  const handleSend = async () => {
+    setIsLoading(true);
+    if (feedbackTitle == "" || feedbackBody == "") {
+      setIsLoading(false);
+      return setShowError("Please enter details!");
+    }
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/feedback/reply`,
+        {
+          feedbackId: feedbackId,
+          title: feedbackTitle,
+          body: feedbackBody,
+        },
+
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      setFeedbackId(0);
+      setFeedbackTitle("");
+      setFeedbackBody("");
+    } catch (error: any) {
+      setShowError(error.response.data);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="pl-10 py-8 min-h-screen bg-[#F6F6F6]">
-      <h1 className="text-3xl">Total Feedbacks:</h1>
-      <div className="mt-6">
+    <>
+      <div className="ml-10 mt-4 pb-8">
+        <div className="flex justify-between w-1/2 items-center">
+          <h1 className=" mt-6 text-3xl mb-5">
+            Total Feedbacks: {results.length}
+          </h1>
+        </div>
         {isFetchloading ? (
           <Loader2 className="animate-spin w-8 h-8" />
         ) : (
           <div className="flex w-full">
             <div className="flex flex-col gap-3 w-[50%]">
-              <div className="bg-blue-200 p-4 rounded-xl">
-                <h1 className="text-2xl">Rahul Chouhan</h1>
-                <h1 className="text-lg mt-1">Rating: 5</h1>
-                <h1 className="mt-2 text-lg">Review: jhsabdnmbnbnbsa</h1>
-                <div className="flex w-full justify-end">
-                  <button className="rounded-xl bg-white py-2 px-3 mt-4">
-                    Send Response
-                  </button>
-                </div>
-              </div>
+              {results.map((feedback: any) => (
+                <FeedBackCard data={feedback} />
+              ))}
             </div>
-
-            {/* {name != "" && (
-              <div className="w-[40%] ml-12 -mt-14">
-                <div className="sticky top-24 z-10 bg-white flex flex-col gap-3">
-                  <h1 className="text-3xl">Update:</h1>
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={name!}
-                    // onChange={(e) => setName(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Address"
-                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={address!}
-                    // onChange={(e) => setAddress(e.target.value)}
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={mob!}
-                    // onChange={(e) => setMob(e.target.value)}
-                  />
-                  <input
-                    type="number"
-                    placeholder="User's Balance"
-                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={balance!}
-                    // onChange={(e) => setBalance(e.target.value)}
-                  />
-                  <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
-                    <select
-                      // onChange={(e) => {
-                      //   setType(e.target.value as type);
-                      // }}
-                      name="type"
-                      id="type"
-                      className="p-5 w-full"
-                      value={timing!}
+              {feedbackId != 0 && (
+                <div className="w-[40%] ml-12 -mt-14">
+                  <div className="sticky top-24 z-10 bg-white flex flex-col gap-3">
+                    {showError && (
+                      <div className="text-red-500 text-2xl mt-4">
+                        {showError}
+                      </div>
+                    )}
+                    <h1 className="text-3xl">Send Response:</h1>
+                    <input
+                      type="text"
+                      placeholder="Title of the Reply"
+                      className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                      value={feedbackTitle!}
+                      onChange={(e) => {
+                        setShowError(undefined);
+                        setFeedbackTitle(e.target.value);
+                      }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Body of the Reply"
+                      className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                      value={feedbackBody!}
+                      onChange={(e) => {
+                        setShowError(undefined);
+                        setFeedbackBody(e.target.value);
+                      }}
+                    />
+                    <button
+                      onClick={handleSend}
+                      disabled={isLoading}
+                      className={`px-4 py-2 flex items-center justify-center rounded-lg text-xl w-fit gap-2 ${
+                        isLoading ? "bg-[#949494]" : "bg-green-500 text-white"
+                      }`}
                     >
-                      <option value="MORNING">MORNING</option>
-                      <option value="EVENING">EVENING</option>
-                      <option value="BOTH">BOTH</option>
-                    </select>
+                      Send
+                      {isLoading && (
+                        <Loader2 className="animate-spin w-8 h-8 ml-3" />
+                      )}
+                    </button>
                   </div>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"
-                  >
-                    Update
-                  </button>
                 </div>
-              </div>
-            )} */}
+              )}
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

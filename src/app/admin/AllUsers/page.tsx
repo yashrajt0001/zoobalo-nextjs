@@ -20,20 +20,7 @@ const page = () => {
   // if (!context) {
   //   return null; // or handle the loading state or error state
   // }
-  const {
-    location,
-    setLocation,
-    name,
-    setName,
-    address,
-    setAddress,
-    mob,
-    setMob,
-    balance,
-    setBalance,
-    timing,
-    setTiming,
-  } = context as UserContextType;
+  const { name, address, mob, balance, timing } = context as UserContextType;
 
   useEffect(() => {
     const getUsers = async () => {
@@ -46,6 +33,7 @@ const page = () => {
         }
       );
       setIsFetchloading(false);
+      console.log(data);
       // data.map((user: any) => (user["show"] = true));
       const subscribedUsers = data.filter((user: any) => {
         return user.order.length > 0;
@@ -99,6 +87,7 @@ const page = () => {
       return user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
+    console.log(pausedUsers);
     setTotalUsers(pausedUsers.length);
   };
 
@@ -211,7 +200,7 @@ const page = () => {
           <button
             onClick={handleDeliveryBoyAssign}
             disabled={isLoading}
-            className={`bg-orange-500 mt-4 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2 ${
+            className={`mt-4 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2 ${
               isLoading ? "bg-[#949494]" : "bg-orange-500"
             } `}
           >
@@ -244,7 +233,12 @@ const page = () => {
                         : user?.order[0]?.tiffinTime.toLowerCase()
                     }
                     _isSubscribed={user?.order.length == 0 ? false : true}
-                    _isPaused={user.order.length>0 && user.order[0].NextMeal.isPause ? true : false}
+                    _isPaused={
+                      user.order.length > 0 && user.order[0].NextMeal.isPause
+                        ? true
+                        : false
+                    }
+                    nextMealArray = {user.order.length > 0 ? user.order[0].NextMeal : []}
                   />
                 );
               })}
@@ -323,7 +317,12 @@ const page = () => {
                   _mobile={user?.user?.phone}
                   _type={user?.order?.tiffinTime}
                   _isSubscribed={user?.order?.length == 0 ? false : true}
-                  _isPaused={user.order.length>0 && user.order[0].NextMeal.isPause ? true : false}
+                  _isPaused={
+                    user.order.length > 0 && user.order[0].NextMeal.isPause
+                      ? true
+                      : false
+                  }
+                  nextMealArray = {user.order.length > 0 ? user.order[0].NextMeal : []}
                 />
               );
             })}

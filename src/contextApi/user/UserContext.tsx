@@ -13,7 +13,13 @@ export interface UserContextType {
   balance: string;
   setBalance: (newString : string) => void;
   timing: string;
-  setTiming: (newString : string) => void;
+  setTiming: (newString: string) => void;
+  feedbackId: number,
+  setFeedbackId: (newId: number) => void;
+  feedbackTitle: string,
+  setFeedbackTitle: (newString: string) => void;
+  feedbackBody: string,
+  setFeedbackBody: (newString: string) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
