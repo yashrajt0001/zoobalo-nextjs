@@ -66,7 +66,9 @@ const page = () => {
   const handleCancel = () => {
     setShowPending(false);
     const cancelledUsers = users.filter((user: any) => {
-      return user.order[0].NextMeal.isCancel == true;
+      for (const order of user.order) {
+        if(order.NextMeal.isCancel) return true
+      }
     });
     setResults(cancelledUsers);
     setTotalUsers(cancelledUsers.length);
