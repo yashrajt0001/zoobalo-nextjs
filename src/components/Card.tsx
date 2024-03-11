@@ -24,7 +24,7 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _type: type;
   _isSubscribed: boolean;
   _isPaused: boolean;
-  nextMealArray: any;
+  nextMeal: any;
 }
 
 export const Card: FC<userInterface> = ({
@@ -38,15 +38,15 @@ export const Card: FC<userInterface> = ({
   className,
   _isSubscribed,
   _isPaused,
-  nextMealArray,
+  nextMeal,
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function getPausedDates() {
-      if (nextMealArray.length!=0) {
-        const pauseTime = nextMealArray.PauseTime.map((d: any) => {
+      if (nextMeal.pauseTime) {
+        const pauseTime = nextMeal.PauseTime.map((d: any) => {
           let day = moment(d.date).tz("Asia/Kolkata");
           const formattedDate = day.format();
           return formattedDate.split("T")[0];
@@ -56,7 +56,7 @@ export const Card: FC<userInterface> = ({
       }
     }
     getPausedDates();
-  }, [nextMealArray]);
+  }, [nextMeal]);
 
   const context = useContext(UserContext);
   const {

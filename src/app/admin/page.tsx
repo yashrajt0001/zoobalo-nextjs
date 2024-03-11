@@ -135,7 +135,7 @@ const page = () => {
     setUserloader(true);
     try {
       const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/user/create`,
+        `${process.env.NEXT_PUBLIC_HOST}/admin/user/create`,
         {
           name: userDetails.name,
           phone: userDetails.phone,
