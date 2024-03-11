@@ -14,25 +14,13 @@ const page = () => {
   const [results, setResults] = useState([]);
   const [showPending, setShowPending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalUsers, setTotalUsers] = useState(0);
 
   const context = useContext(UserContext);
   // if (!context) {
   //   return null; // or handle the loading state or error state
   // }
-  const {
-    location,
-    setLocation,
-    name,
-    setName,
-    address,
-    setAddress,
-    mob,
-    setMob,
-    balance,
-    setBalance,
-    timing,
-    setTiming,
-  } = context as UserContextType;
+  const { name, address, mob, balance, timing } = context as UserContextType;
 
   useEffect(() => {
     const getUsers = async () => {
@@ -45,12 +33,14 @@ const page = () => {
         }
       );
       setIsFetchloading(false);
+      console.log(data);
       // data.map((user: any) => (user["show"] = true));
       const subscribedUsers = data.filter((user: any) => {
         return user.order.length > 0;
       });
       setUsers(subscribedUsers);
       setResults(data);
+      setTotalUsers(data.length);
       setAllUsers(data);
     };
     getUsers();
@@ -64,10 +54,12 @@ const page = () => {
         );
       });
       setResults(finalResults);
+      setTotalUsers(finalResults.length);
     }
 
     if (!searchinput) {
       setResults(allUsers);
+      setTotalUsers(allUsers.length);
     }
   }, [searchinput]);
 
@@ -79,6 +71,7 @@ const page = () => {
       }
     });
     setResults(cancelledUsers);
+    setTotalUsers(cancelledUsers.length);
   };
 
   const handleSubscribe = () => {
@@ -87,6 +80,7 @@ const page = () => {
       return user.order.length > 0;
     });
     setResults(subscribedUsers);
+    setTotalUsers(subscribedUsers.length);
   };
 
   const handlePaused = () => {
@@ -95,6 +89,8 @@ const page = () => {
       return user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
+    console.log(pausedUsers);
+    setTotalUsers(pausedUsers.length);
   };
 
   const handleUnsubscribed = () => {
@@ -103,6 +99,7 @@ const page = () => {
       return user.order.length == 0;
     });
     setResults(unsubscribedUsers);
+    setTotalUsers(unsubscribedUsers.length);
   };
 
   const handlePendingDeliveries = async () => {
@@ -122,6 +119,7 @@ const page = () => {
       return order.isDelivered == false;
     });
     setResults(res);
+    setTotalUsers(res.length);
   };
 
   const handleDeliveryBoyAssign = () => {
@@ -204,7 +202,7 @@ const page = () => {
           <button
             onClick={handleDeliveryBoyAssign}
             disabled={isLoading}
-            className={`bg-orange-500 mt-4 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2 ${
+            className={`mt-4 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2 ${
               isLoading ? "bg-[#949494]" : "bg-orange-500"
             } `}
           >
@@ -213,7 +211,7 @@ const page = () => {
           </button>
         </div>
         <div className="flex justify-between w-1/2 items-center">
-          <h1 className=" mt-6 text-3xl mb-5">All Users: </h1>
+          <h1 className=" mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
         </div>
         {isFetchloading ? (
           <Loader2 className="animate-spin w-8 h-8" />
@@ -237,6 +235,12 @@ const page = () => {
                         : user?.order[0]?.tiffinTime.toLowerCase()
                     }
                     _isSubscribed={user?.order.length == 0 ? false : true}
+                    _isPaused={
+                      user.order.length > 0 && user.order[0].NextMeal.isPause
+                        ? true
+                        : false
+                    }
+                    nextMealArray = {user.order.length > 0 ? user.order[0].NextMeal : []}
                   />
                 );
               })}
@@ -315,6 +319,12 @@ const page = () => {
                   _mobile={user?.user?.phone}
                   _type={user?.order?.tiffinTime}
                   _isSubscribed={user?.order?.length == 0 ? false : true}
+                  _isPaused={
+                    user.order.length > 0 && user.order[0].NextMeal.isPause
+                      ? true
+                      : false
+                  }
+                  nextMealArray = {user.order.length > 0 ? user.order[0].NextMeal : []}
                 />
               );
             })}

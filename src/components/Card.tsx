@@ -4,10 +4,10 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import moment from "moment-timezone";
 import Link from "next/link";
 import React, {
   FC,
-  FormEvent,
   useState,
   useEffect,
   HTMLAttributes,
@@ -23,6 +23,8 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _location: string;
   _type: type;
   _isSubscribed: boolean;
+  _isPaused: boolean;
+  nextMealArray: any;
 }
 
 export const Card: FC<userInterface> = ({
@@ -35,56 +37,26 @@ export const Card: FC<userInterface> = ({
   _type,
   className,
   _isSubscribed,
+  _isPaused,
+  nextMealArray,
 }) => {
-  // const [show, setShow] = useState<null | boolean>(null);
-  // const [loader, setLoader] = useState(false);
-  // const [error, setError] = useState("");
-  // const [name, setName] = useState<null | string>(null);
-  // const [address, setAddress] = useState<null | string>(null);
-  // const [mob, setMob] = useState<null | string>(null);
-  // const [location, setLocation] = useState<null | string>(null);
-  // const [balance, setBalance] = useState<null | string>(null);
-  // const [type, setType] = useState<null | type>(null);
+  const [pausedDates, setPausedDates] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   setName(_name);
-  //   setLocation(_location ?? "");
-  //   setMob(_mobile);
-  //   setAddress(_address);
-  //   setBalance(_balance);
-  //   setType(_type);
-  // });
-
-  // const handleSubmit = async (e: FormEvent) => {
-  //   console.log("called");
-  //   e.preventDefault();
-  // setShow(false);
-  // try {
-  //   setLoader(true);
-  //   await axios.post(
-  //     "/api/updateUser",
-  //     {
-  //       id: id,
-  //       name,
-  //       address,
-  //       mobile: mob,
-  //       balance: parseInt(balance!),
-  //       location,
-  //       type,
-  //     },
-  //     {
-  //       headers: {
-  //         "auth-token": localStorage.getItem("auth-token"),
-  //       },
-  //     }
-  //   );
-  // } catch (error: any) {
-  //   setError(error.response.data);
-  // } finally {
-  //   setLoader(false);
-  //   setShow(false);
-  // }
-  // };
+  useEffect(() => {
+    async function getPausedDates() {
+      if (nextMealArray.length!=0) {
+        const pauseTime = nextMealArray.PauseTime.map((d: any) => {
+          let day = moment(d.date).tz("Asia/Kolkata");
+          const formattedDate = day.format();
+          return formattedDate.split("T")[0];
+        });
+        setPausedDates(pauseTime);
+        console.log("pauseTime: ", pauseTime);
+      }
+    }
+    getPausedDates();
+  }, [nextMealArray]);
 
   const context = useContext(UserContext);
   const {
@@ -110,6 +82,27 @@ export const Card: FC<userInterface> = ({
     setTiming(_type);
   };
 
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/user/delete`,
+        {
+          userId: id,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      console.log(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={className}>
       <div className="w-[100%] p-6 bg-lime-200 rounded-xl">
@@ -120,6 +113,16 @@ export const Card: FC<userInterface> = ({
           Mob No: <span className="ml-2">{_mobile}</span>{" "}
         </h1>
         <h1 className="mt-2 text-lg">Tiffin Time: {_type}</h1>
+        {_isPaused && (
+          <div className="mt-2">
+            <h1 className="text-lg">Paused Dates:</h1>
+            <div className="h-12 overflow-y-auto mt-2 pb-1">
+              {pausedDates.map((date: any) => (
+                <h1 className="text-lg">{date}</h1>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="mt-5 flex gap-4 items-center">
           <button
             onClick={handleUpdate}
@@ -142,6 +145,18 @@ export const Card: FC<userInterface> = ({
                 Add Subscription
               </button>
             </Link>
+          )}
+          {!_isSubscribed && (
+            <button
+              onClick={handleDelete}
+              disabled={isLoading}
+              className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
+                isLoading ? "bg-[#949494]" : "bg-red-400 text-white"
+              }`}
+            >
+              Delete
+              {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+            </button>
           )}
         </div>
       </div>

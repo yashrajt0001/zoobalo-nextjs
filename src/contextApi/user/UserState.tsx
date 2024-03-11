@@ -10,6 +10,9 @@ const UserState = (props: any) => {
   const [location, setLocation] = useState("");
   const [balance, setBalance] = useState("");
   const [timing, setTiming] = useState("");
+  const [feedbackId, setFeedbackId] = useState(0);
+  const [feedbackTitle, setFeedbackTitle] = useState("");
+  const [feedbackBody, setFeedbackBody] = useState("");
 
   return (
     <UserContext.Provider
@@ -26,6 +29,12 @@ const UserState = (props: any) => {
         setBalance,
         timing,
         setTiming,
+        feedbackId,
+        setFeedbackId,
+        feedbackTitle,
+        setFeedbackTitle,
+        feedbackBody,
+        setFeedbackBody
       }}
     >
       {props.children}
