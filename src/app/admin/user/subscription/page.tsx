@@ -19,7 +19,7 @@ const page = ({ params }: PageInterface) => {
   const [userDetails, setUserDetails] = useState({
     packageId: null,
     noOfDays: null,
-    time: "",
+    time: "MORNING",
     address: "",
     altNo: "",
   });
