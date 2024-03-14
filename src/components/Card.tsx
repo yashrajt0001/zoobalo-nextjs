@@ -45,7 +45,7 @@ export const Card: FC<userInterface> = ({
 
   useEffect(() => {
     async function getPausedDates() {
-      if (nextMeal.pauseTime) {
+      if (nextMeal.PauseTime) {
         const pauseTime = nextMeal.PauseTime.map((d: any) => {
           let day = moment(d.date).tz("Asia/Kolkata");
           const formattedDate = day.format();
