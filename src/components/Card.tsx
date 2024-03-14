@@ -25,6 +25,7 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _isSubscribed: boolean;
   _isPaused: boolean;
   nextMeal: any;
+  _order?: any;
 }
 
 export const Card: FC<userInterface> = ({
@@ -39,9 +40,26 @@ export const Card: FC<userInterface> = ({
   _isSubscribed,
   _isPaused,
   nextMeal,
+  _order,
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const cancelled = () => {
+    if (_order) {
+      let time: null | string = null;
+      _order.map((order: any) => {
+        if (order.NextMeal.isCancel) {
+          if (!time) {
+            time = order.tiffinTime;
+          } else {
+            time = "Both time";
+          }
+        }
+      });
+      return time;
+    }
+  };
 
   useEffect(() => {
     async function getPausedDates() {
@@ -52,7 +70,6 @@ export const Card: FC<userInterface> = ({
           return formattedDate.split("T")[0];
         });
         setPausedDates(pauseTime);
-        console.log("pauseTime: ", pauseTime);
       }
     }
     getPausedDates();
@@ -113,6 +130,7 @@ export const Card: FC<userInterface> = ({
           Mob No: <span className="ml-2">{_mobile}</span>{" "}
         </h1>
         <h1 className="mt-2 text-lg">Tiffin Time: {_type}</h1>
+        <h1 className="mt-2 text-lg">{cancelled() ? `Cancelled for: ${cancelled()}` : null}</h1>
         {_isPaused && (
           <div className="mt-2">
             <h1 className="text-lg">Paused Dates:</h1>

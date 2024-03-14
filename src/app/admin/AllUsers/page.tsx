@@ -64,10 +64,10 @@ const page = () => {
   }, [searchinput]);
 
   const handleCancel = () => {
-    setShowPending(false);
+    setShowPending(false); 
     const cancelledUsers = users.filter((user: any) => {
       for (const order of user.order) {
-        if(order.NextMeal.isCancel) return true
+        if (order.NextMeal.isCancel) return true;
       }
     });
     setResults(cancelledUsers);
@@ -89,7 +89,6 @@ const page = () => {
       return user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
-    console.log(pausedUsers);
     setTotalUsers(pausedUsers.length);
   };
 
@@ -120,6 +119,16 @@ const page = () => {
     });
     setResults(res);
     setTotalUsers(res.length);
+  };
+
+  const handleLowBalance = async () => {
+    setShowPending(false);
+    const lowBalanceUser = users.filter((user: any) => {
+      if (user.order[0].amount * 2 >= user.balance) return true;
+    });
+
+    setResults(lowBalanceUser);
+    setTotalUsers(lowBalanceUser.length);
   };
 
   const handleDeliveryBoyAssign = () => {
@@ -195,6 +204,13 @@ const page = () => {
             >
               Pending Deliveries
             </button>
+
+            <button
+              onClick={handleLowBalance}
+              className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
+            >
+              Low balance
+            </button>
           </div>
         </div>
 
@@ -240,7 +256,10 @@ const page = () => {
                         ? true
                         : false
                     }
-                    nextMeal = {user.order.length > 0 ? user.order[0].NextMeal : {}}
+                    _order={user.order}
+                    nextMeal={
+                      user.order.length > 0 ? user.order[0].NextMeal : {}
+                    }
                   />
                 );
               })}
@@ -324,7 +343,7 @@ const page = () => {
                       ? true
                       : false
                   }
-                  nextMeal = {user.order.length > 0 ? user.order[0].NextMeal : {}}
+                  nextMeal={user.order.length > 0 ? user.order[0].NextMeal : {}}
                 />
               );
             })}
