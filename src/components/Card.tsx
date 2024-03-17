@@ -1,7 +1,6 @@
 "use client";
 
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
-import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import moment from "moment-timezone";
@@ -21,7 +20,7 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _address: string;
   _balance: string;
   _location: string;
-  _type: type;
+  _type: any;
   _isSubscribed: boolean;
   _isPaused: boolean;
   nextMeal: any;

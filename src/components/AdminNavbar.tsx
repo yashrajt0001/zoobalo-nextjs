@@ -4,7 +4,6 @@ import { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import logo1 from "../assets/images/logo1.png";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 interface adminNavbarProps {}
 
@@ -23,6 +22,7 @@ const AdminNavbar: FC<adminNavbarProps> = ({}) => {
           <Link href="/admin">Home</Link>
           {!login && <Link href="/admin/AllUsers">Users</Link>}
           {!login && <Link href="/admin/inventory">Today's tiffin</Link>}
+          {!login && <Link href="/admin/tiffinHistory">All history</Link>}
           {!login && <Link href="/admin/feedbacks">Feedbacks</Link>}
         </div>
       </div>
