@@ -20,6 +20,14 @@ export interface UserContextType {
   setFeedbackTitle: (newString: string) => void;
   feedbackBody: string,
   setFeedbackBody: (newString: string) => void;
+  deliveryAgentName: string,
+  setDeliveryAgentName: (newString: string) => void;
+  deliveryAgentMob: string,
+  setDeliveryAgentMob: (newString: string) => void;
+  deliveryAgentParnterCode: string,
+  setDeliveryAgentPartnerCode: (newString: string) => void;
+  deliveryAgentId: number,
+  setDeliveryAgentId: (newId: number) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
