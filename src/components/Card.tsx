@@ -154,6 +154,15 @@ export const Card: FC<userInterface> = ({
               Show History
             </button>
           </Link>
+          {_isSubscribed && (
+            <Link
+              href={`/admin/user/cancelPause?userId=${id}&name=${_name}&mobile=${_mobile}`}
+            >
+              <button className="p-3 bg-white font-bold rounded-xl">
+                Cancel / Pause
+              </button>
+            </Link>
+          )}
           {!_isSubscribed && (
             <Link
               href={`/admin/user/subscription?userId=${id}&name=${_name}&mobile=${_mobile}`}

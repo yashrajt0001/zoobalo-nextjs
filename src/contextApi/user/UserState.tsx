@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import UserContext from "./UserContext";
 import axios, { AxiosError } from "axios";
@@ -13,6 +13,10 @@ const UserState = (props: any) => {
   const [feedbackId, setFeedbackId] = useState(0);
   const [feedbackTitle, setFeedbackTitle] = useState("");
   const [feedbackBody, setFeedbackBody] = useState("");
+  const [deliveryAgentName, setDeliveryAgentName] = useState("");
+  const [deliveryAgentMob, setDeliveryAgentMob] = useState("");
+  const [deliveryAgentParnterCode, setDeliveryAgentPartnerCode] = useState("");
+  const [deliveryAgentId, setDeliveryAgentId] = useState(0);
 
   return (
     <UserContext.Provider
@@ -34,7 +38,15 @@ const UserState = (props: any) => {
         feedbackTitle,
         setFeedbackTitle,
         feedbackBody,
-        setFeedbackBody
+        setFeedbackBody,
+        deliveryAgentName,
+        setDeliveryAgentName,
+        deliveryAgentMob,
+        setDeliveryAgentMob,
+        deliveryAgentParnterCode,
+        setDeliveryAgentPartnerCode,
+        deliveryAgentId,
+        setDeliveryAgentId,
       }}
     >
       {props.children}
