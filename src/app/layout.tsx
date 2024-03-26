@@ -4,7 +4,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import UserState from "@/contextApi/user/UserState";
 
-const inter = Inter({ subsets: ["latin"] });
+import { Inter as FontSans } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Zoobalo",
@@ -18,10 +24,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <UserState>
-        {children}
-        </UserState>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
+        <UserState>{children}</UserState>
       </body>
     </html>
   );

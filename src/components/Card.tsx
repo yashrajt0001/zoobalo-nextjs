@@ -1,7 +1,6 @@
 "use client";
 
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
-import { type } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import moment from "moment-timezone";
@@ -21,10 +20,11 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _address: string;
   _balance: string;
   _location: string;
-  _type: type;
+  _type: any;
   _isSubscribed: boolean;
   _isPaused: boolean;
   nextMeal: any;
+  _order?: any;
 }
 
 export const Card: FC<userInterface> = ({
@@ -39,20 +39,36 @@ export const Card: FC<userInterface> = ({
   _isSubscribed,
   _isPaused,
   nextMeal,
+  _order,
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const cancelled = () => {
+    if (_order) {
+      let time: null | string = null;
+      _order.map((order: any) => {
+        if (order.NextMeal.isCancel) {
+          if (!time) {
+            time = order.tiffinTime;
+          } else {
+            time = "Both time";
+          }
+        }
+      });
+      return time;
+    }
+  };
+
   useEffect(() => {
     async function getPausedDates() {
-      if (nextMeal.pauseTime) {
+      if (nextMeal.PauseTime) {
         const pauseTime = nextMeal.PauseTime.map((d: any) => {
           let day = moment(d.date).tz("Asia/Kolkata");
           const formattedDate = day.format();
           return formattedDate.split("T")[0];
         });
         setPausedDates(pauseTime);
-        console.log("pauseTime: ", pauseTime);
       }
     }
     getPausedDates();
@@ -113,6 +129,7 @@ export const Card: FC<userInterface> = ({
           Mob No: <span className="ml-2">{_mobile}</span>{" "}
         </h1>
         <h1 className="mt-2 text-lg">Tiffin Time: {_type}</h1>
+        <h1 className="mt-2 text-lg">{cancelled() ? `Cancelled for: ${cancelled()}` : null}</h1>
         {_isPaused && (
           <div className="mt-2">
             <h1 className="text-lg">Paused Dates:</h1>
