@@ -25,6 +25,7 @@ const AdminNavbar: FC<adminNavbarProps> = ({}) => {
           {!login && <Link href="/admin/tiffinHistory">All history</Link>}
           {!login && <Link href="/admin/feedbacks">Feedbacks</Link>}
           {!login && <Link href="/admin/deliveryAgents">Delivery Agents</Link>}
+          {!login && <Link href="/admin/demoTiffins">Demo Tiffins</Link>}
         </div>
       </div>
     </div>

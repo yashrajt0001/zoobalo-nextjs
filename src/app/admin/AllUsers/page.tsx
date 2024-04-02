@@ -64,7 +64,7 @@ const page = () => {
   }, [searchinput]);
 
   const handleCancel = () => {
-    setShowPending(false); 
+    setShowPending(false);
     const cancelledUsers = users.filter((user: any) => {
       for (const order of user.order) {
         if (order.NextMeal.isCancel) return true;
@@ -260,6 +260,7 @@ const page = () => {
                     nextMeal={
                       user.order.length > 0 ? user.order[0].NextMeal : {}
                     }
+                    user={user}
                   />
                 );
               })}
@@ -344,6 +345,7 @@ const page = () => {
                       : false
                   }
                   nextMeal={user.order.length > 0 ? user.order[0].NextMeal : {}}
+                  user={user}
                 />
               );
             })}

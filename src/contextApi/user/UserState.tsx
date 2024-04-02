@@ -17,6 +17,92 @@ const UserState = (props: any) => {
   const [deliveryAgentMob, setDeliveryAgentMob] = useState("");
   const [deliveryAgentParnterCode, setDeliveryAgentPartnerCode] = useState("");
   const [deliveryAgentId, setDeliveryAgentId] = useState(0);
+  const [userDetails, setUserDetails] = useState({} as any);
+  const [demoDeliveries, setDemoDeliveries] = useState([]);
+  const [results, setResults] = useState([]);
+  const [showCompleted, setShowCompleted] = useState(false);
+
+  const cancelMeal = async (id: number) => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/meal/cancel`,
+        { orderId: id },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      return true;
+    } catch (error: any) {
+      console.log(error.msg);
+      return false;
+    }
+  };
+
+  const pauseMeal = async (arr: any, id: any) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/meal/pause`,
+        {
+          dates: arr,
+          userId: parseInt(id),
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(res.data);
+      return true;
+    } catch (error: any) {
+      console.log(error.response.data);
+      return false;
+    }
+  };
+
+  const getDemoDeliveries = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/demoTiffin/order/pending`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+      setResults(data);
+      setDemoDeliveries(data);
+      return true;
+    }
+    catch (error: any) {
+      console.log(error.response.data);
+      return false;
+    }
+  };
+
+  const getCompletedDeliveries = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/demoTiffin/order/completed`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+      setResults(data);
+      setDemoDeliveries(data);
+      return true;
+    }
+    catch (error: any) {
+      console.log(error.response.data);
+      return false;
+    }
+  };
 
   return (
     <UserContext.Provider
@@ -47,6 +133,18 @@ const UserState = (props: any) => {
         setDeliveryAgentPartnerCode,
         deliveryAgentId,
         setDeliveryAgentId,
+        userDetails,
+        setUserDetails,
+        cancelMeal,
+        pauseMeal,
+        demoDeliveries,
+        setDemoDeliveries,
+        results,
+        setResults,
+        getDemoDeliveries,
+        getCompletedDeliveries,
+        showCompleted,
+        setShowCompleted
       }}
     >
       {props.children}

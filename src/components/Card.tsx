@@ -25,6 +25,7 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _isPaused: boolean;
   nextMeal: any;
   _order?: any;
+  user:[]
 }
 
 export const Card: FC<userInterface> = ({
@@ -33,13 +34,13 @@ export const Card: FC<userInterface> = ({
   _mobile,
   _address,
   _balance,
-  _location,
   _type,
   className,
   _isSubscribed,
   _isPaused,
   nextMeal,
   _order,
+  user
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,18 +77,12 @@ export const Card: FC<userInterface> = ({
 
   const context = useContext(UserContext);
   const {
-    location,
-    setLocation,
-    name,
     setName,
-    address,
     setAddress,
-    mob,
     setMob,
-    balance,
     setBalance,
-    timing,
     setTiming,
+    setUserDetails
   } = context as UserContextType;
 
   const handleUpdate = () => {
@@ -158,7 +153,7 @@ export const Card: FC<userInterface> = ({
             <Link
               href={`/admin/user/cancelPause?userId=${id}&name=${_name}&mobile=${_mobile}`}
             >
-              <button className="p-3 bg-white font-bold rounded-xl">
+              <button onClick={() => setUserDetails(user)} className="p-3 bg-white font-bold rounded-xl">
                 Cancel / Pause
               </button>
             </Link>
