@@ -210,7 +210,7 @@ const page = () => {
                   });
                 }}
                 placeholder="Name"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
               <input
                 type="tel"
