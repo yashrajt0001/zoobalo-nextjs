@@ -3,31 +3,43 @@ import { createContext } from "react";
 export interface UserContextType {
   // Define your context state and any methods here
   location: string;
-  setLocation: (newString : string) => void;
+  setLocation: (newString: string) => void;
   name: string;
-  setName: (newString : string) => void;
+  setName: (newString: string) => void;
   address: string;
-  setAddress: (newString : string) => void;
+  setAddress: (newString: string) => void;
   mob: string;
-  setMob: (newString : string) => void;
+  setMob: (newString: string) => void;
   balance: string;
-  setBalance: (newString : string) => void;
+  setBalance: (newString: string) => void;
   timing: string;
   setTiming: (newString: string) => void;
-  feedbackId: number,
+  feedbackId: number;
   setFeedbackId: (newId: number) => void;
-  feedbackTitle: string,
+  feedbackTitle: string;
   setFeedbackTitle: (newString: string) => void;
-  feedbackBody: string,
+  feedbackBody: string;
   setFeedbackBody: (newString: string) => void;
-  deliveryAgentName: string,
+  deliveryAgentName: string;
   setDeliveryAgentName: (newString: string) => void;
-  deliveryAgentMob: string,
+  deliveryAgentMob: string;
   setDeliveryAgentMob: (newString: string) => void;
-  deliveryAgentParnterCode: string,
+  deliveryAgentParnterCode: string;
   setDeliveryAgentPartnerCode: (newString: string) => void;
-  deliveryAgentId: number,
+  deliveryAgentId: number;
   setDeliveryAgentId: (newId: number) => void;
+  userDetails: any;
+  setUserDetails: (newArray: any) => void;
+  cancelMeal: (id: number) => void;
+  pauseMeal: (arr: any, userId: any) => void;
+  demoDeliveries: any;
+  setDemoDeliveries: (newArray: any) => void;
+  results: any;
+  setResults: (newArray: any) => void;
+  getDemoDeliveries: () => void;
+  getCompletedDeliveries: () => void;
+  showCompleted: any;
+  setShowCompleted: (newBoolean: any) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
