@@ -4,10 +4,16 @@ export interface UserContextType {
   // Define your context state and any methods here
   location: string;
   setLocation: (newString: string) => void;
-  name: string;
-  setName: (newString: string) => void;
-  address: string;
-  setAddress: (newString: string) => void;
+  userId: any,
+  setUserId: (newNumber:any) => void;
+  userName: string;
+  setUserName: (newString: string) => void;
+  morningAddress: string;
+  setMorningAddress: (newString: string) => void;
+  eveningAddress: string;
+  setEveningAddress: (newString: string) => void;
+  dueTiffins: any,
+  setDueTiffins: (newNumber:any) => void;
   mob: string;
   setMob: (newString: string) => void;
   balance: string;

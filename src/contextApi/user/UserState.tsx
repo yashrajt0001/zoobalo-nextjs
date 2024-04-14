@@ -4,8 +4,10 @@ import UserContext from "./UserContext";
 import axios, { AxiosError } from "axios";
 
 const UserState = (props: any) => {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+  const [userId, setUserId] = useState(0);
+  const [userName, setUserName] = useState("");
+  const [morningAddress, setMorningAddress] = useState("");
+  const [eveningAddress, setEveningAddress] = useState("");
   const [mob, setMob] = useState("");
   const [location, setLocation] = useState("");
   const [balance, setBalance] = useState("");
@@ -21,6 +23,7 @@ const UserState = (props: any) => {
   const [demoDeliveries, setDemoDeliveries] = useState([]);
   const [results, setResults] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false);
+  const [dueTiffins, setDueTiffins] = useState(0);
 
   const cancelMeal = async (id: number) => {
     try {
@@ -76,8 +79,7 @@ const UserState = (props: any) => {
       setResults(data);
       setDemoDeliveries(data);
       return true;
-    }
-    catch (error: any) {
+    } catch (error: any) {
       console.log(error.response.data);
       return false;
     }
@@ -97,8 +99,7 @@ const UserState = (props: any) => {
       setResults(data);
       setDemoDeliveries(data);
       return true;
-    }
-    catch (error: any) {
+    } catch (error: any) {
       console.log(error.response.data);
       return false;
     }
@@ -109,10 +110,10 @@ const UserState = (props: any) => {
       value={{
         location,
         setLocation,
-        name,
-        setName,
-        address,
-        setAddress,
+        userName,
+        setUserName,
+        morningAddress,
+        setMorningAddress,
         mob,
         setMob,
         balance,
@@ -144,7 +145,13 @@ const UserState = (props: any) => {
         getDemoDeliveries,
         getCompletedDeliveries,
         showCompleted,
-        setShowCompleted
+        setShowCompleted,
+        eveningAddress,
+        setEveningAddress,
+        dueTiffins,
+        setDueTiffins,
+        userId,
+        setUserId,
       }}
     >
       {props.children}

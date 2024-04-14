@@ -18,7 +18,7 @@ const page = () => {
     if (results != undefined) {
       const finalResults = results.filter((result: any) => {
         return (
-          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
+          result?.name?.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
         );
       });
       setResults(finalResults);

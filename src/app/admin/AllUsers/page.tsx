@@ -15,12 +15,25 @@ const page = () => {
   const [showPending, setShowPending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [updateLoader, setUpdateLoader] = useState(false);
 
   const context = useContext(UserContext);
-  // if (!context) {
-  //   return null; // or handle the loading state or error state
-  // }
-  const { name, address, mob, balance, timing } = context as UserContextType;
+  const {
+    userName,
+    morningAddress,
+    eveningAddress,
+    dueTiffins,
+    mob,
+    balance,
+    timing,
+    setUserName,
+    setMorningAddress,
+    setEveningAddress,
+    setDueTiffins,
+    setMob,
+    setBalance,
+    userId,
+  } = context as UserContextType;
 
   useEffect(() => {
     const getUsers = async () => {
@@ -33,8 +46,6 @@ const page = () => {
         }
       );
       setIsFetchloading(false);
-      console.log(data);
-      // data.map((user: any) => (user["show"] = true));
       const subscribedUsers = data.filter((user: any) => {
         return user.order.length > 0;
       });
@@ -47,21 +58,16 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    if (results != undefined) {
-      const finalResults = results.filter((result: any) => {
-        return (
-          result.name.toLowerCase().indexOf(searchinput.toLowerCase()) !== -1
-        );
-      });
-      setResults(finalResults);
-      setTotalUsers(finalResults.length);
-    }
+    let finalResults = allUsers;
 
-    if (!searchinput) {
-      setResults(allUsers);
-      setTotalUsers(allUsers.length);
+    if (searchinput) {
+      finalResults = allUsers.filter((user: any) =>
+        user.name.toLowerCase().includes(searchinput.toLowerCase())
+      );
     }
-  }, [searchinput]);
+    setResults(finalResults);
+    setTotalUsers(finalResults.length);
+  }, [searchinput, allUsers]);
 
   const handleCancel = () => {
     setShowPending(false);
@@ -112,8 +118,6 @@ const page = () => {
       }
     );
     setIsFetchloading(false);
-    console.log(data);
-    // data.map((user: any) => (user["show"] = true));
     const res = data.filter((order: any) => {
       return order.isDelivered == false;
     });
@@ -157,6 +161,47 @@ const page = () => {
     setIsLoading(false);
   };
 
+  const handleUpdate = async () => {
+    setUpdateLoader(true);
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/user/update/${userId}`,
+        {
+          name: userName,
+          phone: mob,
+          morningAddress,
+          eveningAddress,
+          balance,
+          dueTiffin: dueTiffins,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(res.data);
+    } catch (error: any) {
+      console.log(error.response.data);
+    } finally {
+      setUpdateLoader(false);
+    }
+  };
+
+  const handleAddOns = () => {
+    setShowPending(false);
+    const haveAddOn = users.filter((user: any) => {
+      if (
+        user.order[0].orderAddon.length > 0 ||
+        (user.order.length > 1 && user.order[1].orderAddon.length > 0)
+      )
+        return true;
+    });
+
+    setResults(haveAddOn);
+    setTotalUsers(haveAddOn.length);
+  };
+
   return (
     <>
       <div className="ml-10 mt-4 pb-8">
@@ -169,7 +214,7 @@ const page = () => {
             className="p-2 border border-gray-200 rounded-lg outline-none w-[30%]"
           />
 
-          <div className="flex gap-5 ml-12">
+          <div className="flex gap-3 ml-12">
             <button
               onClick={handleSubscribe}
               className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
@@ -202,7 +247,7 @@ const page = () => {
               onClick={handlePendingDeliveries}
               className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
             >
-              Pending Deliveries
+              Pending
             </button>
 
             <button
@@ -210,6 +255,13 @@ const page = () => {
               className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
             >
               Low balance
+            </button>
+
+            <button
+              onClick={handleAddOns}
+              className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
+            >
+              AddOns
             </button>
           </div>
         </div>
@@ -235,20 +287,23 @@ const page = () => {
           <div className="flex w-full">
             <div className="flex flex-col gap-3 w-[50%]">
               {results.map((user: any, index) => {
+                if (index == 5) console.log(user);
                 return (
                   <Card
                     className={`flex`}
                     id={user.id}
                     key={index}
                     _name={user?.name}
-                    _address={user?.address}
+                    _morningAddress={user?.morningAddress}
+                    _eveningAddress={user?.eveningAddress}
                     _balance={user?.balance?.toString()}
                     _location={user?.location}
                     _mobile={user?.phone}
+                    dueTiffin={user?.dueTiffin}
                     _type={
                       user?.order?.length > 1
-                        ? "both"
-                        : user?.order[0]?.tiffinTime.toLowerCase()
+                        ? "BOTH"
+                        : user?.order[0]?.tiffinTime
                     }
                     _isSubscribed={user?.order.length == 0 ? false : true}
                     _isPaused={
@@ -266,59 +321,81 @@ const page = () => {
               })}
             </div>
 
-            {name != "" && (
+            {userName != "" && (
               <div className="w-[40%] ml-12 -mt-14">
-                <div className="sticky top-24 z-10 bg-white flex flex-col gap-3">
+                <div className="sticky top-24 z-10 bg-white flex flex-col gap-2">
                   <h1 className="text-3xl">Update:</h1>
                   <input
                     type="text"
                     placeholder="Name"
-                    className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={name!}
-                    // onChange={(e) => setName(e.target.value)}
+                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
                   />
-                  <input
-                    type="text"
-                    placeholder="Address"
-                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={address!}
-                    // onChange={(e) => setAddress(e.target.value)}
-                  />
+
+                  {(timing == "MORNING" || timing == "BOTH") && (
+                    <input
+                      type="text"
+                      placeholder="Morning Address"
+                      className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+                      value={morningAddress}
+                      onChange={(e) => setMorningAddress(e.target.value)}
+                    />
+                  )}
+
+                  {(timing == "EVENING" || timing == "BOTH") && (
+                    <input
+                      type="text"
+                      placeholder="Evening Address"
+                      className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+                      value={eveningAddress}
+                      onChange={(e) => setEveningAddress(e.target.value)}
+                    />
+                  )}
                   <input
                     type="tel"
                     placeholder="Phone Number"
-                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={mob!}
-                    // onChange={(e) => setMob(e.target.value)}
+                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={mob}
+                    maxLength={10}
+                    onChange={(e) => setMob(e.target.value)}
                   />
                   <input
                     type="number"
                     placeholder="User's Balance"
-                    className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={balance!}
-                    // onChange={(e) => setBalance(e.target.value)}
+                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={balance}
+                    onChange={(e) => setBalance(e.target.value)}
                   />
-                  <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
+
+                  <input
+                    type="number"
+                    placeholder="Due Tiffins"
+                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+                    value={dueTiffins}
+                    onChange={(e) => setDueTiffins(e.target.value)}
+                  />
+                  {/* <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
                     <select
-                      // onChange={(e) => {
-                      //   setType(e.target.value as type);
-                      // }}
+                      onChange={(e) => {
+                        setTiming(e.target.value);
+                      }}
                       name="type"
                       id="type"
                       className="p-5 w-full"
-                      value={timing!}
+                      value={timing}
                     >
                       <option value="MORNING">MORNING</option>
                       <option value="EVENING">EVENING</option>
                       <option value="BOTH">BOTH</option>
                     </select>
-                  </div>
+                  </div> */}
                   <button
-                    type="submit"
-                    className="px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit"
+                    onClick={handleUpdate}
+                    className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}
                   >
-                    {/* {loader && <Loader2 className="animate-spin mr-2" />} */}
-                    Update
+                    Update{" "}
+                    {updateLoader && <Loader2 className="animate-spin mr-2" />}
                   </button>
                 </div>
               </div>
@@ -333,17 +410,24 @@ const page = () => {
                   id={user.id}
                   key={index}
                   _name={user?.user?.name}
-                  _address={user?.user?.address}
+                  _morningAddress={user?.morningAddress}
+                  _eveningAddress={user?.eveningAddress}
                   _balance={user?.user?.balance?.toString()}
                   _location={user?.user?.address}
                   _mobile={user?.user?.phone}
-                  _type={user?.order?.tiffinTime}
+                  dueTiffin={user?.dueTiffin}
+                  _type={
+                    user?.order?.length > 1
+                      ? "BOTH"
+                      : user?.order[0]?.tiffinTime
+                  }
                   _isSubscribed={user?.order?.length == 0 ? false : true}
                   _isPaused={
                     user.order.length > 0 && user.order[0].NextMeal.isPause
                       ? true
                       : false
                   }
+                  _order={user.order}
                   nextMeal={user.order.length > 0 ? user.order[0].NextMeal : {}}
                   user={user}
                 />

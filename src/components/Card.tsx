@@ -17,33 +17,38 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   id: string;
   _name: string;
   _mobile: string;
-  _address: string;
+  _morningAddress: string;
+  _eveningAddress: string;
   _balance: string;
   _location: string;
+  dueTiffin: number;
   _type: any;
   _isSubscribed: boolean;
   _isPaused: boolean;
   nextMeal: any;
   _order?: any;
-  user:[]
+  user: [];
 }
 
 export const Card: FC<userInterface> = ({
   id,
   _name,
   _mobile,
-  _address,
+  _morningAddress,
+  _eveningAddress,
   _balance,
   _type,
+  dueTiffin,
   className,
   _isSubscribed,
   _isPaused,
   nextMeal,
   _order,
-  user
+  user,
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [addOns, setAddOns] = useState([]);
 
   const cancelled = () => {
     if (_order) {
@@ -61,6 +66,29 @@ export const Card: FC<userInterface> = ({
     }
   };
 
+  const checkForAddOns = () => {
+    if (_isSubscribed) {
+      if (_order?.length > 1) {
+        let array = [] as any;
+        _order[0].orderAddon.map((addon: any) => {
+          array.push({ ...addon, timing: _order[0].tiffinTime });
+        });
+        _order[1].orderAddon.map((addon: any) => {
+          array.push({ ...addon, timing: _order[1].tiffinTime });
+        });
+        setAddOns(array);
+      } else {
+        let array = [] as any;
+        _order[0]?.orderAddon.map((addon: any) => {
+          array.push({ ...addon, timing: _order[0].tiffinTime });
+        });
+        setAddOns(array);
+      }
+      return true;
+    }
+    return false;
+  };
+
   useEffect(() => {
     async function getPausedDates() {
       if (nextMeal.PauseTime) {
@@ -75,22 +103,32 @@ export const Card: FC<userInterface> = ({
     getPausedDates();
   }, [nextMeal]);
 
+  useEffect(() => {
+    checkForAddOns();
+  }, [_isSubscribed, _order]);
+
   const context = useContext(UserContext);
   const {
-    setName,
-    setAddress,
+    setUserName,
+    setMorningAddress,
     setMob,
     setBalance,
     setTiming,
-    setUserDetails
+    setUserDetails,
+    setEveningAddress,
+    setDueTiffins,
+    setUserId,
   } = context as UserContextType;
 
   const handleUpdate = () => {
-    setName(_name);
-    setAddress(_address);
+    setUserName(_name);
+    setMorningAddress(_morningAddress);
+    setEveningAddress(_eveningAddress);
     setMob(_mobile);
     setBalance(_balance);
     setTiming(_type);
+    setUserId(id);
+    setDueTiffins(dueTiffin);
   };
 
   const handleDelete = async () => {
@@ -118,13 +156,20 @@ export const Card: FC<userInterface> = ({
     <div className={className}>
       <div className="w-[100%] p-6 bg-lime-200 rounded-xl">
         <h1 className="mt-2 text-2xl font-bold">{_name}</h1>
-        <h1 className="mt-2 text-lg">Address: {_address}</h1>
+        {(_type == "BOTH" || _type == "MORNING") && (
+          <h1 className="mt-2 text-lg">Morning Address: {_morningAddress}</h1>
+        )}
+        {(_type == "BOTH" || _type == "EVENING") && (
+          <h1 className="mt-2 text-lg">Evening Address: {_eveningAddress}</h1>
+        )}
         <h1 className="mt-2 text-lg">Balance: {_balance}</h1>
         <h1 className="mt-2">
           Mob No: <span className="ml-2">{_mobile}</span>{" "}
         </h1>
         <h1 className="mt-2 text-lg">Tiffin Time: {_type}</h1>
-        <h1 className="mt-2 text-lg">{cancelled() ? `Cancelled for: ${cancelled()}` : null}</h1>
+        <h1 className="mt-2 text-lg">
+          {cancelled() ? `Cancelled for: ${cancelled()}` : null}
+        </h1>
         {_isPaused && (
           <div className="mt-2">
             <h1 className="text-lg">Paused Dates:</h1>
@@ -135,6 +180,21 @@ export const Card: FC<userInterface> = ({
             </div>
           </div>
         )}
+
+        {addOns.length > 0 && (
+          <div className="mt-2">
+            <h1 className="text-lg">Add Ons:</h1>
+            <div className="mt-1 pb-1">
+              {addOns.map((item: any) => (
+                <div className="flex items-center">
+                  <h1 className="text-lg font-semibold">{item.addon.name}</h1>
+                  <h1 className="ml-3 font-semibold">{item.quantity}</h1>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-5 flex gap-4 items-center">
           <button
             onClick={handleUpdate}
@@ -153,7 +213,10 @@ export const Card: FC<userInterface> = ({
             <Link
               href={`/admin/user/cancelPause?userId=${id}&name=${_name}&mobile=${_mobile}`}
             >
-              <button onClick={() => setUserDetails(user)} className="p-3 bg-white font-bold rounded-xl">
+              <button
+                onClick={() => setUserDetails(user)}
+                className="p-3 bg-white font-bold rounded-xl"
+              >
                 Cancel / Pause
               </button>
             </Link>
