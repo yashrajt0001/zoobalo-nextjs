@@ -9,6 +9,7 @@ const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(true);
   const [searchinput, setSearchinput] = useState("");
   const [totalDeliveries, setTotalDeliveries] = useState(0);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
 
   useEffect(() => {
     handlePending();
@@ -38,7 +39,7 @@ const page = () => {
     setResults,
     getDemoDeliveries,
     getCompletedDeliveries,
-    setShowCompleted
+    setShowCompleted,
   } = context as UserContextType;
 
   useEffect(() => {
@@ -58,10 +59,41 @@ const page = () => {
     setShowCompleted(true);
   };
 
+  const handleDemoDeliveryBoyAssign = () => {
+    setIsDemoLoading(true);
+    results.map(async (user: any) => {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
+          {
+            userId: user.user.id,
+            agentId: 1,
+          },
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+    })
+    setIsDemoLoading(false);
+  };
+
   console.log(results);
 
   return (
     <div className="ml-10 mt-4 pb-8">
+      <div className="flex items-center gap-2 mb-4 mt-4">
+        <button
+          onClick={handleDemoDeliveryBoyAssign}
+          disabled={isDemoLoading}
+          className={`items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2 ${
+            isDemoLoading ? "bg-[#949494]" : "bg-green-500"
+          } `}
+        >
+          Assign Demo Delivery
+          {isDemoLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+        </button>
+      </div>
       <div className="flex items-center">
         <input
           type="text"
