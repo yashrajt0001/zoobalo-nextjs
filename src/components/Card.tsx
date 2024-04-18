@@ -51,7 +51,7 @@ export const Card: FC<userInterface> = ({
   const [addOns, setAddOns] = useState([]);
 
   const cancelled = () => {
-    if (_order) {
+    if (_order.length > 0) {
       let time: null | string = null;
       _order.map((order: any) => {
         if (order.NextMeal.isCancel) {
