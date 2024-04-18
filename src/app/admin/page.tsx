@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState, ChangeEvent } from "react";
 
 import axios from "axios";
 import { ShowLogin } from "../../components/ShowLogin";
@@ -10,6 +10,7 @@ const page = () => {
   const [login, setLogin] = useState(true);
   const [timing, setTiming] = useState("MORNING");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     setLogin(!localStorage.getItem("auth-token"));
@@ -159,12 +160,37 @@ const page = () => {
     });
   };
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
+
+  console.log(selectedFile);
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      console.log("Please select a file");
+      return;
+    }
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/admin/webBanner/upload`,{
+        headers: {
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+      });
+      console.log("Image uploaded successfully:", response.data);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
   return (
     <>
       {login ? (
         <ShowLogin setLogin={setLogin} />
       ) : (
-        <div className="mb-10">
+        <div className="pb-8 min-h-full">
           <div className="flex items-center">
             <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
               Hi! <span className="text-green-500">Admin</span>{" "}
@@ -174,7 +200,7 @@ const page = () => {
               <select
                 onChange={(e) => setTiming(e.target.value)}
                 value={timing}
-                className="py-2 px-4 text-center"
+                className="py-2 px-4 text-center rounded-md"
               >
                 <option value="MORNING">MORNING</option>
                 <option value="EVENING">EVENING</option>
@@ -290,6 +316,17 @@ const page = () => {
                 Create
               </button>
             </form>
+          </div>
+
+          <div className="mt-2 flex flex-col ml-16">
+            <h1 className="text-3xl">Upload Image:</h1>
+            <input className="mt-5" type="file" onChange={handleFileChange} />
+            <button
+              className="bg-green-500 px-3 py-2 rounded-lg text-xl w-fit flex items-center text-white mt-8"
+              onClick={handleUpload}
+            >
+              Upload Image
+            </button>
           </div>
         </div>
       )}
