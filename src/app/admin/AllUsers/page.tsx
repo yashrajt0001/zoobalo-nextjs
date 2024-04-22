@@ -16,6 +16,7 @@ const page = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
   const [updateLoader, setUpdateLoader] = useState(false);
+  const [tempResults, setTempResults] = useState([]);
 
   const context = useContext(UserContext);
   const {
@@ -51,6 +52,7 @@ const page = () => {
       });
       setUsers(subscribedUsers);
       setResults(data);
+      setTempResults(data);
       setTotalUsers(data.length);
       setAllUsers(data);
     };
@@ -58,16 +60,18 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    let finalResults = allUsers;
+    let finalResults = tempResults;
 
     if (searchinput) {
-      finalResults = allUsers.filter((user: any) =>
-        user.name.toLowerCase().includes(searchinput.toLowerCase())
+      finalResults = tempResults.filter((user: any) =>
+        !showPending
+          ? user.name.toLowerCase().includes(searchinput.toLowerCase())
+          : user.user.name.toLowerCase().includes(searchinput.toLowerCase())
       );
     }
     setResults(finalResults);
     setTotalUsers(finalResults.length);
-  }, [searchinput, allUsers]);
+  }, [searchinput, tempResults]);
 
   const handleCancel = () => {
     setShowPending(false);
@@ -77,7 +81,15 @@ const page = () => {
       }
     });
     setResults(cancelledUsers);
+    setTempResults(cancelledUsers);
     setTotalUsers(cancelledUsers.length);
+  };
+
+  const handleAllUsers = () => {
+    setShowPending(false);
+    setResults(allUsers);
+    setTempResults(allUsers);
+    setTotalUsers(allUsers.length);
   };
 
   const handleSubscribe = () => {
@@ -86,6 +98,7 @@ const page = () => {
       return user.order.length > 0;
     });
     setResults(subscribedUsers);
+    setTempResults(subscribedUsers);
     setTotalUsers(subscribedUsers.length);
   };
 
@@ -95,6 +108,7 @@ const page = () => {
       return user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
+    setTempResults(pausedUsers);
     setTotalUsers(pausedUsers.length);
   };
 
@@ -104,6 +118,7 @@ const page = () => {
       return user.order.length == 0;
     });
     setResults(unsubscribedUsers);
+    setTempResults(unsubscribedUsers);
     setTotalUsers(unsubscribedUsers.length);
   };
 
@@ -122,6 +137,7 @@ const page = () => {
       return order.isDelivered == false;
     });
     setResults(res);
+    setTempResults(res);
     setTotalUsers(res.length);
   };
 
@@ -132,6 +148,7 @@ const page = () => {
     });
 
     setResults(lowBalanceUser);
+    setTempResults(lowBalanceUser);
     setTotalUsers(lowBalanceUser.length);
   };
 
@@ -199,6 +216,7 @@ const page = () => {
     });
 
     setResults(haveAddOn);
+    setTempResults(haveAddOn);
     setTotalUsers(haveAddOn.length);
   };
 
@@ -211,10 +229,17 @@ const page = () => {
             value={searchinput}
             onChange={(e) => setSearchinput(e.target.value)}
             placeholder="Search a User"
-            className="p-2 border border-gray-200 rounded-lg outline-none w-[30%]"
+            className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
           />
 
-          <div className="flex gap-3 ml-12">
+          <div className="flex gap-2 ml-8">
+            <button
+              onClick={handleAllUsers}
+              className="bg-orange-500 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
+            >
+              All Users
+            </button>
+
             <button
               onClick={handleSubscribe}
               className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
@@ -409,17 +434,13 @@ const page = () => {
                   id={user.id}
                   key={index}
                   _name={user?.user?.name}
-                  _morningAddress={user?.morningAddress}
-                  _eveningAddress={user?.eveningAddress}
+                  _morningAddress={user?.user?.morningAddress}
+                  _eveningAddress={user?.user?.eveningAddress}
                   _balance={user?.user?.balance?.toString()}
                   _location={user?.user?.address}
                   _mobile={user?.user?.phone}
                   dueTiffin={user?.dueTiffin}
-                  _type={
-                    user?.order?.length > 1
-                      ? "BOTH"
-                      : user?.order[0]?.tiffinTime
-                  }
+                  _type={user?.order?.tiffinTime}
                   _isSubscribed={user?.order?.length == 0 ? false : true}
                   _isPaused={
                     user.order.length > 0 && user.order[0].NextMeal.isPause
