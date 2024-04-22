@@ -311,8 +311,7 @@ const page = () => {
         ) : !showPending ? (
           <div className="flex w-full">
             <div className="flex flex-col gap-3 w-[50%]">
-              {results.map((user: any, index) => {
-                if (index == 5) console.log(user);
+                {results.map((user: any, index) => {
                 return (
                   <Card
                     className={`flex`}
