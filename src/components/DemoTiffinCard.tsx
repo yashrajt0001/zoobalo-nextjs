@@ -61,10 +61,14 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
           },
         }
       );
+      setIsPaid(false);
+      setGotDelivered(false);
+      setGotPicked(false);
+      setReviewText("");
+      await getDemoDeliveries();
     } catch (error: any) {
       console.log(error.response.data);
     }
-    await getDemoDeliveries();
   };
 
   const handleDone = async () => {
@@ -81,10 +85,14 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
           },
         }
       );
+      setIsPaid(false);
+      setGotDelivered(false);
+      setGotPicked(false);
+      setReviewText("");
+      await getDemoDeliveries();
     } catch (error: any) {
       console.log(error.response.data);
     }
-    await getDemoDeliveries();
   };
 
   return (
@@ -198,7 +206,7 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
             />
           </div>
         )}
-        {!showCompleted &&
+        {!showCompleted && (
           <div>
             <button
               onClick={handleRemove}
@@ -212,7 +220,8 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
             >
               Done
             </button>
-          </div>}
+          </div>
+        )}
       </div>
     </div>
   );
