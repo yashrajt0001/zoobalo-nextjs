@@ -50,8 +50,6 @@ export const Card: FC<userInterface> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [addOns, setAddOns] = useState([]);
 
-  console.log("user: ", user);
-
   const cancelled = () => {
     if (_order && Array.isArray(_order) && _order.length > 0) {
       let time: null | string = null;
@@ -168,7 +166,9 @@ export const Card: FC<userInterface> = ({
         <h1 className="mt-2">
           Mob No: <span className="ml-2">{_mobile}</span>{" "}
         </h1>
-        <h1 className="mt-2 text-lg">Tiffin Time: {_type?.length > 0 ? _type : "NA"}</h1>
+        <h1 className="mt-2 text-lg">
+          Tiffin Time: {_type?.length > 0 ? _type : "NA"}
+        </h1>
         <h1 className="mt-2 text-lg">
           {cancelled() ? `Cancelled for: ${cancelled()}` : null}
         </h1>
