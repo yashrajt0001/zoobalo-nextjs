@@ -1,29 +1,38 @@
 "use client";
 
 import axios from "axios";
-import React, { useState } from "react";
+import { usePathname } from 'next/navigation'
+import React, { useEffect, useState } from "react";
 
-export const ShowLogin = ({ setLogin }) => {
+interface MyComponentProps {
+  isLoggedIn : () => void; 
+}
+
+export const ShowLogin: React.FC<MyComponentProps> = ({ isLoggedIn }) => {
+  const pathname = usePathname()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [showError, setShowError] = useState<undefined | string>(undefined);
+
 
   const handleLogin = async () => {
     try {
       if (!email || !password) {
-        setError("Please enter email and password");
+        setShowError("Please enter email and password");
+        return;
       }
       const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/login`,
+        `${process.env.NEXT_PUBLIC_HOST}${pathname}/login`,
         {
           email,
           password,
         }
       );
       localStorage.setItem("auth-token", data.token);
-      setLogin(false);
-    } catch (error) {
-      console.log(error);
+      isLoggedIn();
+    } catch (error: any) {
+      setShowError(error.response.data);
+      console.log(error.response.data);
     }
   };
 
@@ -31,7 +40,7 @@ export const ShowLogin = ({ setLogin }) => {
     <div className="flex items-center h-screen w-full">
       <div className="w-[60%] bg-purple-500 h-screen flex justify-center items-center">
         <h1 className="text-5xl w-[70%] mb-32 font-semibold leading-tight text-[#dcd8d8]">
-          Hello Admin! Welcome in your Space
+          Hello! Welcome in your Space
         </h1>
       </div>
       <div className="w-[40%] h-[70%] bg-white rounded-lg flex flex-col items-center p-10 gap-8 z-20">
@@ -42,7 +51,7 @@ export const ShowLogin = ({ setLogin }) => {
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-            setError(false);
+            setShowError("");
           }}
           className="p-2 outline-none border-b-[1.5px] border-purple-300 w-[70%]"
         />
@@ -52,11 +61,11 @@ export const ShowLogin = ({ setLogin }) => {
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
-            setError(false);
+            setShowError("");
           }}
           className="p-2 outline-none mb-10 border-b-[1.5px] border-purple-300 w-[70%]"
         />
-        {error && <div className="text-red-500 text-lg">{error}</div>}
+        {showError && <div className="text-red-500 text-lg">{showError}</div>}
         <button
           onClick={handleLogin}
           className="p-3 text-[1.25rem] font-semibold w-[60%] bg-purple-400 rounded-xl text-white"

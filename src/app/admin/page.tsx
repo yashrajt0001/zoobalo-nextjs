@@ -3,17 +3,34 @@
 import React, { FormEvent, useEffect, useState, ChangeEvent } from "react";
 
 import axios from "axios";
-import { ShowLogin } from "../../components/ShowLogin";
 import { Loader2 } from "lucide-react";
+import { ShowLogin } from "@/components/ShowLogin";
 
 const page = () => {
   const [login, setLogin] = useState(true);
   const [timing, setTiming] = useState("MORNING");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedCity, setSelectedCity] = useState(1);
+  const [kitchenLoader, setKitchenLoader] = useState(false);
+  const [cities, setCities] = useState([]);
+
+  const isLoggedIn = () => {
+    setLogin(false);
+  }
 
   useEffect(() => {
     setLogin(!localStorage.getItem("auth-token"));
+    async function getAllCities() {
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
+        setCities(res.data);
+        setSelectedCity(res.data[0].id);
+      } catch (error: any) {
+        console.log(error.response.data);
+      }
+    }
+    getAllCities();
   }, []);
 
   const [showError, setShowError] = useState<undefined | string>(undefined);
@@ -27,54 +44,13 @@ const page = () => {
     password: "",
   });
 
+  const [kitchenDetails, setKitchenDetails] = useState({
+    name: "",
+    address: ""
+  });
+
   const [userloader, setUserloader] = useState(false);
   const [delBoyLoader, setDelBoyLoader] = useState(false);
-
-  // const handleUserSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   if (
-  //     !userDetails.name ||
-  //     !userDetails.address ||
-  //     !userDetails.phone ||
-  //     userDetails.balance == undefined ||
-  //     !userDetails.type
-  //   ) {
-  //     return setShowError("Please enter details!");
-  //   }
-
-  //   try {
-  //     setUserloader(true);
-  //     await axios.post(
-  //       "/api/createUser",
-  //       {
-  //         name: userDetails.name,
-  //         address: userDetails.address,
-  //         mobile: userDetails.phone,
-  //         balance: parseInt(userDetails.balance),
-  //         location: userDetails.location,
-  //         type: userDetails.type,
-  //       },
-  //       {
-  //         headers: {
-  //           "auth-token": localStorage.getItem("auth-token"),
-  //         },
-  //       }
-  //     );
-  //   } catch (error: any) {
-  //     setShowError(error.response.data);
-  //   } finally {
-  //     setUserloader(false);
-  //   }
-
-  //   setUserDetails({
-  //     name: "",
-  //     address: "",
-  //     balance: "",
-  //     phone: "",
-  //     location: "",
-  //     type: "both",
-  //   });
-  // };
 
   const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -105,6 +81,36 @@ const page = () => {
       setShowError(error.response.data);
     } finally {
       setDelBoyLoader(false);
+    }
+  };
+
+  const handleKitchenCreate = async () => {
+    if (
+      !kitchenDetails.name ||
+      !kitchenDetails.address
+    ) {
+      return setShowError("Please enter details!");
+    }
+
+    try {
+      setKitchenLoader(true);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/kitchen/create`,
+        {
+          name: kitchenDetails.name,
+          cityId: selectedCity,
+          address: kitchenDetails.address,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setKitchenLoader(false);
     }
   };
 
@@ -166,19 +172,20 @@ const page = () => {
     }
   };
 
-  console.log(selectedFile);
-
   const handleUpload = async () => {
     if (!selectedFile) {
       console.log("Please select a file");
       return;
     }
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/admin/webBanner/upload`,{
-        headers: {
-          "auth-token": localStorage.getItem("auth-token"),
-        },
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/webBanner/upload`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
       console.log("Image uploaded successfully:", response.data);
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -188,7 +195,7 @@ const page = () => {
   return (
     <>
       {login ? (
-        <ShowLogin setLogin={setLogin} />
+        <ShowLogin isLoggedIn={isLoggedIn} />
       ) : (
         <div className="pb-8 min-h-full">
           <div className="flex items-center">
@@ -221,7 +228,7 @@ const page = () => {
           {showError && (
             <div className="text-red-500 ml-12 text-2xl mt-4">{showError}</div>
           )}
-          <div className="flex">
+          <div className="flex mb-6">
             <div className="ml-16 flex flex-col gap-3 w-[40%]">
               <h1 className="text-3xl mt-5">Create a User:</h1>
               <input
@@ -318,15 +325,65 @@ const page = () => {
             </form>
           </div>
 
-          <div className="mt-2 flex flex-col ml-16">
-            <h1 className="text-3xl">Upload Image:</h1>
-            <input className="mt-5" type="file" onChange={handleFileChange} />
-            <button
-              className="bg-green-500 px-3 py-2 rounded-lg text-xl w-fit flex items-center text-white mt-8"
-              onClick={handleUpload}
-            >
-              Upload Image
-            </button>
+          <div className="flex ml-16">
+            <div className="flex flex-col gap-4 w-[40%]">
+              <h1 className="text-3xl">Upload Image:</h1>
+              <input type="file" onChange={handleFileChange} />
+              <button
+                className="bg-green-500 px-3 py-2 rounded-lg text-xl w-fit flex items-center text-white"
+                onClick={handleUpload}
+              >
+                Upload Image
+              </button>
+            </div>
+
+            <div className="ml-28 flex flex-col gap-3 w-[43%]">
+              <h1 className="text-3xl">Create Kitchen:</h1>
+              <input
+                type="text"
+                name="name"
+                value={kitchenDetails.name}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setKitchenDetails({
+                    ...kitchenDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Name"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <select
+                onChange={(e) => setSelectedCity(parseInt(e.target.value))}
+                value={selectedCity}
+                className="py-5 px-4 rounded-md"
+              >
+                {cities.map((city: any) => (
+                  <option key={city.id} value={city.id}>{city.name}</option>
+                ))}
+              </select>
+              <input
+                type="text"
+                name="address"
+                value={kitchenDetails.address}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setKitchenDetails({
+                    ...kitchenDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Address"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <button
+                onClick={handleKitchenCreate}
+                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+              >
+                {kitchenLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
+                Create
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -5,9 +5,7 @@ import Image from "next/image";
 import logo1 from "../assets/images/logo1.png";
 import Link from "next/link";
 
-interface adminNavbarProps {}
-
-const AdminNavbar: FC<adminNavbarProps> = ({}) => {
+const KitchenHeadNavbar = () => {
   const [login, setLogin] = useState(true);
 
   useEffect(() => {
@@ -19,18 +17,12 @@ const AdminNavbar: FC<adminNavbarProps> = ({}) => {
       <div className="flex items-center justify-center">
         <Image src={logo1} alt="logo" className="w-28 h-12" />
         <div className="hidden sm:flex items-center  gap-10 ml-12 text-lg font-medium">
-          <Link href="/admin">Home</Link>
-          {!login && <Link href="/admin/AllUsers">Users</Link>}
-          {!login && <Link href="/admin/inventory">Today's tiffin</Link>}
-          {!login && <Link href="/admin/tiffinHistory">All history</Link>}
-          {!login && <Link href="/admin/feedbacks">Feedbacks</Link>}
-          {!login && <Link href="/admin/deliveryAgents">Delivery Agents</Link>}
-          {!login && <Link href="/admin/demoTiffins">Demo Tiffins</Link>}
-          {!login && <Link href="/admin/kitchens">Kitchens</Link>}
+          <Link href="/kitchenHead">Home</Link>
+          {!login && <Link href="/kitchenHead/extraTiffin">Extra Tiffins</Link>}
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminNavbar;
+export default KitchenHeadNavbar;
