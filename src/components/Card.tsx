@@ -20,14 +20,14 @@ interface userInterface extends HTMLAttributes<HTMLDivElement> {
   _morningAddress: string;
   _eveningAddress: string;
   _balance: string;
-  _location: string;
+  _location?: string;
   dueTiffin: number;
   _type: any;
   _isSubscribed: boolean;
   _isPaused: boolean;
   nextMeal: any;
   _order?: any;
-  user: [];
+  user: any;
 }
 
 export const Card: FC<userInterface> = ({
@@ -49,6 +49,13 @@ export const Card: FC<userInterface> = ({
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [addOns, setAddOns] = useState([]);
+  const [showRecharge, setShowRecharge] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [loader, setLoader] = useState(false);
+  const [showAssign, setShowAssign] = useState(false);
+  const [agentAssignLoader, setAgentAssignLoader] = useState(false);
+  const [agentId, setAgentId] = useState(1);
+  const [allAgents, setAllAgents] = useState([]);
 
   const cancelled = () => {
     if (_order && Array.isArray(_order) && _order.length > 0) {
@@ -107,6 +114,26 @@ export const Card: FC<userInterface> = ({
     checkForAddOns();
   }, [_isSubscribed, _order]);
 
+  useEffect(() => {
+    async function getAllAgents() {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/agent/get`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        console.log(res.data);
+        setAllAgents(res.data);
+      } catch (error: any) {
+        console.log(error.response.data);
+      }
+    }
+    getAllAgents();
+  }, []);
+
   const context = useContext(UserContext);
   const {
     setUserName,
@@ -149,6 +176,53 @@ export const Card: FC<userInterface> = ({
       console.log(error.response.data);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDone = async () => {
+    setLoader(true);
+    console.log("id: ", id);
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/user/recharge/${id}`,
+        {
+          amount,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      setShowRecharge(false);
+    } catch (error: any) {
+      console.log(error.response.data);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const handleAgentAssign = async () => {
+    setAgentAssignLoader(true);
+    console.log("id: ", id);
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/agent/assign`,
+        {
+          userId:id,
+          agentId,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      setShowAssign(false);
+    } catch (error: any) {
+      console.log(error.response.data);
+    } finally {
+      setAgentAssignLoader(false);
     }
   };
 
@@ -197,7 +271,7 @@ export const Card: FC<userInterface> = ({
           </div>
         )}
 
-        <div className="mt-5 flex gap-4 items-center">
+        <div className="mt-5 flex gap-4 items-center flex-wrap">
           <button
             onClick={handleUpdate}
             className="p-3 bg-white font-bold rounded-xl"
@@ -205,27 +279,44 @@ export const Card: FC<userInterface> = ({
             Update
           </button>
           <Link
-            href={`/admin/user?userId=${id}&name=${_name}&mobile=${_mobile}`}
+            href={`/kitchenHead/user?userId=${id}&name=${_name}&mobile=${_mobile}`}
           >
             <button className="p-3 bg-white font-bold rounded-xl">
               Show History
             </button>
           </Link>
+
+          <Link
+            href={`/kitchenHead/user/recharges?userId=${id}&name=${_name}&mobile=${_mobile}`}
+          >
+            <button className="p-3 bg-white font-bold rounded-xl">
+              Recharge History
+            </button>
+          </Link>
           {_isSubscribed && (
-            <Link
-              href={`/admin/user/cancelPause?userId=${id}&name=${_name}&mobile=${_mobile}`}
-            >
+            <>
+              <Link
+                href={`/kitchenHead/user/cancelPause?userId=${id}&name=${_name}&mobile=${_mobile}`}
+              >
+                <button
+                  onClick={() => setUserDetails(user)}
+                  className="p-3 bg-white font-bold rounded-xl"
+                >
+                  Cancel / Pause
+                </button>
+              </Link>
+
               <button
-                onClick={() => setUserDetails(user)}
+                onClick={() => setShowRecharge(true)}
                 className="p-3 bg-white font-bold rounded-xl"
               >
-                Cancel / Pause
+                Recharge
               </button>
-            </Link>
+            </>
           )}
           {!_isSubscribed && (
             <Link
-              href={`/admin/user/subscription?userId=${id}&name=${_name}&mobile=${_mobile}`}
+              href={`/kitchenHead/user/subscription?userId=${id}&name=${_name}&mobile=${_mobile}`}
             >
               <button className="p-3 bg-white font-bold rounded-xl">
                 Add Subscription
@@ -244,7 +335,68 @@ export const Card: FC<userInterface> = ({
               {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
             </button>
           )}
+          {user.agentId == null && (
+            <button
+              onClick={() => setShowAssign(true)}
+              className="p-3 bg-white font-bold rounded-xl"
+            >
+              Assign
+            </button>
+          )}
         </div>
+
+        {showRecharge && (
+          <>
+            <div className="mt-4">
+              <input
+                type="number"
+                value={amount}
+                name="amount"
+                onChange={(e) => {
+                  setAmount(parseInt(e.target.value));
+                }}
+                placeholder="Amount"
+                className="p-5 w-[50%] outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={handleDone}
+                className="flex mt-8 items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+              >
+                {loader && <Loader2 className="animate-spin mr-2" />}
+                Done
+              </button>
+            </div>
+          </>
+        )}
+
+        {showAssign && (
+          <>
+            <div className="mt-4">
+              <select
+                onChange={(e) => setAgentId(parseInt(e.target.value))}
+                value={agentId}
+                className="py-5 px-4 rounded-md w-[50%] bg-white border-[2px] border-gray-200"
+              >
+                {allAgents.map((agent: any) => (
+                  <option key={agent.id} value={agent.id}>
+                    {agent.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={handleAgentAssign}
+                className="flex mt-8 items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+              >
+                {agentAssignLoader && <Loader2 className="animate-spin mr-2" />}
+                Done
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -46,6 +46,18 @@ export interface UserContextType {
   getCompletedDeliveries: () => void;
   showCompleted: any;
   setShowCompleted: (newBoolean: any) => void;
+  getExtraTiffinDeliveries: () => void;
+  getCompletedExtraTiffinDeliveries: () => void;
+  tiffinPackageId: any;
+  setTiffinPackageId: (newId: any) => void;
+  tiffinPackageName: any;
+  setTiffinPackageName: (newName: any) => void;
+  packageContain: any;
+  setPackageContain: (newArray: any) => void;
+  price: any;
+  setPrice: (newArray: any) => void;
+  extraTiffinDeliveries: any;
+  setExtraTiffinDeliveries: (newArray: any) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);

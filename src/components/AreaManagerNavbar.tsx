@@ -19,6 +19,7 @@ export const AreaManagerNavbar = () => {
           <div className="hidden sm:flex items-center  gap-10 ml-12 text-lg font-medium">
             <Link href="/areaManager">Home</Link>
             {!login && <Link href="/areaManager/requests">Requests</Link>}
+            {!login && <Link href="/areaManager/updateTiffinPackage">Update Package</Link>}
           </div>
         </div>
       </div>
