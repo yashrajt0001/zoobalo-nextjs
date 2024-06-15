@@ -5,6 +5,7 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [users, setUsers] = useState([]);
@@ -33,26 +34,30 @@ const page = () => {
     setDueTiffins,
     setMob,
     setBalance,
-    userId,
+    userId
   } = context as UserContextType;
 
   useEffect(() => {
     const getUsers = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/users`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      const res = data.AssignedKitchenHead[0].kitchen.UserDetails;
-      console.log(res);
-      setIsFetchloading(false);
-      setResults(res);
-      setTempResults(res);
-      setTotalUsers(res.length);
-      setAllUsers(res);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/users`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        const res = data.AssignedKitchenHead[0].kitchen.UserDetails;
+        setResults(res);
+        setTempResults(res);
+        setTotalUsers(res.length);
+        setAllUsers(res);
+      } catch (error: any) {
+        toast.error(error.response.data);
+      } finally {
+        setIsFetchloading(false);
+      }
     };
     getUsers();
   }, []);
@@ -120,24 +125,30 @@ const page = () => {
   //   setTotalUsers(unsubscribedUsers.length);
   // };
 
-  // const handlePendingDeliveries = async () => {
-  //   setShowPending(true);
-  //   const { data } = await axios.get(
-  //     `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/users`,
-  //     {
-  //       headers: {
-  //         "auth-token": localStorage.getItem("auth-token"),
-  //       },
-  //     }
-  //   );
-  //   setIsFetchloading(false);
-  //   const res = data.filter((order: any) => {
-  //     return order.isDelivered == false;
-  //   });
-  //   setResults(res);
-  //   setTempResults(res);
-  //   setTotalUsers(res.length);
-  // };
+  const handlePendingDeliveries = async () => {
+    setShowPending(true);
+    setIsFetchloading(true);
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/queue`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      setResults(data);
+      console.log("pending : ",data);
+      setTempResults(data);
+      setTotalUsers(data.length);
+    }
+    catch (error: any) {
+      toast.error(error?.response?.data);
+    }
+    finally {
+      setIsFetchloading(false);
+    }
+  };
 
   const handleLowBalance = async () => {
     setShowPending(false);
@@ -159,21 +170,26 @@ const page = () => {
           (user.order.length > 1 && user.order[1].status == true))
       );
     });
-    subscribedUsers.map(async (user: any) => {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
-        {
-          userId: user.id,
-          agentId: 1,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
+    try {
+      subscribedUsers.map(async (user: any) => {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
+          {
+            userId: user.id,
+            agentId: 1,
           },
-        }
-      );
-    });
-    setIsLoading(false);
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+      });
+    } catch (error: any) {
+      toast.error(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleUpdate = async () => {
@@ -197,7 +213,7 @@ const page = () => {
       );
       console.log(res.data);
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setUpdateLoader(false);
     }
@@ -262,12 +278,12 @@ const page = () => {
               Paused
             </button>
 
-            {/* <button
+            <button
               onClick={handlePendingDeliveries}
               className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
             >
               Pending
-            </button> */}
+            </button>
 
             <button
               onClick={handleLowBalance}
@@ -331,6 +347,7 @@ const page = () => {
                         : {}
                     }
                     user={user}
+                  isPending={showPending}
                   />
                 );
               })}
@@ -418,7 +435,7 @@ const page = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            {results.map((user: any, index) => {
+            {results.map((user: any) => {
               return (
                 <Card
                   className={`flex w-[50%]`}
@@ -449,6 +466,7 @@ const page = () => {
                       : {}
                   }
                   user={user}
+                  isPending={showPending}
                 />
               );
             })}

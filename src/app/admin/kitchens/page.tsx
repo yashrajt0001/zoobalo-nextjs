@@ -2,15 +2,18 @@
 
 import KitchenCard from "@/components/KitchenCard";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [searchinput, setSearchinput] = useState("");
-  const [isFetchloading, setIsFetchloading] = useState(true);
+  const [isFetchloading, setIsFetchloading] = useState(false);
   const [kitchens, setKitchens] = useState([]);
   const [selectedCity, setSelectedCity] = useState(1);
   const [cities, setCities] = useState([]);
 
+  // gets all cities
   useEffect(() => {
     async function getAllCities() {
       try {
@@ -18,14 +21,16 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        console.log(error.response.data);
+        toast.error(error.response.data);
       }
     }
     getAllCities();
   });
 
+  // gets all kitchens
   useEffect(() => {
     async function getAllKitchens() {
+      setIsFetchloading(true);
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/kitchen/get?cityId=${selectedCity}`,
@@ -35,10 +40,11 @@ const page = () => {
             },
           }
         );
-        console.log(res.data.kitchens);
         setKitchens(res.data.kitchens);
       } catch (error: any) {
-        console.log(error.response.data);
+        toast.error(error.response.data);
+      } finally {
+        setIsFetchloading(false);
       }
     }
     getAllKitchens();
@@ -68,11 +74,15 @@ const page = () => {
         </select>
       </div>
 
-      <div className="flex flex-col gap-3 w-[40%] mt-8">
-        {kitchens.map((kitchen: any) => (
-          <KitchenCard data={kitchen} />
-        ))}
-      </div>
+      {isFetchloading ? (
+        <Loader2 className="animate-spin w-8 h-8" />
+      ) : (
+        <div className="flex flex-col gap-3 w-[40%] mt-8">
+          {kitchens.map((kitchen: any) => (
+            <KitchenCard data={kitchen} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

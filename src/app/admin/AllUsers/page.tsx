@@ -5,18 +5,19 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
-  const [users, setUsers] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
-  const [isFetchloading, setIsFetchloading] = useState(true);
-  const [searchinput, setSearchinput] = useState("");
-  const [results, setResults] = useState([]);
-  const [showPending, setShowPending] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [updateLoader, setUpdateLoader] = useState(false);
-  const [tempResults, setTempResults] = useState([]);
+  const [users, setUsers] = useState([]); // conatins subscribed users
+  const [allUsers, setAllUsers] = useState([]); // conatains all users
+  const [isFetchloading, setIsFetchloading] = useState(true); // loading state shown before all users are displayed
+  const [searchinput, setSearchinput] = useState(""); // state to handle search input text
+  const [results, setResults] = useState([]); // array which is used to map all users and show them
+  const [showPending, setShowPending] = useState(false); // state which determines the display of pending deliveries
+  const [isLoading, setIsLoading] = useState(false); // loader when delivery boy is assigned
+  const [totalUsers, setTotalUsers] = useState(0); // state that holds total user's number
+  const [updateLoader, setUpdateLoader] = useState(false); // loader when a user's details are updated
+  const [tempResults, setTempResults] = useState([]); // temp results stores all users which helps in searching user
 
   const context = useContext(UserContext);
   const {
@@ -36,29 +37,36 @@ const page = () => {
     userId,
   } = context as UserContextType;
 
+  // get all users during mounting
   useEffect(() => {
     const getUsers = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/user/get`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      setIsFetchloading(false);
-      const subscribedUsers = data.filter((user: any) => {
-        return user.order.length > 0;
-      });
-      setUsers(subscribedUsers);
-      setResults(data);
-      setTempResults(data);
-      setTotalUsers(data.length);
-      setAllUsers(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/admin/user/get`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setIsFetchloading(false);
+        const subscribedUsers = data.filter((user: any) => {
+          return user.order.length > 0;
+        });
+        setUsers(subscribedUsers);
+        setResults(data);
+        setTempResults(data);
+        setTotalUsers(data.length);
+        setAllUsers(data);
+      }
+      catch (error:any) {
+        toast.error(error.response.data);
+      }
     };
     getUsers();
   }, []);
 
+  // handles search functionality
   useEffect(() => {
     let finalResults = tempResults;
 
@@ -73,6 +81,7 @@ const page = () => {
     setTotalUsers(finalResults.length);
   }, [searchinput, tempResults]);
 
+  // shows users who have cancelled meal
   const handleCancel = () => {
     setShowPending(false);
     const cancelledUsers = users.filter((user: any) => {
@@ -85,6 +94,7 @@ const page = () => {
     setTotalUsers(cancelledUsers.length);
   };
 
+  // shows all users
   const handleAllUsers = () => {
     setShowPending(false);
     setResults(allUsers);
@@ -92,6 +102,7 @@ const page = () => {
     setTotalUsers(allUsers.length);
   };
 
+  // show subscribed users
   const handleSubscribe = () => {
     setShowPending(false);
     const subscribedUsers = allUsers.filter((user: any) => {
@@ -102,6 +113,7 @@ const page = () => {
     setTotalUsers(subscribedUsers.length);
   };
 
+  // shows users who have paused meal
   const handlePaused = () => {
     setShowPending(false);
     const pausedUsers = users.filter((user: any) => {
@@ -112,6 +124,7 @@ const page = () => {
     setTotalUsers(pausedUsers.length);
   };
 
+  // shows unsubscribed users
   const handleUnsubscribed = () => {
     setShowPending(false);
     const unsubscribedUsers = allUsers.filter((user: any) => {
@@ -122,25 +135,35 @@ const page = () => {
     setTotalUsers(unsubscribedUsers.length);
   };
 
+  // shows pending deliveries or deliveries which are present in queue delivery
   const handlePendingDeliveries = async () => {
     setShowPending(true);
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_HOST}/admin/deliveries/get`,
-      {
-        headers: {
-          "auth-token": localStorage.getItem("auth-token"),
-        },
-      }
-    );
-    setIsFetchloading(false);
-    const res = data.filter((order: any) => {
-      return order.isDelivered == false;
-    });
-    setResults(res);
-    setTempResults(res);
-    setTotalUsers(res.length);
+    setIsFetchloading(true);
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/deliveries/get`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      const res = data.filter((order: any) => {
+        return order.isDelivered == false;
+      });
+      setResults(res);
+      setTempResults(res);
+      setTotalUsers(res.length);
+    }
+    catch (error:any) {
+      toast.error(error.response.data);
+    }
+    finally {
+      setIsFetchloading(false);
+    }
   };
 
+  // shows users with low balance
   const handleLowBalance = async () => {
     setShowPending(false);
     const lowBalanceUser = users.filter((user: any) => {
@@ -152,6 +175,7 @@ const page = () => {
     setTotalUsers(lowBalanceUser.length);
   };
 
+  // assigns delivery boy to all subscribed users
   const handleDeliveryBoyAssign = () => {
     setIsLoading(true);
     const subscribedUsers = allUsers.filter((user: any) => {
@@ -161,23 +185,30 @@ const page = () => {
           (user.order.length > 1 && user.order[1].status == true))
       );
     });
-    subscribedUsers.map(async (user: any) => {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
-        {
-          userId: user.id,
-          agentId: 1,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
+    try {
+      subscribedUsers.map(async (user: any) => {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
+          {
+            userId: user.id,
+            agentId: 1,
           },
-        }
-      );
-    });
-    setIsLoading(false);
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+      });
+    }
+    catch (error:any) {
+      toast.error(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  // update details of a user
   const handleUpdate = async () => {
     setUpdateLoader(true);
     try {
@@ -197,14 +228,14 @@ const page = () => {
           },
         }
       );
-      console.log(res.data);
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setUpdateLoader(false);
     }
   };
 
+  // shows users who have addons
   const handleAddOns = () => {
     setShowPending(false);
     const haveAddOn = users.filter((user: any) => {
@@ -340,6 +371,7 @@ const page = () => {
                       user.order.length > 0 ? user.order[0].NextMeal : {}
                     }
                     user={user}
+                    isPending={showPending}
                   />
                 );
               })}
@@ -399,21 +431,6 @@ const page = () => {
                     value={dueTiffins}
                     onChange={(e) => setDueTiffins(e.target.value)}
                   />
-                  {/* <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
-                    <select
-                      onChange={(e) => {
-                        setTiming(e.target.value);
-                      }}
-                      name="type"
-                      id="type"
-                      className="p-5 w-full"
-                      value={timing}
-                    >
-                      <option value="MORNING">MORNING</option>
-                      <option value="EVENING">EVENING</option>
-                      <option value="BOTH">BOTH</option>
-                    </select>
-                  </div> */}
                   <button
                     onClick={handleUpdate}
                     className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}
@@ -450,6 +467,7 @@ const page = () => {
                   _order={user.order}
                   nextMeal={user.order.length > 0 ? user.order[0].NextMeal : {}}
                   user={user}
+                  isPending={showPending}
                 />
               );
             })}

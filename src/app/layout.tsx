@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import UserState from "@/contextApi/user/UserState";
+import { Toaster } from "react-hot-toast";
 
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <Toaster containerClassName="text-3xl" position="top-center" />
         <UserState>{children}</UserState>
       </body>
     </html>

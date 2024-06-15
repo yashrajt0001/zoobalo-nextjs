@@ -1,5 +1,6 @@
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import React, {
   FC,
   HTMLAttributes,
@@ -7,6 +8,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import toast from "react-hot-toast";
 interface userInterface extends HTMLAttributes<HTMLDivElement> {
   data: any;
 }
@@ -16,7 +18,8 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
   const [gotDelivered, setGotDelivered] = useState(false);
   const [gotPicked, setGotPicked] = useState(false);
   const [reviewText, setReviewText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [removeLoader, setRemoveLoader] = useState(false);
+  const [doneLoader, setDoneLoader] = useState(false);
 
   useEffect(() => {
     handleSelection();
@@ -24,8 +27,6 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
 
   const context = useContext(UserContext);
   const { getDemoDeliveries, showCompleted } = context as UserContextType;
-
-  console.log(reviewText);
 
   const handleSelection = async () => {
     try {
@@ -44,11 +45,12 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
         }
       );
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
     }
   };
 
   const handleRemove = async () => {
+    setRemoveLoader(true);
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/demoTiffin/remove`,
@@ -67,11 +69,14 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
       setReviewText("");
       await getDemoDeliveries();
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
+    } finally {
+      setRemoveLoader(false);
     }
   };
 
   const handleDone = async () => {
+    setDoneLoader(true);
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/demoTiffin/done`,
@@ -91,7 +96,9 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
       setReviewText("");
       await getDemoDeliveries();
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
+    } finally {
+      setDoneLoader(false);
     }
   };
 
@@ -210,15 +217,25 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
           <div>
             <button
               onClick={handleRemove}
-              className="rounded-xl bg-red-400 py-2 px-3 text-xl text-white"
+              disabled={removeLoader}
+              className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
+                removeLoader ? "bg-[#949494]" : "bg-red-400 text-white"
+              }`}
             >
               Remove
+              {removeLoader && (
+                <Loader2 className="animate-spin w-8 h-8 ml-3" />
+              )}
             </button>
             <button
               onClick={handleDone}
-              className="rounded-xl bg-white py-2 px-3 text-xl ml-3"
+              disabled={doneLoader}
+              className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
+                doneLoader ? "bg-[#949494]" : "bg-white text-black"
+              }`}
             >
               Done
+              {doneLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
             </button>
           </div>
         )}

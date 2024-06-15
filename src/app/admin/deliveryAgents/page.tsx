@@ -5,15 +5,15 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
-  const [deliveryAgents, setDeliveryAgents] = useState([]);
-  const [isFetchloading, setIsFetchloading] = useState(true);
-  const [searchinput, setSearchinput] = useState("");
-  const [results, setResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalDeliveryAgents, setTotalDeliveryAgents] = useState(0);
-
+  const [deliveryAgents, setDeliveryAgents] = useState([]); // conatins all delivery agents
+  const [isFetchloading, setIsFetchloading] = useState(true); // loader
+  const [searchinput, setSearchinput] = useState(""); // handles change of searchInput text
+  const [results, setResults] = useState([]); // conatains all delivery agents and are mapped to display on page
+  const [isLoading, setIsLoading] = useState(false); // loader
+  const [totalDeliveryAgents, setTotalDeliveryAgents] = useState(0); // denotes number of delivery agents
 
   const context = useContext(UserContext);
   const {
@@ -24,28 +24,35 @@ const page = () => {
     setDeliveryAgentMob,
     setDeliveryAgentPartnerCode,
     deliveryAgentId,
-    setDeliveryAgentId
+    setDeliveryAgentId,
   } = context as UserContextType;
 
+  // get all delivery agents during mounting
   useEffect(() => {
     const getDeliveryAgents = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/agent/get`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      setIsFetchloading(false);
-      console.log(data);
-      setResults(data);
-      setTotalDeliveryAgents(data.length);
-      setDeliveryAgents(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/agent/get`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        console.log(data);
+        setResults(data);
+        setTotalDeliveryAgents(data.length);
+        setDeliveryAgents(data);
+      } catch (error: any) {
+        toast.error(error.response.data);
+      } finally {
+        setIsFetchloading(false);
+      }
     };
     getDeliveryAgents();
   }, []);
 
+  // handles search functionality
   useEffect(() => {
     if (results != undefined) {
       const finalResults = results.filter((result: any) => {
@@ -63,6 +70,7 @@ const page = () => {
     }
   }, [searchinput]);
 
+  // updates details of a delivery boy
   const handleUpdate = async () => {
     setIsLoading(true);
     try {
@@ -85,9 +93,8 @@ const page = () => {
       setDeliveryAgentMob("");
       setDeliveryAgentPartnerCode("");
     } catch (error: any) {
-      console.log(error.response.data);
-    }
-    finally {
+      toast.error(error.response.data)
+    } finally {
       setIsLoading(false);
     }
   };
@@ -115,10 +122,8 @@ const page = () => {
         ) : (
           <div className="flex w-full">
             <div className="flex flex-col gap-3 w-[50%]">
-              {results.map((deliveryAgent:any) => {
-                return (
-                  <DeliveryAgentCard data={deliveryAgent} />
-                );
+              {results.map((deliveryAgent: any) => {
+                return <DeliveryAgentCard data={deliveryAgent} />;
               })}
             </div>
 

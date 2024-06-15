@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import UserContext from "./UserContext";
 import axios, { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 const UserState = (props: any) => {
   const [userId, setUserId] = useState(0);
@@ -30,7 +31,6 @@ const UserState = (props: any) => {
   const [packageContain, setPackageContain] = useState("");
   const [price, setPrice] = useState(0);
 
- 
   const cancelMeal = async (id: number) => {
     try {
       await axios.post(
@@ -44,7 +44,7 @@ const UserState = (props: any) => {
       );
       return true;
     } catch (error: any) {
-      console.log(error.msg);
+      toast.error(error?.response?.data);
       return false;
     }
   };
@@ -63,10 +63,9 @@ const UserState = (props: any) => {
           },
         }
       );
-      console.log(res.data);
       return true;
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
       return false;
     }
   };
@@ -81,12 +80,11 @@ const UserState = (props: any) => {
           },
         }
       );
-      console.log(data);
       setResults(data);
       setDemoDeliveries(data);
       return true;
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
       return false;
     }
   };
@@ -101,12 +99,11 @@ const UserState = (props: any) => {
           },
         }
       );
-      console.log(data);
       setResults(data);
       setDemoDeliveries(data);
       return true;
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
       return false;
     }
   };
@@ -121,13 +118,11 @@ const UserState = (props: any) => {
           },
         }
       );
-      console.log("data: ",data);
-      console.log(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
       setResults(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
       setExtraTiffinDeliveries(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
       return true;
     } catch (error: any) {
-      console.log(error);
+      toast.error(error?.response?.data);
       return false;
     }
   };
@@ -142,12 +137,11 @@ const UserState = (props: any) => {
           },
         }
       );
-      console.log(data);
       setResults(data);
       setExtraTiffinDeliveries(data);
       return true;
     } catch (error: any) {
-      console.log(error);
+      toast.error(error?.response?.data);
       return false;
     }
   };
@@ -210,7 +204,7 @@ const UserState = (props: any) => {
         packageContain,
         setPackageContain,
         price,
-        setPrice
+        setPrice,
       }}
     >
       {props.children}

@@ -7,6 +7,7 @@ import Calendar from "react-calendar";
 import "./MyCalendar.css";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import moment from "moment-timezone";
+import toast from "react-hot-toast";
 
 interface PageInterface {
   params: {
@@ -188,8 +189,8 @@ const page = ({ params }: PageInterface) => {
       );
       console.log(res.data);
       setResumeLoader(false);
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      toast.error(error.response.data);
     }
   };
 

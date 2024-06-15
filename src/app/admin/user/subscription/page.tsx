@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface PageInterface {
   params: {
@@ -17,8 +18,8 @@ const page = ({ params }: PageInterface) => {
   const mobile = searchParams.get("mobile");
 
   const [userDetails, setUserDetails] = useState({
-    packageId: null,
-    noOfDays: null,
+    packageId: null as any,
+    noOfDays: null as any,
     time: "MORNING",
     morningAddress: "",
     eveningAddress: "",
@@ -26,7 +27,6 @@ const page = ({ params }: PageInterface) => {
   });
 
   const [userloader, setUserloader] = useState(false);
-  const [showError, setShowError] = useState<undefined | string>(undefined);
 
   const handleAddSubscription = async () => {
     if (
@@ -38,7 +38,7 @@ const page = ({ params }: PageInterface) => {
       !userDetails.packageId ||
       userDetails.time == ""
     ) {
-      return setShowError("Please enter details!");
+      toast.error("Please enter details!");
     }
     setUserloader(true);
     try {
@@ -59,10 +59,8 @@ const page = ({ params }: PageInterface) => {
           },
         }
       );
-      console.log(data);
     } catch (error: any) {
-      console.log(error.response.data);
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setUserloader(false);
     }
@@ -88,7 +86,6 @@ const page = ({ params }: PageInterface) => {
           value={userDetails.packageId || ""}
           name="packageId"
           onChange={(e) => {
-            setShowError(undefined);
             setUserDetails({
               ...userDetails,
               [e.target.name]: e.target.value,
@@ -102,7 +99,6 @@ const page = ({ params }: PageInterface) => {
           value={userDetails.noOfDays || ""}
           name="noOfDays"
           onChange={(e) => {
-            setShowError(undefined);
             setUserDetails({
               ...userDetails,
               [e.target.name]: e.target.value,
@@ -117,7 +113,6 @@ const page = ({ params }: PageInterface) => {
           className="p-5 w-full"
           value={userDetails.time}
           onChange={(e) => {
-            setShowError(undefined);
             setUserDetails({
               ...userDetails,
               [e.target.name]: e.target.value,
@@ -134,7 +129,6 @@ const page = ({ params }: PageInterface) => {
             value={userDetails.morningAddress || ""}
             name="morningAddress"
             onChange={(e) => {
-              setShowError(undefined);
               setUserDetails({
                 ...userDetails,
                 [e.target.name]: e.target.value,
@@ -151,7 +145,6 @@ const page = ({ params }: PageInterface) => {
             value={userDetails.eveningAddress || ""}
             name="eveningAddress"
             onChange={(e) => {
-              setShowError(undefined);
               setUserDetails({
                 ...userDetails,
                 [e.target.name]: e.target.value,
@@ -168,7 +161,6 @@ const page = ({ params }: PageInterface) => {
           name="altNo"
           maxLength={10}
           onChange={(e) => {
-            setShowError(undefined);
             setUserDetails({
               ...userDetails,
               [e.target.name]: e.target.value,
