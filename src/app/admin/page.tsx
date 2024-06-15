@@ -17,7 +17,7 @@ const page = () => {
 
   const isLoggedIn = () => {
     setLogin(false);
-  }
+  };
 
   useEffect(() => {
     setLogin(!localStorage.getItem("auth-token"));
@@ -46,11 +46,38 @@ const page = () => {
 
   const [kitchenDetails, setKitchenDetails] = useState({
     name: "",
-    address: ""
+    address: "",
+  });
+
+  const [areaManagerDetails, setAreaManagerDetails] = useState({
+    name: "",
+    username: "",
+    password: "",
+    email: "",
+    phone: "",
+    alternatePhone: "",
+    emergencyPhone: "",
+    residentAddress: "",
+    officeAddress: "",
+    aadhar: "",
+    pan: "",
+    agreement: "",
+    photo: "",
+    stateId: "",
+    district: "",
   });
 
   const [userloader, setUserloader] = useState(false);
   const [delBoyLoader, setDelBoyLoader] = useState(false);
+  const [areaManagerId, setAreaManagerId] = useState(null);
+  const [cityId, setCityId] = useState(null);
+  const [stateName, setStateName] = useState("");
+  const [cityName, setCityName] = useState("");
+  const [stateId, setStateId] = useState(null);
+  const [areaManagerLoader, setAreaManagerLoader] = useState(false);
+  const [assignAreaManagerLoader, setAssignAreaManagerLoader] = useState(false);
+  const [stateLoader, setStateLoader] = useState(false);
+  const [cityLoader, setCityLoader] = useState(false);
 
   const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -85,10 +112,7 @@ const page = () => {
   };
 
   const handleKitchenCreate = async () => {
-    if (
-      !kitchenDetails.name ||
-      !kitchenDetails.address
-    ) {
+    if (!kitchenDetails.name || !kitchenDetails.address) {
       return setShowError("Please enter details!");
     }
 
@@ -189,6 +213,145 @@ const page = () => {
       console.log("Image uploaded successfully:", response.data);
     } catch (error) {
       console.error("Error uploading image:", error);
+    }
+  };
+
+  const handleCreateAreaManager = async () => {
+    if (
+      !areaManagerDetails.name ||
+      !areaManagerDetails.username ||
+      !areaManagerDetails.password ||
+      !areaManagerDetails.email ||
+      !areaManagerDetails.phone ||
+      !areaManagerDetails.alternatePhone ||
+      !areaManagerDetails.emergencyPhone ||
+      !areaManagerDetails.residentAddress ||
+      !areaManagerDetails.officeAddress ||
+      !areaManagerDetails.aadhar ||
+      !areaManagerDetails.pan ||
+      !areaManagerDetails.agreement ||
+      !areaManagerDetails.stateId ||
+      !areaManagerDetails.district
+    ) {
+      return setShowError("Please enter details!");
+    }
+
+    if (!selectedFile) {
+      console.log("Please select a file");
+      return;
+    }
+
+    try {
+      setAreaManagerLoader(true);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/areaManager/create`,
+        {
+          name: areaManagerDetails.name,
+          username: areaManagerDetails.username,
+          password: areaManagerDetails.password,
+          email: areaManagerDetails.email,
+          phone: areaManagerDetails.phone,
+          alternatePhone: areaManagerDetails.alternatePhone,
+          emergencyPhone: areaManagerDetails.emergencyPhone,
+          residentAddress: areaManagerDetails.residentAddress,
+          officeAddress: areaManagerDetails.officeAddress,
+          aadhar: areaManagerDetails.aadhar,
+          pan: areaManagerDetails.pan,
+          agreement: areaManagerDetails.agreement,
+          stateId: areaManagerDetails.stateId,
+          district: areaManagerDetails.district,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setAreaManagerLoader(false);
+    }
+  };
+
+  const handleAreaHeadAssign = async () => {
+    if (!areaManagerId || !cityId) {
+      return setShowError("Please enter details!");
+    }
+
+    try {
+      setAssignAreaManagerLoader(true);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/user/create`,
+        {
+          areaHeadId: areaManagerId,
+          cityId,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setAssignAreaManagerLoader(false);
+    }
+  };
+
+  const handleStateCreation = async () => {
+    if (!stateName) {
+      return setShowError("Please enter details!");
+    }
+
+    try {
+      setStateLoader(true);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/state/create`,
+        {
+          name: stateName,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setStateLoader(false);
+    }
+  };
+
+  const handleCityCreation = async () => {
+    if (!cityName) {
+      return setShowError("Please enter details!");
+    }
+
+    try {
+      setCityLoader(true);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/city/create`,
+        {
+          name: stateName,
+          stateId: stateId
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+    } catch (error: any) {
+      setShowError(error.response.data);
+    } finally {
+      setCityLoader(false);
     }
   };
 
@@ -359,7 +522,9 @@ const page = () => {
                 className="py-5 px-4 rounded-md"
               >
                 {cities.map((city: any) => (
-                  <option key={city.id} value={city.id}>{city.name}</option>
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
                 ))}
               </select>
               <input
@@ -383,6 +548,310 @@ const page = () => {
                 {kitchenLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
                 Create
               </button>
+            </div>
+          </div>
+
+          <div className="flex ml-16 mt-4">
+            <div className="flex flex-col gap-4 w-[40%]">
+              <h1 className="text-3xl">Create Area Manager:</h1>
+              <input
+                type="text"
+                name="name"
+                value={areaManagerDetails.name}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Name"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="username"
+                value={areaManagerDetails.username}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Username"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="password"
+                value={areaManagerDetails.password}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Password"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="email"
+                value={areaManagerDetails.email}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="E-mail"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="phone"
+                value={areaManagerDetails.phone}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Phone No."
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="alternatePhone"
+                value={areaManagerDetails.alternatePhone}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Alternate Phone No."
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="emergencyPhone"
+                value={areaManagerDetails.emergencyPhone}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Emergency Phone No."
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="residentAddress"
+                value={areaManagerDetails.residentAddress}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Residential address"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="officeAddress"
+                value={areaManagerDetails.officeAddress}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Office Address"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="aadhar"
+                value={areaManagerDetails.aadhar}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Aadhar No."
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="pan"
+                value={areaManagerDetails.pan}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Pan Card No."
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="agreement"
+                value={areaManagerDetails.agreement}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="agreement"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="stateId"
+                value={areaManagerDetails.stateId}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="State Id"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input
+                type="text"
+                name="district"
+                value={areaManagerDetails.district}
+                onChange={(e) => {
+                  setShowError(undefined);
+                  setAreaManagerDetails({
+                    ...areaManagerDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="District"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+              />
+              <input type="file" onChange={handleFileChange} />
+              <button
+                onClick={handleCreateAreaManager}
+                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+              >
+                {areaManagerLoader && (
+                  <Loader2 className=" animate-spin mr-2" />
+                )}{" "}
+                Create
+              </button>
+            </div>
+
+            <div className="w-[50%]">
+              <div className="ml-28 flex flex-col gap-3">
+                <h1 className="text-3xl">Assign AreaManager to City:</h1>
+                <input
+                  type="number"
+                  name="areaHeadId"
+                  value={areaManagerId as any}
+                  onChange={(e) => {
+                    setShowError(undefined);
+                    setAreaManagerId(e.target.value as any);
+                  }}
+                  placeholder="Area Head Id"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <input
+                  type="number"
+                  name="cityId"
+                  value={cityId as any}
+                  onChange={(e) => {
+                    setShowError(undefined);
+                    setCityId(e.target.value as any);
+                  }}
+                  placeholder="City Id"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <button
+                  onClick={handleAreaHeadAssign}
+                  className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+                >
+                  {assignAreaManagerLoader && (
+                    <Loader2 className=" animate-spin mr-2" />
+                  )}{" "}
+                  Assign
+                </button>
+              </div>
+
+              <div className="ml-28 flex flex-col gap-3 mt-12">
+                <h1 className="text-3xl">Create State:</h1>
+                <input
+                  type="text"
+                  name="name"
+                  value={stateName}
+                  onChange={(e) => {
+                    setShowError(undefined);
+                    setStateName(e.target.value as any);
+                  }}
+                  placeholder="State Name"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <button
+                  onClick={handleStateCreation}
+                  className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+                >
+                  {stateLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
+                  Create
+                </button>
+              </div>
+
+              <div className="ml-28 flex flex-col gap-3 mt-12">
+                <h1 className="text-3xl">Create City:</h1>
+                <input
+                  type="text"
+                  name="name"
+                  value={cityName}
+                  onChange={(e) => {
+                    setShowError(undefined);
+                    setCityName(e.target.value as any);
+                  }}
+                  placeholder="City Name"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <input
+                  type="number"
+                  name="stateId"
+                  value={stateId as any}
+                  onChange={(e) => {
+                    setShowError(undefined);
+                    setStateId(e.target.value as any);
+                  }}
+                  placeholder="State Id"
+                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <button
+                  onClick={handleCityCreation}
+                  className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+                >
+                  {cityLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
+                  Create
+                </button>
+              </div>
             </div>
           </div>
         </div>

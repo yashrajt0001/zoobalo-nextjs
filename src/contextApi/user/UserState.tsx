@@ -21,10 +21,16 @@ const UserState = (props: any) => {
   const [deliveryAgentId, setDeliveryAgentId] = useState(0);
   const [userDetails, setUserDetails] = useState({} as any);
   const [demoDeliveries, setDemoDeliveries] = useState([]);
+  const [extraTiffinDeliveries, setExtraTiffinDeliveries] = useState([]);
   const [results, setResults] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false);
   const [dueTiffins, setDueTiffins] = useState(0);
+  const [tiffinPackageId, setTiffinPackageId] = useState(0);
+  const [tiffinPackageName, setTiffinPackageName] = useState("");
+  const [packageContain, setPackageContain] = useState("");
+  const [price, setPrice] = useState(0);
 
+ 
   const cancelMeal = async (id: number) => {
     try {
       await axios.post(
@@ -105,6 +111,47 @@ const UserState = (props: any) => {
     }
   };
 
+  const getExtraTiffinDeliveries = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/extraTiffin/kitchenHead/pending`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log("data: ",data);
+      console.log(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
+      setResults(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
+      setExtraTiffinDeliveries(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
+      return true;
+    } catch (error: any) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  const getCompletedExtraTiffinDeliveries = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/extraTiffin/kitchenHead/completed`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(data);
+      setResults(data);
+      setExtraTiffinDeliveries(data);
+      return true;
+    } catch (error: any) {
+      console.log(error);
+      return false;
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -152,6 +199,18 @@ const UserState = (props: any) => {
         setDueTiffins,
         userId,
         setUserId,
+        getExtraTiffinDeliveries,
+        getCompletedExtraTiffinDeliveries,
+        extraTiffinDeliveries,
+        setExtraTiffinDeliveries,
+        tiffinPackageId,
+        setTiffinPackageId,
+        tiffinPackageName,
+        setTiffinPackageName,
+        packageContain,
+        setPackageContain,
+        price,
+        setPrice
       }}
     >
       {props.children}
