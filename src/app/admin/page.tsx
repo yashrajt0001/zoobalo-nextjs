@@ -73,7 +73,7 @@ const page = () => {
   const [cityId, setCityId] = useState(null);
   const [stateName, setStateName] = useState("");
   const [cityName, setCityName] = useState("");
-  const [stateId, setStateId] = useState(null);
+  const [stateId, setStateId] = useState("");
   const [areaManagerLoader, setAreaManagerLoader] = useState(false);
   const [assignAreaManagerLoader, setAssignAreaManagerLoader] = useState(false);
   const [stateLoader, setStateLoader] = useState(false);
@@ -258,7 +258,7 @@ const page = () => {
           aadhar: areaManagerDetails.aadhar,
           pan: areaManagerDetails.pan,
           agreement: areaManagerDetails.agreement,
-          stateId: areaManagerDetails.stateId,
+          stateId: parseInt(areaManagerDetails.stateId),
           district: areaManagerDetails.district,
         },
         {
@@ -283,7 +283,7 @@ const page = () => {
     try {
       setAssignAreaManagerLoader(true);
       const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/user/create`,
+        `${process.env.NEXT_PUBLIC_HOST}/areaManager/assign`,
         {
           areaHeadId: areaManagerId,
           cityId,
@@ -336,8 +336,8 @@ const page = () => {
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/city/create`,
         {
-          name: stateName,
-          stateId: stateId
+          name: cityName,
+          stateId:parseInt(stateId)
         },
         {
           headers: {
@@ -431,7 +431,7 @@ const page = () => {
             </div>
           </div>
 
-          <div className="flex mb-6">
+          {/* <div className="flex mb-6">
             <div className="ml-16 flex flex-col gap-3 w-[40%]">
               <h1 className="text-3xl mt-5">Create a User:</h1>
               <input
@@ -521,9 +521,9 @@ const page = () => {
                 Create
               </button>
             </form>
-          </div>
+          </div> */}
 
-          <div className="flex ml-16">
+          {/* <div className="flex ml-16">
             <div className="flex flex-col gap-4 w-[40%]">
               <h1 className="text-3xl">Upload Image:</h1>
               <input type="file" onChange={handleFileChange} />
@@ -535,7 +535,7 @@ const page = () => {
               </button>
             </div>
 
-            <div className="ml-28 flex flex-col gap-3 w-[43%]">
+            <div className="flex flex-col gap-3 w-[43%]">
               <h1 className="text-3xl">Create Kitchen:</h1>
               <input
                 type="text"
@@ -582,7 +582,7 @@ const page = () => {
                 Create
               </button>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex ml-16 mt-4">
             <div className="flex flex-col gap-4 w-[40%]">
@@ -822,7 +822,7 @@ const page = () => {
                   name="name"
                   value={stateName}
                   onChange={(e) => {
-                    setStateName(e.target.value as any);
+                    setStateName(e.target.value);
                   }}
                   placeholder="State Name"
                   className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
@@ -843,7 +843,7 @@ const page = () => {
                   name="name"
                   value={cityName}
                   onChange={(e) => {
-                    setCityName(e.target.value as any);
+                    setCityName(e.target.value);
                   }}
                   placeholder="City Name"
                   className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
@@ -851,9 +851,9 @@ const page = () => {
                 <input
                   type="number"
                   name="stateId"
-                  value={stateId as any}
+                  value={stateId}
                   onChange={(e) => {
-                    setStateId(e.target.value as any);
+                    setStateId(e.target.value);
                   }}
                   placeholder="State Id"
                   className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
