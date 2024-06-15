@@ -5,6 +5,7 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [deliveryAgents, setDeliveryAgents] = useState([]);
@@ -29,19 +30,25 @@ const page = () => {
 
   useEffect(() => {
     const getDeliveryAgents = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/agent/get`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      setIsFetchloading(false);
-      console.log(data);
-      setResults(data);
-      setTotalDeliveryAgents(data.length);
-      setDeliveryAgents(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/agent/get`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setResults(data);
+        setTotalDeliveryAgents(data.length);
+        setDeliveryAgents(data);
+      }
+      catch (error: any) {
+        toast.error(error.response.data);
+      }
+      finally {
+        setIsFetchloading(false);
+      }
     };
     getDeliveryAgents();
   }, []);
@@ -85,7 +92,7 @@ const page = () => {
       setDeliveryAgentMob("");
       setDeliveryAgentPartnerCode("");
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
     }
     finally {
       setIsLoading(false);

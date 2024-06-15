@@ -3,6 +3,7 @@ import axios from "axios";
 import { ChevronLeftIcon, ChevronRight, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const searchParams = useSearchParams();
@@ -24,10 +25,9 @@ const page = () => {
             },
           }
         );
-        console.log(data);
         setHistory(data);
-      } catch (error) {
-        console.log(error);
+      } catch (error:any) {
+        toast.error(error?.response?.data);
       } finally {
         setIsFetchloading(false);
       }

@@ -5,10 +5,11 @@ import React, { FormEvent, useEffect, useState, ChangeEvent } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { ShowLogin } from "@/components/ShowLogin";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [login, setLogin] = useState(true);
-  const [timing, setTiming] = useState("MORNING");
+  const [timing, setTiming] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedCity, setSelectedCity] = useState(1);
@@ -27,13 +28,12 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        console.log(error.response.data);
+        toast.error(error.response.data);
       }
     }
     getAllCities();
   }, []);
 
-  const [showError, setShowError] = useState<undefined | string>(undefined);
   const [userDetails, setUserDetails] = useState({
     name: "",
     phone: "",
@@ -78,6 +78,8 @@ const page = () => {
   const [assignAreaManagerLoader, setAssignAreaManagerLoader] = useState(false);
   const [stateLoader, setStateLoader] = useState(false);
   const [cityLoader, setCityLoader] = useState(false);
+  const [skipTiming, setSkipTiming] = useState("");
+  const [skipLoader, setSkipLoader] = useState(false);
 
   const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -86,7 +88,7 @@ const page = () => {
       !delBoyDetails.email ||
       !delBoyDetails.password
     ) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     try {
@@ -105,7 +107,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setDelBoyLoader(false);
     }
@@ -113,7 +115,7 @@ const page = () => {
 
   const handleKitchenCreate = async () => {
     if (!kitchenDetails.name || !kitchenDetails.address) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     try {
@@ -132,7 +134,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setKitchenLoader(false);
     }
@@ -152,16 +154,17 @@ const page = () => {
           },
         }
       );
-      console.log(data);
-      setIsLoading(false);
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 
   const handleCreate = async () => {
     if (!userDetails.name || !userDetails.phone) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
     setUserloader(true);
     try {
@@ -177,9 +180,8 @@ const page = () => {
           },
         }
       );
-      console.log(data);
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setUserloader(false);
     }
@@ -198,8 +200,7 @@ const page = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      console.log("Please select a file");
-      return;
+      return toast.error("Please select a file");
     }
     try {
       const response = await axios.post(
@@ -210,9 +211,9 @@ const page = () => {
           },
         }
       );
-      console.log("Image uploaded successfully:", response.data);
+      toast.success("Image uploaded successfully:");
     } catch (error) {
-      console.error("Error uploading image:", error);
+      toast.error("Error uploading image:");
     }
   };
 
@@ -233,12 +234,11 @@ const page = () => {
       !areaManagerDetails.stateId ||
       !areaManagerDetails.district
     ) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     if (!selectedFile) {
-      console.log("Please select a file");
-      return;
+      return toast.error("Please select a file");
     }
 
     try {
@@ -269,7 +269,7 @@ const page = () => {
       );
       console.log(data);
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setAreaManagerLoader(false);
     }
@@ -277,7 +277,7 @@ const page = () => {
 
   const handleAreaHeadAssign = async () => {
     if (!areaManagerId || !cityId) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     try {
@@ -294,9 +294,8 @@ const page = () => {
           },
         }
       );
-      console.log(data);
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setAssignAreaManagerLoader(false);
     }
@@ -304,7 +303,7 @@ const page = () => {
 
   const handleStateCreation = async () => {
     if (!stateName) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     try {
@@ -320,9 +319,8 @@ const page = () => {
           },
         }
       );
-      console.log(data);
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setStateLoader(false);
     }
@@ -330,7 +328,7 @@ const page = () => {
 
   const handleCityCreation = async () => {
     if (!cityName) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     try {
@@ -347,13 +345,34 @@ const page = () => {
           },
         }
       );
-      console.log(data);
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setCityLoader(false);
     }
   };
+
+  const handleSkip = async () => {
+    setSkipLoader(true);
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/admin/skipQueue`,
+        {
+          tiffinTime: skipTiming,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      toast.error(error.response.data);
+    }
+    finally {
+      setSkipLoader(false);
+    }
+  }
 
   return (
     <>
@@ -371,7 +390,8 @@ const page = () => {
                 onChange={(e) => setTiming(e.target.value)}
                 value={timing}
                 className="py-2 px-4 text-center rounded-md"
-              >
+                >
+                  <option value="" disabled>Select Queue Generation Time</option>
                 <option value="MORNING">MORNING</option>
                 <option value="EVENING">EVENING</option>
               </select>
@@ -385,12 +405,32 @@ const page = () => {
                 Generate
                 {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
               </button>
+              </div>
+              
+            
+              <div className="ml-16 mt-5 flex">
+              <select
+                onChange={(e) => setSkipTiming(e.target.value)}
+                value={skipTiming}
+                className="py-2 px-4 text-center rounded-md"
+                >
+                  <option value="" disabled>Select Skip Time</option>
+                <option value="MORNING">MORNING</option>
+                <option value="EVENING">EVENING</option>
+              </select>
+              <button
+                onClick={handleSkip}
+                disabled={skipLoader}
+                className={`flex items-center px-5 py-2 rounded-lg text-xl text-white ml-8 ${
+                  skipLoader ? "bg-[#949494]" : "bg-green-500"
+                }`}
+              >
+                Skip
+                {skipLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+              </button>
             </div>
           </div>
 
-          {showError && (
-            <div className="text-red-500 ml-12 text-2xl mt-4">{showError}</div>
-          )}
           <div className="flex mb-6">
             <div className="ml-16 flex flex-col gap-3 w-[40%]">
               <h1 className="text-3xl mt-5">Create a User:</h1>
@@ -399,7 +439,6 @@ const page = () => {
                 value={userDetails.name}
                 name="name"
                 onChange={(e) => {
-                  setShowError(undefined);
                   setUserDetails({
                     ...userDetails,
                     [e.target.name]: e.target.value,
@@ -414,7 +453,6 @@ const page = () => {
                 name="phone"
                 maxLength={10}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setUserDetails({
                     ...userDetails,
                     [e.target.name]: e.target.value,
@@ -441,7 +479,6 @@ const page = () => {
                 name="name"
                 value={delBoyDetails.name}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setDelBoyDetails({
                     ...delBoyDetails,
                     [e.target.name]: e.target.value,
@@ -455,7 +492,6 @@ const page = () => {
                 name="email"
                 value={delBoyDetails.email}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setDelBoyDetails({
                     ...delBoyDetails,
                     [e.target.name]: e.target.value,
@@ -469,7 +505,6 @@ const page = () => {
                 name="password"
                 value={delBoyDetails.password}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setDelBoyDetails({
                     ...delBoyDetails,
                     [e.target.name]: e.target.value,
@@ -507,7 +542,6 @@ const page = () => {
                 name="name"
                 value={kitchenDetails.name}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setKitchenDetails({
                     ...kitchenDetails,
                     [e.target.name]: e.target.value,
@@ -532,7 +566,6 @@ const page = () => {
                 name="address"
                 value={kitchenDetails.address}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setKitchenDetails({
                     ...kitchenDetails,
                     [e.target.name]: e.target.value,
@@ -559,7 +592,6 @@ const page = () => {
                 name="name"
                 value={areaManagerDetails.name}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -573,7 +605,6 @@ const page = () => {
                 name="username"
                 value={areaManagerDetails.username}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -587,7 +618,6 @@ const page = () => {
                 name="password"
                 value={areaManagerDetails.password}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -601,7 +631,6 @@ const page = () => {
                 name="email"
                 value={areaManagerDetails.email}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -615,7 +644,6 @@ const page = () => {
                 name="phone"
                 value={areaManagerDetails.phone}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -629,7 +657,6 @@ const page = () => {
                 name="alternatePhone"
                 value={areaManagerDetails.alternatePhone}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -643,7 +670,6 @@ const page = () => {
                 name="emergencyPhone"
                 value={areaManagerDetails.emergencyPhone}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -657,7 +683,6 @@ const page = () => {
                 name="residentAddress"
                 value={areaManagerDetails.residentAddress}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -671,7 +696,6 @@ const page = () => {
                 name="officeAddress"
                 value={areaManagerDetails.officeAddress}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -685,7 +709,6 @@ const page = () => {
                 name="aadhar"
                 value={areaManagerDetails.aadhar}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -699,7 +722,6 @@ const page = () => {
                 name="pan"
                 value={areaManagerDetails.pan}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -713,7 +735,6 @@ const page = () => {
                 name="agreement"
                 value={areaManagerDetails.agreement}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -727,7 +748,6 @@ const page = () => {
                 name="stateId"
                 value={areaManagerDetails.stateId}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -741,7 +761,6 @@ const page = () => {
                 name="district"
                 value={areaManagerDetails.district}
                 onChange={(e) => {
-                  setShowError(undefined);
                   setAreaManagerDetails({
                     ...areaManagerDetails,
                     [e.target.name]: e.target.value,
@@ -770,7 +789,6 @@ const page = () => {
                   name="areaHeadId"
                   value={areaManagerId as any}
                   onChange={(e) => {
-                    setShowError(undefined);
                     setAreaManagerId(e.target.value as any);
                   }}
                   placeholder="Area Head Id"
@@ -781,7 +799,6 @@ const page = () => {
                   name="cityId"
                   value={cityId as any}
                   onChange={(e) => {
-                    setShowError(undefined);
                     setCityId(e.target.value as any);
                   }}
                   placeholder="City Id"
@@ -805,7 +822,6 @@ const page = () => {
                   name="name"
                   value={stateName}
                   onChange={(e) => {
-                    setShowError(undefined);
                     setStateName(e.target.value as any);
                   }}
                   placeholder="State Name"
@@ -827,7 +843,6 @@ const page = () => {
                   name="name"
                   value={cityName}
                   onChange={(e) => {
-                    setShowError(undefined);
                     setCityName(e.target.value as any);
                   }}
                   placeholder="City Name"
@@ -838,7 +853,6 @@ const page = () => {
                   name="stateId"
                   value={stateId as any}
                   onChange={(e) => {
-                    setShowError(undefined);
                     setStateId(e.target.value as any);
                   }}
                   placeholder="State Id"

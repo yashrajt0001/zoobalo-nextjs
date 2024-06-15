@@ -11,9 +11,9 @@ import {
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [history, setHistory] = useState([]);
@@ -26,6 +26,7 @@ const page = () => {
   const page = searchParams.get("page") ?? 1;
   const limit = searchParams.get("limit") ?? 10;
 
+  // gets history
   useEffect(() => {
     const getHistory = async () => {
       try {
@@ -38,7 +39,6 @@ const page = () => {
           }
         );
 
-        console.log(data);
         let totalDelivered = 0;
         let totalPicked = 0;
         data.allDeliveries.map((order: any) => {
@@ -60,8 +60,8 @@ const page = () => {
         setTotalTiffinDelivered(totalDelivered);
         setTotalTiffinPicked(totalPicked);
         setHistory(data.allDeliveries);
-      } catch (error) {
-        console.log(error);
+      } catch (error:any) {
+        toast.error(error.response.data);
       } finally {
         setIsFetchloading(false);
       }

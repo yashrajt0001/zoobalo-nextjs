@@ -4,12 +4,12 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(false);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showError, setShowError] = useState<undefined | string>(undefined);
 
   const context = useContext(UserContext);
   const {
@@ -21,28 +21,35 @@ const page = () => {
     setFeedbackTitle,
   } = context as UserContextType;
 
+  // get all feedbacks
   useEffect(() => {
     const getFeedbacks = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/feedback`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      setIsFetchloading(false);
-      setResults(data);
-      console.log(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/admin/feedback`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setResults(data);
+        console.log(data);
+      } catch (error: any) {
+        toast.error(error.response.data);
+      } finally {
+        setIsFetchloading(false);
+      }
     };
     getFeedbacks();
   }, []);
 
+  // send response of a feedback to a user
   const handleSend = async () => {
     setIsLoading(true);
     if (feedbackTitle == "" || feedbackBody == "") {
       setIsLoading(false);
-      return setShowError("Please enter details!");
+      toast.error("Please enter details!");
     }
     try {
       await axios.post(
@@ -67,8 +74,7 @@ const page = () => {
       );
       setResults(updatedArray);
     } catch (error: any) {
-      setShowError(error.response.data);
-      console.log(error);
+      toast.error(error.response.data);
     } finally {
       setIsLoading(false);
     }
@@ -94,11 +100,6 @@ const page = () => {
             {feedbackId != 0 && (
               <div className="w-[40%] ml-12 -mt-14">
                 <div className="sticky top-24 z-10 bg-white flex flex-col gap-3">
-                  {showError && (
-                    <div className="text-red-500 text-2xl mt-4">
-                      {showError}
-                    </div>
-                  )}
                   <h1 className="text-3xl">Send Response:</h1>
                   <input
                     type="text"
@@ -106,7 +107,6 @@ const page = () => {
                     className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
                     value={feedbackTitle!}
                     onChange={(e) => {
-                      setShowError(undefined);
                       setFeedbackTitle(e.target.value);
                     }}
                   />
@@ -116,7 +116,6 @@ const page = () => {
                     className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
                     value={feedbackBody!}
                     onChange={(e) => {
-                      setShowError(undefined);
                       setFeedbackBody(e.target.value);
                     }}
                   />

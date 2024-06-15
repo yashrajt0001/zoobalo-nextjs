@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import HistoryCard from "@/components/HistoryCard";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 interface PageInterface {
   params: {
@@ -19,27 +21,33 @@ const page = ({ params }: PageInterface) => {
   const [users, setUsers] = useState([]);
   const [totalTiffinDelivered, setTotalTiffinDelivered] = useState(0);
   const [totalTiffinPicked, setTotalTiffinPicked] = useState(0);
+  const [isFetchLoading, setIsFetchLoading] = useState(true);
 
   useEffect(() => {
     const getUserHistory = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/orderLogs/user/get/${userId}`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      let totalDelivered = 0;
-      let totalPicked = 0;
-      data.map((order: any) => {
-        totalDelivered = totalDelivered + order.deliveredTiffin;
-        totalPicked = totalPicked + order.pickedTiffin;
-      });
-      setTotalTiffinDelivered(totalDelivered);
-      setTotalTiffinPicked(totalPicked);
-      setUsers(data);
-      console.log(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/orderLogs/user/get/${userId}`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        let totalDelivered = 0;
+        let totalPicked = 0;
+        data.map((order: any) => {
+          totalDelivered = totalDelivered + order.deliveredTiffin;
+          totalPicked = totalPicked + order.pickedTiffin;
+        });
+        setTotalTiffinDelivered(totalDelivered);
+        setTotalTiffinPicked(totalPicked);
+        setUsers(data);
+      } catch (error: any) {
+        toast.error(error?.response?.data);
+      } finally {
+        setIsFetchLoading(false);
+      }
     };
     getUserHistory();
   }, []);
@@ -56,16 +64,21 @@ const page = ({ params }: PageInterface) => {
           <h1 className="w-[25%] text-center">Picked</h1>
           <h1 className="w-[25%] text-center">Due</h1>
         </div>
-        {users.map((user) => (
-          <HistoryCard user={user} />
-        ))}
+
+        {isFetchLoading ? (
+          <Loader2 className="animate-spin w-8 h-8" />
+        ) : (
+          users.map((user) => <HistoryCard user={user} />)
+        )}
       </div>
       <div className="bottom-0 px-24 flex items-center py-4 bg-green-500 text-white w-full sticky text-2xl">
         <h1 className="w-[25%] text-center">Total :</h1>
         <h1 className="w-[25%] text-center"></h1>
         <h1 className="w-[25%] text-center">{totalTiffinDelivered}</h1>
         <h1 className="w-[25%] text-center">{totalTiffinPicked}</h1>
-        <h1 className="w-[25%] text-center">{totalTiffinDelivered - totalTiffinPicked}</h1>
+        <h1 className="w-[25%] text-center">
+          {totalTiffinDelivered - totalTiffinPicked}
+        </h1>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [packages, setPackages] = useState([]);
@@ -40,7 +41,7 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        console.log(error.response.data);
+        toast.error(error.response.data);
       }
     }
     getAllCities();
@@ -48,19 +49,26 @@ const page = () => {
   }, []);
 
   const getPackages = async () => {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_HOST}/areaManager/tiffinPackage/get`,
-      {
-        headers: {
-          "auth-token": localStorage.getItem("auth-token"),
-        },
-      }
-    );
-    setIsFetchloading(false);
-    setPackages(data.AreaHeadCities[0].city.TiffinPackage);
-    setResults(data.AreaHeadCities[0].city.TiffinPackage);
-    setTempResults(data.AreaHeadCities[0].city.TiffinPackage);
-    setTotalPackages(data.AreaHeadCities[0].city.TiffinPackage.length);
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOST}/areaManager/tiffinPackage/get`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      setPackages(data.AreaHeadCities[0].city.TiffinPackage);
+      setResults(data.AreaHeadCities[0].city.TiffinPackage);
+      setTempResults(data.AreaHeadCities[0].city.TiffinPackage);
+      setTotalPackages(data.AreaHeadCities[0].city.TiffinPackage.length);
+    }
+    catch (error: any) {
+      toast.error(error.response.data);
+    }
+    finally {
+      setIsFetchloading(false);
+    }
   };
 
   useEffect(() => {
@@ -92,9 +100,8 @@ const page = () => {
           },
         }
       );
-      console.log(res.data);
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setUpdateLoader(false);
     }
@@ -126,9 +133,8 @@ const page = () => {
           },
         }
       );
-      console.log(res.data);
     } catch (error: any) {
-      console.log(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setSecurityDepositLoader(false);
     }

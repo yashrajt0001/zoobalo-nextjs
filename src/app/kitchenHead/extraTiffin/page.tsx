@@ -5,6 +5,7 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext, FormEvent } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [extraTiffinAddress, setExtraTiffinAddress] = useState("");
@@ -45,9 +46,8 @@ const page = () => {
         }
       );
       setUsers(res.data);
-      console.log(res.data);
     } catch (error: any) {
-      console.log(error);
+      toast.error(error);
     }
   };
 
@@ -62,9 +62,8 @@ const page = () => {
         }
       );
       setKitchens(res.data);
-      console.log(res.data);
     } catch (error: any) {
-      console.log(error);
+      toast.error(error);
     }
   };
 
@@ -80,16 +79,14 @@ const page = () => {
           }
         );
         setTiffinPackages(res.data);
-        console.log(res.data);
       } catch (error: any) {
-        console.log(error);
+        toast.error(error);
       }
     }
     getTiffinPackages();
 
     async function getUser() {
       try {
-        console.log(search);
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/extraTiffin/users?search=${search}`,
           {
@@ -99,9 +96,8 @@ const page = () => {
           }
         );
         setUsers(res.data);
-        console.log(res.data);
       } catch (error: any) {
-        console.log(error);
+        toast.error(error);
       }
     }
     getUser();
@@ -146,7 +142,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      console.log(error);
+      toast.error(error);
     } finally {
       setExtraTiffinLoader(false);
     }

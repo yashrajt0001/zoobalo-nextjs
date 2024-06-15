@@ -4,6 +4,7 @@ import { TodaysCard } from "@/components/TodaysCard";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [history, setHistory] = useState([]);
@@ -13,25 +14,31 @@ const page = () => {
 
   useEffect(() => {
     const getHistory = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/orderLogs/today`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      console.log(data);
-      setIsFetchloading(false);
-      let totalDelivered = 0;
-      let totalPicked = 0;
-      data.map((order: any) => {
-        totalDelivered = totalDelivered + order.deliveredTiffin;
-        totalPicked = totalPicked + order.pickedTiffin;
-      });
-      setTotalTiffinDelivered(totalDelivered);
-      setTotalTiffinPicked(totalPicked);
-      setHistory(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/orderLogs/today`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        let totalDelivered = 0;
+        let totalPicked = 0;
+        data.map((order: any) => {
+          totalDelivered = totalDelivered + order.deliveredTiffin;
+          totalPicked = totalPicked + order.pickedTiffin;
+        });
+        setTotalTiffinDelivered(totalDelivered);
+        setTotalTiffinPicked(totalPicked);
+        setHistory(data);
+      }
+      catch (error: any) {
+        toast.error(error.response.data);
+      }
+      finally {
+        setIsFetchloading(false);
+      }
     };
     getHistory();
   }, []);

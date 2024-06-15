@@ -3,6 +3,7 @@
 import axios from "axios";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [lowNotificationDetails, setLowNotificationDetails] = useState({
@@ -35,6 +36,7 @@ const page = () => {
   const [search, setSearch] = useState("");
   const [usersArray, setUsersArray] = useState([] as any);
 
+  // sends notification to all users with low balance
   const handleSendLowNotification = async () => {
     setLowNotificationLoader(true);
     try {
@@ -50,13 +52,14 @@ const page = () => {
           },
         }
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      toast.error(error.response.data);
     } finally {
       setLowNotificationLoader(false);
     }
   };
 
+  // sends notification to all users
   const handleSendGlobalNotification = async () => {
     setGlobalNotificationLoader(true);
     try {
@@ -74,13 +77,14 @@ const page = () => {
           },
         }
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      toast.error(error.response.data);
     } finally {
       setGlobalNotificationLoader(false);
     }
   };
 
+  //sends personal notification to selected users
   const handleSendPersonalNotification = async () => {
     setPersonalNotificationLoader(true);
     try {
@@ -99,13 +103,14 @@ const page = () => {
           },
         }
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      toast.error(error.response.data);
     } finally {
       setPersonalNotificationLoader(false);
     }
   };
 
+  // get users according to searchinput
   const getUsers = async (e: any) => {
     try {
       setSearch(e.target.value);
@@ -118,16 +123,15 @@ const page = () => {
         }
       );
       setUsers(res.data);
-      console.log(res.data);
     } catch (error: any) {
       console.log(error);
     }
   };
 
+  // get all users at mount
   useEffect(() => {
     async function getUser() {
       try {
-        console.log(search);
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/admin/searchUser?search=${search}`,
           {
@@ -137,16 +141,13 @@ const page = () => {
           }
         );
         setUsers(res.data);
-        console.log(res.data);
       } catch (error: any) {
-        console.log(error);
+        toast.error(error.response.data);
       }
     }
     getUser();
   }, []);
-
-  console.log("arr: ", usersArray);
-
+  
   return (
     <div className="py-8 min-h-full ml-16">
       <div className="flex">

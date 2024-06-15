@@ -4,6 +4,7 @@ import { ShowLogin } from "@/components/ShowLogin";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [login, setLogin] = useState(true);
@@ -12,7 +13,6 @@ const page = () => {
     address: ""
   });
   const [selectedCity, setSelectedCity] = useState(1);
-  const [showError, setShowError] = useState<undefined | string>(undefined);
   const [cities, setCities] = useState([]);
   const [kitchenLoader, setKitchenLoader] = useState(false);
 
@@ -24,7 +24,7 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        console.log(error.response.data);
+        toast.error(error.response.data);
       }
     }
     getAllCities();
@@ -39,7 +39,7 @@ const page = () => {
       !kitchenDetails.name ||
       !kitchenDetails.address
     ) {
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
 
     try {
@@ -58,7 +58,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      setShowError(error.response.data);
+      toast.error(error.response.data);
     } finally {
       setKitchenLoader(false);
     }
@@ -77,7 +77,6 @@ const page = () => {
               name="name"
               value={kitchenDetails.name}
               onChange={(e) => {
-                setShowError(undefined);
                 setKitchenDetails({
                   ...kitchenDetails,
                   [e.target.name]: e.target.value,
@@ -102,7 +101,6 @@ const page = () => {
               name="address"
               value={kitchenDetails.address}
               onChange={(e) => {
-                setShowError(undefined);
                 setKitchenDetails({
                   ...kitchenDetails,
                   [e.target.name]: e.target.value,

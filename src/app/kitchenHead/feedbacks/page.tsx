@@ -4,6 +4,7 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(false);
@@ -23,17 +24,23 @@ const page = () => {
 
   useEffect(() => {
     const getFeedbacks = async () => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/feedback`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      setIsFetchloading(false);
-      setResults(data);
-      console.log(data);
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/feedback`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setResults(data);
+      }
+      catch (error: any) {
+        toast.error(error.response.data);
+      }
+      finally {
+        setIsFetchloading(false);
+      }
     };
     getFeedbacks();
   }, []);
@@ -42,7 +49,7 @@ const page = () => {
     setIsLoading(true);
     if (feedbackTitle == "" || feedbackBody == "") {
       setIsLoading(false);
-      return setShowError("Please enter details!");
+      return toast.error("Please enter details!");
     }
     try {
       await axios.post(
@@ -67,8 +74,7 @@ const page = () => {
       );
       setResults(updatedArray);
     } catch (error: any) {
-      setShowError(error.response.data);
-      console.log(error);
+      toast.error(error.response.data);
     } finally {
       setIsLoading(false);
     }

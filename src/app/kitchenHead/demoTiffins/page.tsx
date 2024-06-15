@@ -4,6 +4,7 @@ import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(true);
@@ -52,6 +53,7 @@ const page = () => {
     setIsFetchloading(false);
     setShowCompleted(false);
   };
+
   const handleCompleted = async () => {
     setIsFetchloading(true);
     const res = await getCompletedDeliveries();
@@ -61,7 +63,8 @@ const page = () => {
 
   const handleDemoDeliveryBoyAssign = () => {
     setIsDemoLoading(true);
-    results.map(async (user: any) => {
+    try {
+      results.map(async (user: any) => {
         await axios.post(
           `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
           {
@@ -74,11 +77,13 @@ const page = () => {
             },
           }
         );
-    })
-    setIsDemoLoading(false);
+      });
+    } catch (error: any) {
+      toast.error(error.response.data);
+    } finally {
+      setIsDemoLoading(false);
+    }
   };
-
-  console.log(results);
 
   return (
     <div className="ml-10 mt-4 pb-8">
