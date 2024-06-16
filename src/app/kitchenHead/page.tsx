@@ -18,8 +18,10 @@ const page = () => {
   const [userloader, setUserloader] = useState(false);
   const [delBoyDetails, setDelBoyDetails] = useState({
     name: "",
-    email: "",
-    password: "",
+    phone: "",
+    code: "",
+    alternateNumber: "",
+    kitchenId:""
   });
   const [delBoyLoader, setDelBoyLoader] = useState(false);
   const [timing, setTiming] = useState("");
@@ -107,8 +109,10 @@ const page = () => {
     e.preventDefault();
     if (
       !delBoyDetails.name ||
-      !delBoyDetails.email ||
-      !delBoyDetails.password
+      !delBoyDetails.phone ||
+      !delBoyDetails.code ||
+      !delBoyDetails.alternateNumber ||
+      !delBoyDetails.kitchenId
     ) {
       return toast.error("Please enter details!");
     }
@@ -116,11 +120,14 @@ const page = () => {
     try {
       setDelBoyLoader(true);
       await axios.post(
-        "/api/createDelBoy",
+        `${process.env.NEXT_PUBLIC_HOST}/agent/create`,
         {
-          name: delBoyDetails.name,
-          email: delBoyDetails.email,
-          password: delBoyDetails.password,
+          name:delBoyDetails.name,
+          phone:delBoyDetails.phone,
+          status:true,
+          partnerCode:delBoyDetails.code,
+          alternateNumber:delBoyDetails.alternateNumber,
+          kitchenId: parseInt(delBoyDetails.kitchenId)
         },
         {
           headers: {
@@ -201,8 +208,6 @@ const page = () => {
       setAddUserLoader(false);
     }
   };
-
-  console.log("selected: ", selectedUserId);
 
   return (
     <div>
@@ -406,29 +411,55 @@ const page = () => {
                 className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
               <input
-                type="email"
-                name="email"
-                value={delBoyDetails.email}
+                type="tel"
+                name="phone"
+                value={delBoyDetails.phone}
                 onChange={(e) => {
                   setDelBoyDetails({
                     ...delBoyDetails,
                     [e.target.name]: e.target.value,
                   });
                 }}
-                placeholder="Email Address"
+                placeholder="Phone Number"
                 className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
               <input
-                type="password"
-                name="password"
-                value={delBoyDetails.password}
+                type="text"
+                name="code"
+                value={delBoyDetails.code}
                 onChange={(e) => {
                   setDelBoyDetails({
                     ...delBoyDetails,
                     [e.target.name]: e.target.value,
                   });
                 }}
-                placeholder="Password"
+                placeholder="Partner Code"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <input
+                type="tel"
+                name="alternateNumber"
+                value={delBoyDetails.alternateNumber}
+                onChange={(e) => {
+                  setDelBoyDetails({
+                    ...delBoyDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="ALternate Number"
+                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+                />
+                <input
+                type="number"
+                name="kitchenId"
+                value={delBoyDetails.kitchenId}
+                onChange={(e) => {
+                  setDelBoyDetails({
+                    ...delBoyDetails,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                placeholder="Kitchen Id"
                 className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
               />
               <button
