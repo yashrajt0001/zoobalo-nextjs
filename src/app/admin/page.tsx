@@ -94,7 +94,7 @@ const page = () => {
     try {
       setDelBoyLoader(true);
       await axios.post(
-        "/api/createDelBoy",
+        `${process.env.NEXT_PUBLIC_HOST}/agent/create`,
         {
           name: delBoyDetails.name,
           email: delBoyDetails.email,
