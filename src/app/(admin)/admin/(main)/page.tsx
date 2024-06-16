@@ -4,11 +4,11 @@ import React, { FormEvent, useEffect, useState, ChangeEvent } from "react";
 
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { ShowLogin } from "@/components/ShowLogin";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
+import { createErrorMessage } from "@/lib/utils";
 
 const page = () => {
-  const [login, setLogin] = useState(true);
   const [timing, setTiming] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -16,12 +16,26 @@ const page = () => {
   const [kitchenLoader, setKitchenLoader] = useState(false);
   const [cities, setCities] = useState([]);
 
-  const isLoggedIn = () => {
-    setLogin(false);
-  };
+  const authToken = localStorage.getItem('auth-token')
+  if (authToken) {
+    try {
+      axios.get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
+        headers: {
+          'auth-token': authToken
+        }
+      })
+    } catch (error) {
+      // todo: show toast of invalid authToken
+      console.log(createErrorMessage(error))
+      localStorage.removeItem('auth-token')
+      redirect('/admin/login')
+    }
+  } else {
+    redirect('/admin/login')
+  }
+
 
   useEffect(() => {
-    setLogin(!localStorage.getItem("auth-token"));
     async function getAllCities() {
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
@@ -376,10 +390,7 @@ const page = () => {
 
   return (
     <>
-      {login ? (
-        <ShowLogin isLoggedIn={isLoggedIn} />
-      ) : (
-        <div className="pb-8 min-h-full">
+        <div className="pb-8 overflow-y-auto">
           <div className="flex items-center">
             <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
               Hi! <span className="text-green-500">Admin</span>{" "}
@@ -869,7 +880,6 @@ const page = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };
