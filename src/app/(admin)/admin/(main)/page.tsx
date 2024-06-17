@@ -1,12 +1,9 @@
 "use client";
 
 import React, { FormEvent, useEffect, useState, ChangeEvent } from "react";
-
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
-import { createErrorMessage } from "@/lib/utils";
 
 const page = () => {
   const [timing, setTiming] = useState("");
@@ -17,22 +14,6 @@ const page = () => {
   const [cities, setCities] = useState([]);
   const [areaManagers, setAreaManagers] = useState([]);
   const [states, setStates] = useState([]);
-
-  const authToken = localStorage.getItem("auth-token");
-  if (authToken) {
-      axios.get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
-        headers: {
-          'auth-token': authToken
-        }
-      }).catch((error) => {
-        // todo: show toast of invalid authToken
-        console.log(createErrorMessage(error))
-        localStorage.removeItem('auth-token')
-        return redirect('/admin/login')
-      })
-  } else {
-    return redirect('/admin/login')
-  }
 
   useEffect(() => {
     async function getAllCities() {
@@ -425,8 +406,8 @@ const page = () => {
 
   return (
     <>
-      <div className="overflow-y-auto w-[calc(100vw-165px)]">
-        <div className="flex px-4 gap-12 border-b border-gray-300 sticky top-0 ">
+      <div className="bg-slate-50">
+        <div className="flex px-4 gap-12 border-b border-gray-300 ">
           <button
             className={`py-3 ${
               selectedTab == 0 ? "border-b-2 border-blue-400" : ""
@@ -487,8 +468,8 @@ const page = () => {
 
         {selectedTab == 1 && (
           <div className="pt-8 bg-[#F6F6F6] relative">
-            <div className="pb-8 px-8 min-h-screen">
-              <div className="flex mt-6 text-2xl font-semibold">
+            <div className="pb-8 px-8">
+              <div className="flex py-6 text-2xl font-semibold">
                 <h1 className="w-[25%] text-center">Name</h1>
                 {/* <h1 className="w-[20%] text-center">State</h1> */}
                 <h1 className="w-[25%] text-center">District</h1>
@@ -496,26 +477,28 @@ const page = () => {
                 <h1 className="w-[25%] text-center">Address</h1>
               </div>
 
-              {areaManagers.map((areaManager: any) => (
-                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                  <h1 className="w-[25%] text-center">{areaManager.name}</h1>
-                  {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
-                  <h1 className="w-[25%] text-center">
-                    {areaManager.district}
-                  </h1>
-                  <h1 className="w-[25%] text-center">{areaManager.phone}</h1>
-                  <h1 className="w-[25%] text-center">
-                    {areaManager.officeAddress}
-                  </h1>
-                </div>
-              ))}
+              <div className="overflow-y-auto">
+                {areaManagers.map((areaManager: any) => (
+                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                    <h1 className="w-[25%] text-center">{areaManager.name}</h1>
+                    {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
+                    <h1 className="w-[25%] text-center">
+                      {areaManager.district}
+                    </h1>
+                    <h1 className="w-[25%] text-center">{areaManager.phone}</h1>
+                    <h1 className="w-[25%] text-center">
+                      {areaManager.officeAddress}
+                    </h1>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {selectedTab == 2 && (
           <div className="pt-8 bg-[#F6F6F6] relative">
-            <div className="pb-8 px-8 min-h-screen">
+            <div className="pb-8 px-8">
               <div className="flex mt-6 text-2xl font-semibold">
                 <h1 className="w-[50%] text-center">Name</h1>
                 <h1 className="w-[50%] text-center">Security Deposit</h1>
@@ -535,7 +518,7 @@ const page = () => {
 
         {selectedTab == 3 && (
           <div className="pt-8 bg-[#F6F6F6] relative">
-            <div className="pb-8 px-8 min-h-screen">
+            <div className="pb-8 px-8">
               <div className="flex mt-6 text-2xl font-semibold px-2">
                 <h1>Name</h1>
               </div>

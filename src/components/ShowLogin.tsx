@@ -1,26 +1,45 @@
 "use client";
 
 import axios, { AxiosError } from "axios";
-import { usePathname } from 'next/navigation'
+import { redirect, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { createErrorMessage } from "@/lib/utils";
 
 interface MyComponentProps {
-  name: 'admin' | 'kitchen' | 'area',
+  name: "admin" | "kitchenHead" | "areaManager";
 }
 
 export const ShowLogin: React.FC<MyComponentProps> = ({ name }) => {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState<undefined | string>(undefined);
-  const [isLoading, setisLoading] = useState(false)
+  const [isLoading, setisLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const authToken = localStorage.getItem("auth-token");
+  if (authToken) {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
+        headers: {
+          "auth-token": authToken,
+        },
+      })
+      .catch(() => localStorage.removeItem("auth-token"));
+    return redirect("/admin");
+  }
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      redirect("/admin");
+    }
+  }, [isLoggedIn]);
 
   const handleLogin = async () => {
     try {
-      setisLoading(true)
+      setisLoading(true);
       if (!email || !password) {
         setShowError("Please enter email and password");
         return;
@@ -33,11 +52,12 @@ export const ShowLogin: React.FC<MyComponentProps> = ({ name }) => {
         }
       );
       localStorage.setItem("auth-token", data.token);
+      setIsLoggedIn(true);
     } catch (error: any) {
       // todo: show toast error
-      console.log(createErrorMessage(error))
+      console.log(createErrorMessage(error));
     } finally {
-      setisLoading(false)
+      setisLoading(false);
     }
   };
 
@@ -45,7 +65,13 @@ export const ShowLogin: React.FC<MyComponentProps> = ({ name }) => {
     <div className="flex items-center h-screen w-full">
       <div className="w-[60%] bg-purple-500 h-screen flex justify-center items-center">
         <h1 className="text-5xl w-[70%] mb-32 font-semibold leading-tight text-[#dcd8d8]">
-          Hello {name === 'admin' ? 'Admin' : name === 'area' ? 'Area manager' : 'Kitchen head'}! Welcome in your Space
+          Hello{" "}
+          {name === "admin"
+            ? "Admin"
+            : name === "areaManager"
+            ? "Area manager"
+            : "Kitchen head"}
+          ! Welcome in your Space
         </h1>
       </div>
       <form className="w-[40%] h-[70%] bg-white rounded-lg flex flex-col items-center p-10 gap-8 z-20">
@@ -77,7 +103,7 @@ export const ShowLogin: React.FC<MyComponentProps> = ({ name }) => {
           className="p-5 text-[1.25rem] font-semibold w-[60%] bg-purple-400 rounded-xl text-white hover:bg-purple-300"
         >
           Login
-          {isLoading ? <Loader2 className="w-5 h-5 ml-2 animate-spin"/> : null}
+          {isLoading ? <Loader2 className="w-5 h-5 ml-2 animate-spin" /> : null}
         </Button>
       </form>
     </div>

@@ -3,19 +3,38 @@
 import React, { useState } from "react";
 import Sidebar from '@/components/layouts/Sidebar'
 import MenuBarMobile from "@/components/ui/MenuBarMobile";
+import axios from "axios";
+import { createErrorMessage } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 export default function Layout({ children }: {children: React.ReactNode}) {
   const [showSidebar, setShowSidebar] = useState(false);
 
- 
+ const authToken = localStorage.getItem("auth-token");
+ if (authToken) {
+   axios
+     .get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
+       headers: {
+         "auth-token": authToken,
+       },
+     })
+     .catch((error) => {
+       // todo: show toast of invalid authToken
+       console.log(createErrorMessage(error));
+       localStorage.removeItem("auth-token");
+       return redirect("/admin/login");
+     });
+ } else {
+   return redirect("/admin/login");
+ }
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="flex flex-col">
         <div className="flex">
           <MenuBarMobile setter={setShowSidebar} />
-          <Sidebar show={showSidebar} setter={setShowSidebar} />
-          <div className="flex flex-col flex-grow w-screen md:w-full min-h-screen">
+          <Sidebar show={showSidebar} setter={setShowSidebar}/>
+          <div className="bg-[#f6f6f6] flex flex-col flex-grow w-screen md:w-full">
             {children}
           </div>
         </div>

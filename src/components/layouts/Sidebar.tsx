@@ -13,10 +13,23 @@ interface MenuItemProps {
   route: string;
 }
 
+const items = [
+  {
+    name: "Home",
+    icon: null,
+    route: "/admin",
+  },
+  {
+    name: "Users",
+    icon: null,
+    route: "/admin/users",
+  },
+];
+
 export default function Sidebar({ show, setter }: SidebarProps) {
   const pathname = usePathname();
   const className =
-    "bg-black w-[250px] transition-[margin-left] ease-in-out duration-500 fixed md:static top-0 bottom-0 left-0 z-40";
+    "bg-black w-[250px] transition-[margin-left] ease-in-out duration-500 fixed md:static h-[calc(100vh-65px)] md:top-0 top-[65px] bottom-0 left-0 z-40";
   const appendClass = show ? " ml-0" : " ml-[-250px] md:ml-0";
 
   const MenuItem = ({ icon, name, route }: MenuItemProps) => {
@@ -48,26 +61,11 @@ export default function Sidebar({ show, setter }: SidebarProps) {
     />
   );
 
-  const items = [
-    {
-      name: "Home",
-      icon: null,
-      route: "/admin/home",
-    },
-    {
-      name: "Users",
-      icon: null,
-      route: "/admin/users",
-    },
-  ];
 
   return (
     <>
       <div className={`${className}${appendClass}`}>
-        <div className="p-2 flex">
-          <Link href="/">Zoobalo</Link>
-        </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col py-6">
           {items.map((item) => {
               return <MenuItem name={item.name} icon={item.icon} route={item.route} />;
           })}
