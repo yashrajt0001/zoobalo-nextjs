@@ -9,7 +9,7 @@ export default function MenuBarMobile({
   setter: (value: any) => void;
 }) {
   return (
-    <nav className="border border-gray-100 md:hidden z-20 fixed top-[65px] left-0 right-0 h-[60px] flex [&>*]:my-auto px-2">
+    <nav className="md:hidden z-20 flex [&>*]:my-auto px-2">
       <Button
         onClick={() => {
           setter((oldVal: boolean) => !oldVal);

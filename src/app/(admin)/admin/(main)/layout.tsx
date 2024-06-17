@@ -6,6 +6,7 @@ import MenuBarMobile from "@/components/ui/MenuBarMobile";
 import axios from "axios";
 import { createErrorMessage } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import AdminNavbar from "@/components/AdminNavbar";
 
 export default function Layout({ children }: {children: React.ReactNode}) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -31,9 +32,9 @@ export default function Layout({ children }: {children: React.ReactNode}) {
   return (
     <>
       <div className="flex flex-col">
+          <AdminNavbar setter={setShowSidebar} />
         <div className="flex">
-          <MenuBarMobile setter={setShowSidebar} />
-          <Sidebar show={showSidebar} setter={setShowSidebar}/>
+          <Sidebar show={showSidebar} setter={setShowSidebar} />
           <div className="bg-[#f6f6f6] flex flex-col flex-grow w-screen md:w-full">
             {children}
           </div>

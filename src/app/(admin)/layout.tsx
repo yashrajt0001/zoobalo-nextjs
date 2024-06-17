@@ -8,7 +8,6 @@ interface layoutProps {
 const Layout: FC<layoutProps> = ({ children }) => {
   return (
     <div className="h-screen">
-      <AdminNavbar />
       {children}
     </div>
   );
