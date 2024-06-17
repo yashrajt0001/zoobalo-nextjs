@@ -1,6 +1,5 @@
 "use client";
 
-import { ShowLogin } from "@/components/ShowLogin";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -132,9 +131,6 @@ const page = () => {
 
   return (
     <div>
-      {login ? (
-        <ShowLogin isLoggedIn={isLoggedIn} />
-      ) : (
         <div className="pb-8 min-h-full">
           <div className="flex mt-7">
             <div className="ml-12 flex flex-col gap-3 w-[43%]">
@@ -286,7 +282,6 @@ const page = () => {
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 };

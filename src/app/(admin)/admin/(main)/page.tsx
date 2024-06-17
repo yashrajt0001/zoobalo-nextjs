@@ -18,20 +18,18 @@ const page = () => {
 
   const authToken = localStorage.getItem('auth-token')
   if (authToken) {
-    try {
       axios.get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
         headers: {
           'auth-token': authToken
         }
+      }).catch((error) => {
+        // todo: show toast of invalid authToken
+        console.log(createErrorMessage(error))
+        localStorage.removeItem('auth-token')
+        return redirect('/admin/login')
       })
-    } catch (error) {
-      // todo: show toast of invalid authToken
-      console.log(createErrorMessage(error))
-      localStorage.removeItem('auth-token')
-      redirect('/admin/login')
-    }
   } else {
-    redirect('/admin/login')
+    return redirect('/admin/login')
   }
 
 
