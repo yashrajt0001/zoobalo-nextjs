@@ -22,7 +22,7 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(error?.response?.data);
       }
     }
 
@@ -34,7 +34,7 @@ const page = () => {
         console.log(res.data);
         setStates(res.data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(error?.response?.data);
       }
     }
 
@@ -110,7 +110,7 @@ const page = () => {
   const [cityLoader, setCityLoader] = useState(false);
   const [skipTiming, setSkipTiming] = useState("");
   const [skipLoader, setSkipLoader] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(1);
+  const [selectedTab, setSelectedTab] = useState(0);
   const [isFetchLoading, setIsFetchLoading] = useState(true);
 
   const handleDelBoySubmit = async (e: FormEvent) => {

@@ -31,7 +31,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Toaster containerClassName="text-3xl" position="top-center" />
+        <Toaster containerClassName="text-3xl" position="bottom-center" />
         <UserState>{children}</UserState>
       </body>
     </html>
