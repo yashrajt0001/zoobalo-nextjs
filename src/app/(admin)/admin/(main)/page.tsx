@@ -15,8 +15,10 @@ const page = () => {
   const [selectedCity, setSelectedCity] = useState(1);
   const [kitchenLoader, setKitchenLoader] = useState(false);
   const [cities, setCities] = useState([]);
+  const [areaManagers, setAreaManagers] = useState([]);
+  const [states, setStates] = useState([]);
 
-  const authToken = localStorage.getItem('auth-token')
+  const authToken = localStorage.getItem("auth-token");
   if (authToken) {
       axios.get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
         headers: {
@@ -32,7 +34,6 @@ const page = () => {
     return redirect('/admin/login')
   }
 
-
   useEffect(() => {
     async function getAllCities() {
       try {
@@ -43,6 +44,42 @@ const page = () => {
         toast.error(error.response.data);
       }
     }
+
+    async function getAllStates() {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/state/get`
+        );
+        console.log(res.data);
+        setStates(res.data);
+      } catch (error: any) {
+        toast.error(error.response.data);
+      }
+    }
+
+    const getAreaManagers = async () => {
+      try {
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_HOST}/areaManager/get`,
+          {
+            stateId: 1,
+          },
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setAreaManagers(data);
+      } catch (error: any) {
+        toast.error(error?.response?.data);
+      } finally {
+        setIsFetchLoading(false);
+      }
+    };
+
+    getAllStates();
+    getAreaManagers();
     getAllCities();
   }, []);
 
@@ -92,6 +129,8 @@ const page = () => {
   const [cityLoader, setCityLoader] = useState(false);
   const [skipTiming, setSkipTiming] = useState("");
   const [skipLoader, setSkipLoader] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(1);
+  const [isFetchLoading, setIsFetchLoading] = useState(true);
 
   const handleDelBoySubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -168,8 +207,7 @@ const page = () => {
       );
     } catch (error: any) {
       toast.error(error.response.data);
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -349,7 +387,7 @@ const page = () => {
         `${process.env.NEXT_PUBLIC_HOST}/city/create`,
         {
           name: cityName,
-          stateId:parseInt(stateId)
+          stateId: parseInt(stateId),
         },
         {
           headers: {
@@ -380,27 +418,148 @@ const page = () => {
       );
     } catch (error: any) {
       toast.error(error.response.data);
-    }
-    finally {
+    } finally {
       setSkipLoader(false);
     }
-  }
+  };
 
   return (
     <>
-        <div className="pb-8 overflow-y-auto">
-          <div className="flex items-center">
-            <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
-              Hi! <span className="text-green-500">Admin</span>{" "}
+      <div className="overflow-y-auto w-[calc(100vw-165px)]">
+        <div className="flex px-4 gap-12 border-b border-gray-300 sticky top-0 ">
+          <button
+            className={`py-3 ${
+              selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(0)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Queue
             </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 1 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(1)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Area Manager
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 2 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(2)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              City
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 3 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(3)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              State
+            </h1>
+          </button>
+        </div>
 
+        {selectedTab == 1 && (
+          <div className="pt-8 bg-[#F6F6F6] relative">
+            <div className="pb-8 px-8 min-h-screen">
+              <div className="flex mt-6 text-2xl font-semibold">
+                <h1 className="w-[25%] text-center">Name</h1>
+                {/* <h1 className="w-[20%] text-center">State</h1> */}
+                <h1 className="w-[25%] text-center">District</h1>
+                <h1 className="w-[25%] text-center">Phone</h1>
+                <h1 className="w-[25%] text-center">Address</h1>
+              </div>
+
+              {areaManagers.map((areaManager: any) => (
+                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                  <h1 className="w-[25%] text-center">{areaManager.name}</h1>
+                  {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
+                  <h1 className="w-[25%] text-center">
+                    {areaManager.district}
+                  </h1>
+                  <h1 className="w-[25%] text-center">{areaManager.phone}</h1>
+                  <h1 className="w-[25%] text-center">
+                    {areaManager.officeAddress}
+                  </h1>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedTab == 2 && (
+          <div className="pt-8 bg-[#F6F6F6] relative">
+            <div className="pb-8 px-8 min-h-screen">
+              <div className="flex mt-6 text-2xl font-semibold">
+                <h1 className="w-[50%] text-center">Name</h1>
+                <h1 className="w-[50%] text-center">Security Deposit</h1>
+              </div>
+
+              {cities.map((city: any) => (
+                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                  <h1 className="w-[50%] text-center">{city.name}</h1>
+                  <h1 className="w-[50%] text-center">
+                    {city.securityDeposit}
+                  </h1>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedTab == 3 && (
+          <div className="pt-8 bg-[#F6F6F6] relative">
+            <div className="pb-8 px-8 min-h-screen">
+              <div className="flex mt-6 text-2xl font-semibold px-2">
+                <h1>Name</h1>
+              </div>
+
+              {states.map((state: any) => (
+                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
+                  <h1>{state.name}</h1>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedTab == 0 && (
+          <>
             <div className="ml-16 mt-5 flex">
               <select
                 onChange={(e) => setTiming(e.target.value)}
                 value={timing}
                 className="py-2 px-4 text-center rounded-md"
-                >
-                  <option value="" disabled>Select Queue Generation Time</option>
+              >
+                <option value="" disabled>
+                  Select Queue Generation Time
+                </option>
                 <option value="MORNING">MORNING</option>
                 <option value="EVENING">EVENING</option>
               </select>
@@ -414,16 +573,17 @@ const page = () => {
                 Generate
                 {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
               </button>
-              </div>
-              
-            
-              <div className="ml-16 mt-5 flex">
+            </div>
+
+            <div className="ml-16 mt-5 flex">
               <select
                 onChange={(e) => setSkipTiming(e.target.value)}
                 value={skipTiming}
                 className="py-2 px-4 text-center rounded-md"
-                >
-                  <option value="" disabled>Select Skip Time</option>
+              >
+                <option value="" disabled>
+                  Select Skip Time
+                </option>
                 <option value="MORNING">MORNING</option>
                 <option value="EVENING">EVENING</option>
               </select>
@@ -435,12 +595,15 @@ const page = () => {
                 }`}
               >
                 Skip
-                {skipLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+                {skipLoader && (
+                  <Loader2 className="animate-spin w-8 h-8 ml-3" />
+                )}
               </button>
             </div>
-          </div>
+          </>
+        )}
 
-          {/* <div className="flex mb-6">
+        {/* <div className="flex mb-6">
             <div className="ml-16 flex flex-col gap-3 w-[40%]">
               <h1 className="text-3xl mt-5">Create a User:</h1>
               <input
@@ -532,7 +695,7 @@ const page = () => {
             </form>
           </div> */}
 
-          {/* <div className="flex ml-16">
+        {/* <div className="flex ml-16">
             <div className="flex flex-col gap-4 w-[40%]">
               <h1 className="text-3xl">Upload Image:</h1>
               <input type="file" onChange={handleFileChange} />
@@ -593,7 +756,7 @@ const page = () => {
             </div>
           </div> */}
 
-          <div className="flex ml-16 mt-4">
+        {/* <div className="flex ml-16 mt-4">
             <div className="flex flex-col gap-4 w-[40%]">
               <h1 className="text-3xl">Create Area Manager:</h1>
               <input
@@ -876,8 +1039,8 @@ const page = () => {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
+          </div> */}
+      </div>
     </>
   );
 };
