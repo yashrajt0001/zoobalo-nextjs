@@ -22,7 +22,7 @@ const items = [
   {
     name: "Users",
     icon: null,
-    route: "/admin/users",
+    route: "/admin/AllUsers",
   },
 ];
 

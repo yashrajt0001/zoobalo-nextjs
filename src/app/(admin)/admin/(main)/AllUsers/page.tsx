@@ -18,6 +18,7 @@ const page = () => {
   const [totalUsers, setTotalUsers] = useState(0); // state that holds total user's number
   const [updateLoader, setUpdateLoader] = useState(false); // loader when a user's details are updated
   const [tempResults, setTempResults] = useState([]); // temp results stores all users which helps in searching user
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const context = useContext(UserContext);
   const {
@@ -58,8 +59,7 @@ const page = () => {
         setTempResults(data);
         setTotalUsers(data.length);
         setAllUsers(data);
-      }
-      catch (error:any) {
+      } catch (error: any) {
         toast.error(error.response.data);
       }
     };
@@ -83,6 +83,7 @@ const page = () => {
 
   // shows users who have cancelled meal
   const handleCancel = () => {
+    setSelectedTab(2);
     setShowPending(false);
     const cancelledUsers = users.filter((user: any) => {
       for (const order of user.order) {
@@ -96,6 +97,7 @@ const page = () => {
 
   // shows all users
   const handleAllUsers = () => {
+    setSelectedTab(0);
     setShowPending(false);
     setResults(allUsers);
     setTempResults(allUsers);
@@ -104,6 +106,7 @@ const page = () => {
 
   // show subscribed users
   const handleSubscribe = () => {
+    setSelectedTab(1);
     setShowPending(false);
     const subscribedUsers = allUsers.filter((user: any) => {
       return user.order.length > 0;
@@ -115,6 +118,7 @@ const page = () => {
 
   // shows users who have paused meal
   const handlePaused = () => {
+    setSelectedTab(3);
     setShowPending(false);
     const pausedUsers = users.filter((user: any) => {
       return user.order[0].NextMeal.isPause == true;
@@ -126,6 +130,7 @@ const page = () => {
 
   // shows unsubscribed users
   const handleUnsubscribed = () => {
+    setSelectedTab(4);
     setShowPending(false);
     const unsubscribedUsers = allUsers.filter((user: any) => {
       return user.order.length == 0;
@@ -137,6 +142,7 @@ const page = () => {
 
   // shows pending deliveries or deliveries which are present in queue delivery
   const handlePendingDeliveries = async () => {
+    setSelectedTab(5);
     setShowPending(true);
     setIsFetchloading(true);
     try {
@@ -154,17 +160,16 @@ const page = () => {
       setResults(res);
       setTempResults(res);
       setTotalUsers(res.length);
-    }
-    catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data);
-    }
-    finally {
+    } finally {
       setIsFetchloading(false);
     }
   };
 
   // shows users with low balance
   const handleLowBalance = async () => {
+    setSelectedTab(6);
     setShowPending(false);
     const lowBalanceUser = users.filter((user: any) => {
       if (user.order[0].amount * 2 >= user.balance) return true;
@@ -200,8 +205,7 @@ const page = () => {
           }
         );
       });
-    }
-    catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data);
     } finally {
       setIsLoading(false);
@@ -237,6 +241,7 @@ const page = () => {
 
   // shows users who have addons
   const handleAddOns = () => {
+    setSelectedTab(7);
     setShowPending(false);
     const haveAddOn = users.filter((user: any) => {
       if (
@@ -253,7 +258,124 @@ const page = () => {
 
   return (
     <>
-      <div className="ml-10 mt-4 pb-8">
+      <div className="flex px-4 gap-12 border-b border-gray-300 ">
+        <button
+          className={`py-3 ${
+            selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handleAllUsers}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            All Users
+          </h1>
+        </button>
+        <button
+          className={`py-3 ${
+            selectedTab == 1 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handleSubscribe}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Subscribed
+          </h1>
+        </button>
+        <button
+          className={`py-3 ${
+            selectedTab == 2 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handleCancel}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Cancelled
+          </h1>
+        </button>
+        <button
+          className={`py-3 ${
+            selectedTab == 3 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handlePaused}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Paused
+          </h1>
+        </button>
+
+        <button
+          className={`py-3 ${
+            selectedTab == 4 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handleUnsubscribed}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Unsubscribed
+          </h1>
+        </button>
+
+        <button
+          className={`py-3 ${
+            selectedTab == 5 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handlePendingDeliveries}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Pending
+          </h1>
+        </button>
+        <button
+          className={`py-3 ${
+            selectedTab == 6 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handleLowBalance}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Low Balance
+          </h1>
+        </button>
+        <button
+          className={`py-3 ${
+            selectedTab == 7 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={handleAddOns}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Addons
+          </h1>
+        </button>
+      </div>
+
+      <div className="bg-slate-50 pl-12 mt-6">
         <div className="flex items-center">
           <input
             type="text"
@@ -262,67 +384,9 @@ const page = () => {
             placeholder="Search a User"
             className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
           />
-
-          <div className="flex gap-2 ml-8">
-            <button
-              onClick={handleAllUsers}
-              className="bg-orange-500 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              All Users
-            </button>
-
-            <button
-              onClick={handleSubscribe}
-              className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Subscribed
-            </button>
-
-            <button
-              onClick={handleCancel}
-              className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Cancelled
-            </button>
-
-            <button
-              onClick={handlePaused}
-              className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Paused
-            </button>
-
-            <button
-              onClick={handleUnsubscribed}
-              className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Unsubscribed
-            </button>
-
-            <button
-              onClick={handlePendingDeliveries}
-              className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Pending
-            </button>
-
-            <button
-              onClick={handleLowBalance}
-              className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Low balance
-            </button>
-
-            <button
-              onClick={handleAddOns}
-              className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              AddOns
-            </button>
-          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <button
             onClick={handleDeliveryBoyAssign}
             disabled={isLoading}
@@ -333,7 +397,7 @@ const page = () => {
             Assign Delivery
             {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
           </button>
-        </div>
+        </div> */}
         <div className="flex justify-between w-1/2 items-center">
           <h1 className=" mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
         </div>
@@ -342,7 +406,7 @@ const page = () => {
         ) : !showPending ? (
           <div className="flex w-full">
             <div className="flex flex-col gap-3 w-[50%]">
-                {results.map((user: any, index) => {
+              {results.map((user: any, index) => {
                 return (
                   <Card
                     className={`flex`}
