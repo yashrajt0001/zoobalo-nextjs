@@ -36,7 +36,8 @@
     "shadcn-ui": "^0.8.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.3",
