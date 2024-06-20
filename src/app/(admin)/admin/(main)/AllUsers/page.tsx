@@ -3,7 +3,8 @@
 import { Card } from "@/components/Card";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { CircleEllipsis, Loader2 } from "lucide-react";
+import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 
@@ -19,6 +20,7 @@ const page = () => {
   const [updateLoader, setUpdateLoader] = useState(false); // loader when a user's details are updated
   const [tempResults, setTempResults] = useState([]); // temp results stores all users which helps in searching user
   const [selectedTab, setSelectedTab] = useState(0);
+  const [showDropDown, setShowDropDown] = useState(null);
 
   const context = useContext(UserContext);
   const {
@@ -258,135 +260,136 @@ const page = () => {
 
   return (
     <>
-      <div className="flex px-4 gap-12 border-b border-gray-300 ">
-        <button
-          className={`py-3 ${
-            selectedTab == 0 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handleAllUsers}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+      <div className="w-[100%]">
+        <div className="flex px-4 gap-12 border-b border-gray-300">
+          <button
+            className={`py-3 ${
+              selectedTab == 0 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handleAllUsers}
           >
-            All Users
-          </h1>
-        </button>
-        <button
-          className={`py-3 ${
-            selectedTab == 1 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handleSubscribe}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+            <h1
+              className={`text-xl ${
+                selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              All Users
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 1 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handleSubscribe}
           >
-            Subscribed
-          </h1>
-        </button>
-        <button
-          className={`py-3 ${
-            selectedTab == 2 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handleCancel}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+            <h1
+              className={`text-xl ${
+                selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Subscribed
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 2 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handleCancel}
           >
-            Cancelled
-          </h1>
-        </button>
-        <button
-          className={`py-3 ${
-            selectedTab == 3 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handlePaused}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+            <h1
+              className={`text-xl ${
+                selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Cancelled
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 3 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handlePaused}
           >
-            Paused
-          </h1>
-        </button>
+            <h1
+              className={`text-xl ${
+                selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Paused
+            </h1>
+          </button>
 
-        <button
-          className={`py-3 ${
-            selectedTab == 4 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handleUnsubscribed}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+          <button
+            className={`py-3 ${
+              selectedTab == 4 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handleUnsubscribed}
           >
-            Unsubscribed
-          </h1>
-        </button>
+            <h1
+              className={`text-xl ${
+                selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Unsubscribed
+            </h1>
+          </button>
 
-        <button
-          className={`py-3 ${
-            selectedTab == 5 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handlePendingDeliveries}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+          <button
+            className={`py-3 ${
+              selectedTab == 5 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handlePendingDeliveries}
           >
-            Pending
-          </h1>
-        </button>
-        <button
-          className={`py-3 ${
-            selectedTab == 6 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handleLowBalance}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+            <h1
+              className={`text-xl ${
+                selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Pending
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 6 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handleLowBalance}
           >
-            Low Balance
-          </h1>
-        </button>
-        <button
-          className={`py-3 ${
-            selectedTab == 7 ? "border-b-2 border-blue-400" : ""
-          }`}
-          onClick={handleAddOns}
-        >
-          <h1
-            className={`text-xl ${
-              selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+            <h1
+              className={`text-xl ${
+                selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Low Balance
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 7 ? "border-b-2 border-blue-400" : ""
             }`}
+            onClick={handleAddOns}
           >
-            Addons
-          </h1>
-        </button>
-      </div>
-
-      <div className="bg-slate-50 pl-12 mt-6">
-        <div className="flex items-center">
-          <input
-            type="text"
-            value={searchinput}
-            onChange={(e) => setSearchinput(e.target.value)}
-            placeholder="Search a User"
-            className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
-          />
+            <h1
+              className={`text-xl ${
+                selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Addons
+            </h1>
+          </button>
         </div>
 
-        {/* <div className="flex items-center gap-2">
+        <div className="bg-slate-50 pl-12 mt-6">
+          <div>
+            <input
+              type="text"
+              value={searchinput}
+              onChange={(e) => setSearchinput(e.target.value)}
+              placeholder="Search a User"
+              className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
+            />
+          </div>
+
+          {/* <div className="flex items-center gap-2">
           <button
             onClick={handleDeliveryBoyAssign}
             disabled={isLoading}
@@ -398,50 +401,82 @@ const page = () => {
             {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
           </button>
         </div> */}
-        <div className="flex justify-between w-1/2 items-center">
-          <h1 className=" mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
-        </div>
-        {isFetchloading ? (
-          <Loader2 className="animate-spin w-8 h-8" />
-        ) : !showPending ? (
-          <div className="flex w-full">
-            <div className="flex flex-col gap-3 w-[50%]">
-              {results.map((user: any, index) => {
-                return (
-                  <Card
-                    className={`flex`}
-                    id={user.id}
-                    key={index}
-                    _name={user?.name}
-                    _morningAddress={user?.morningAddress}
-                    _eveningAddress={user?.eveningAddress}
-                    _balance={user?.balance?.toString()}
-                    _location={user?.location}
-                    _mobile={user?.phone}
-                    dueTiffin={user?.dueTiffin}
-                    _type={
-                      user?.order?.length > 1
-                        ? "BOTH"
-                        : user?.order[0]?.tiffinTime
-                    }
-                    _isSubscribed={user?.order.length == 0 ? false : true}
-                    _isPaused={
-                      user.order.length > 0 && user.order[0].NextMeal.isPause
-                        ? true
-                        : false
-                    }
-                    _order={user.order}
-                    nextMeal={
-                      user.order.length > 0 ? user.order[0].NextMeal : {}
-                    }
-                    user={user}
-                    isPending={showPending}
-                  />
-                );
-              })}
-            </div>
+          <div>
+            <h1 className="mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
+          </div>
+          {isFetchloading ? (
+            <Loader2 className="animate-spin w-8 h-8" />
+          ) : !showPending ? (
+            <div className="text-2xl font-semibold w-[100%] pr-[4%]">
+              <div className="flex mb-2 w-full">
+                <h1 className="w-[20%] text-center">Name</h1>
+                <h1 className="w-[20%] text-center">Phone</h1>
+                <h1 className="w-[20%] text-center">Balance</h1>
+                <h1 className="w-[20%] text-center">Tiffin Time</h1>
+                <h1 className="w-[20%] text-center"></h1>
+              </div>
+              <div className="w-[100%]">
+                {results.map((user: any) => {
+                  return (
+                    <>
+                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                        <h1 className="w-[20%] text-center truncate">
+                          {user?.name}
+                        </h1>
+                        <h1 className="w-[20%] text-center truncate">
+                          {user?.phone}
+                        </h1>
+                        <h1 className="w-[20%] text-center truncate">
+                          {user?.balance?.toString()}
+                        </h1>
+                        <h1 className="w-[20%] text-center truncate">
+                          {user?.order?.length > 1
+                            ? "BOTH"
+                            : user?.order[0]?.tiffinTime}
+                        </h1>
+                        <button
+                          onClick={() => setShowDropDown(user.id)}
+                          className="w-[20%] flex items-center justify-center"
+                        >
+                          <CircleEllipsis />
+                        </button>
+                      </div>
+                      {showDropDown == user.id && (
+                        <div className="absolute border right-[4%] border-gray-300 bg-gray-300 w-[16%] border-t-0 rounded-lg rounded-t-none z-40">
+                          <button className="border-b-2 border-white py-2 text-center w-full">
+                            Update
+                          </button>
+                          <Link
+                            href={`/kitchenHead/user?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                          >
+                            <button className="border-b-2 border-white py-2 text-center w-full">
+                              Show History
+                            </button>
+                          </Link>
+                          <Link
+                            href={`/kitchenHead/user/recharges?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                          >
+                            <button className="border-b-2 border-white py-2 text-center w-full">
+                              Recharge History
+                            </button>
+                          </Link>
+                          {user.order.length==0 && (
+                            <Link
+                              href={`/kitchenHead/user/subscription?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                            >
+                              <button className="border-b-2 border-white py-2 text-center w-full">
+                                Add Subscription
+                              </button>
+                            </Link>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  );
+                })}
+              </div>
 
-            {userName != "" && (
+              {/* {userName != "" && (
               <div className="w-[40%] ml-12 -mt-14">
                 <div className="sticky top-24 z-10 bg-white flex flex-col gap-2">
                   <h1 className="text-3xl">Update:</h1>
@@ -504,39 +539,42 @@ const page = () => {
                   </button>
                 </div>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {results.map((user: any, index) => {
-              return (
-                <Card
-                  className={`flex w-[50%]`}
-                  id={user.id}
-                  key={index}
-                  _name={user?.user?.name}
-                  _morningAddress={user?.user?.morningAddress}
-                  _eveningAddress={user?.user?.eveningAddress}
-                  _balance={user?.user?.balance?.toString()}
-                  _location={user?.user?.address}
-                  _mobile={user?.user?.phone}
-                  dueTiffin={user?.dueTiffin}
-                  _type={user?.order?.tiffinTime}
-                  _isSubscribed={user?.order?.length == 0 ? false : true}
-                  _isPaused={
-                    user.order.length > 0 && user.order[0].NextMeal.isPause
-                      ? true
-                      : false
-                  }
-                  _order={user.order}
-                  nextMeal={user.order.length > 0 ? user.order[0].NextMeal : {}}
-                  user={user}
-                  isPending={showPending}
-                />
-              );
-            })}
-          </div>
-        )}
+            )} */}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {results.map((user: any, index) => {
+                return (
+                  <Card
+                    className={`flex w-[50%]`}
+                    id={user.id}
+                    key={index}
+                    _name={user?.user?.name}
+                    _morningAddress={user?.user?.morningAddress}
+                    _eveningAddress={user?.user?.eveningAddress}
+                    _balance={user?.user?.balance?.toString()}
+                    _location={user?.user?.address}
+                    _mobile={user?.user?.phone}
+                    dueTiffin={user?.dueTiffin}
+                    _type={user?.order?.tiffinTime}
+                    _isSubscribed={user?.order?.length == 0 ? false : true}
+                    _isPaused={
+                      user.order.length > 0 && user.order[0].NextMeal.isPause
+                        ? true
+                        : false
+                    }
+                    _order={user.order}
+                    nextMeal={
+                      user.order.length > 0 ? user.order[0].NextMeal : {}
+                    }
+                    user={user}
+                    isPending={showPending}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

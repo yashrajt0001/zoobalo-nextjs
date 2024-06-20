@@ -24,6 +24,26 @@ const items = [
     icon: null,
     route: "/admin/AllUsers",
   },
+  {
+    name: "Today's History",
+    icon: null,
+    route: "/admin/inventory"
+  },
+  {
+    name: "All History",
+    icon: null,
+    route: "/admin/tiffinHistory",
+  },
+  {
+    name: "Feedback",
+    icon: null,
+    route: "/admin/feedbacks",
+  },
+  {
+    name: "Notifications",
+    icon: null,
+    route: "/admin/notifications",
+  }
 ];
 
 export default function Sidebar({ show, setter }: SidebarProps) {
