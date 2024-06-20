@@ -4,6 +4,8 @@ import React, { FormEvent, useEffect, useState, ChangeEvent } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal-store";
 
 const page = () => {
   const [timing, setTiming] = useState("");
@@ -14,6 +16,8 @@ const page = () => {
   const [cities, setCities] = useState([]);
   const [areaManagers, setAreaManagers] = useState([]);
   const [states, setStates] = useState([]);
+
+  const {onOpen} = useModal()
 
   useEffect(() => {
     async function getAllCities() {
@@ -467,33 +471,40 @@ const page = () => {
         </div>
 
         {selectedTab == 1 && (
-          <div className="pt-8 bg-[#F6F6F6] relative">
-            <div className="pb-8 px-8">
-              <div className="flex py-6 text-2xl font-semibold">
-                <h1 className="w-[25%] text-center">Name</h1>
-                {/* <h1 className="w-[20%] text-center">State</h1> */}
-                <h1 className="w-[25%] text-center">District</h1>
-                <h1 className="w-[25%] text-center">Phone</h1>
-                <h1 className="w-[25%] text-center">Address</h1>
-              </div>
+          <>
+            <Button onClick={()=>onOpen('createAreaManager')}>create</Button>
+            <div className="pt-8 bg-[#F6F6F6] relative">
+              <div className="pb-8 px-8">
+                <div className="flex py-6 text-2xl font-semibold">
+                  <h1 className="w-[25%] text-center">Name</h1>
+                  {/* <h1 className="w-[20%] text-center">State</h1> */}
+                  <h1 className="w-[25%] text-center">District</h1>
+                  <h1 className="w-[25%] text-center">Phone</h1>
+                  <h1 className="w-[25%] text-center">Address</h1>
+                </div>
 
-              <div className="overflow-y-auto">
-                {areaManagers.map((areaManager: any) => (
-                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                    <h1 className="w-[25%] text-center">{areaManager.name}</h1>
-                    {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
-                    <h1 className="w-[25%] text-center">
-                      {areaManager.district}
-                    </h1>
-                    <h1 className="w-[25%] text-center">{areaManager.phone}</h1>
-                    <h1 className="w-[25%] text-center">
-                      {areaManager.officeAddress}
-                    </h1>
-                  </div>
-                ))}
+                <div className="overflow-y-auto">
+                  {areaManagers.map((areaManager: any) => (
+                    <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                      <h1 className="w-[25%] text-center">
+                        {areaManager.name}
+                      </h1>
+                      {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
+                      <h1 className="w-[25%] text-center">
+                        {areaManager.district}
+                      </h1>
+                      <h1 className="w-[25%] text-center">
+                        {areaManager.phone}
+                      </h1>
+                      <h1 className="w-[25%] text-center">
+                        {areaManager.officeAddress}
+                      </h1>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
 
         {selectedTab == 2 && (
