@@ -1,7 +1,7 @@
 "use client";
 
-import axios, { AxiosError } from "axios";
-import { redirect, usePathname } from "next/navigation";
+import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
@@ -11,31 +11,35 @@ interface MyComponentProps {
   name: "admin" | "kitchenHead" | "areaManager";
 }
 
-export const ShowLogin: React.FC<MyComponentProps> = ({ name }) => {
+export const ShowLogin = ({ name }: MyComponentProps) => {
   const pathname = usePathname();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState<undefined | string>(undefined);
   const [isLoading, setisLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const authToken = localStorage.getItem("auth-token");
-  if (authToken) {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_HOST}/admin/verify`, {
-        headers: {
-          "auth-token": authToken,
-        },
-      })
-      .catch(() => localStorage.removeItem("auth-token"));
-    return redirect("/admin");
-  }
+  const router = useRouter();
 
   useEffect(() => {
-    if (isLoggedIn) {
-      redirect("/admin");
+    const authToken = localStorage.getItem("auth-token");
+    if (authToken) {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_HOST}/${name}/verify`, {
+          headers: {
+            "auth-token": authToken,
+          },
+        })
+        .catch(() => localStorage.removeItem("auth-token"));
+      router.push(`/${name}`);
     }
-  }, [isLoggedIn]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     return router.push("/admin");
+  //   }
+  // }, [isLoggedIn]);
 
   const handleLogin = async () => {
     try {
@@ -52,7 +56,7 @@ export const ShowLogin: React.FC<MyComponentProps> = ({ name }) => {
         }
       );
       localStorage.setItem("auth-token", data.token);
-      setIsLoggedIn(true);
+      return router.push("/admin");
     } catch (error: any) {
       // todo: show toast error
       console.log(createErrorMessage(error));
