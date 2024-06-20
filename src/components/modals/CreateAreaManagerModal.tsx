@@ -5,6 +5,7 @@ import { Dialog, DialogDescription, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { useModal } from "@/hooks/use-modal-store";
 import { DialogContent } from "@radix-ui/react-dialog";
+import Modal from "../ui/modal";
 
 interface CreateAreaManagerModalProps {}
 
@@ -15,12 +16,11 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
   console.log(isModalOpen);
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogTitle>name</DialogTitle>
-        <DialogDescription>yashraj</DialogDescription>
-      </DialogContent>
-    </Dialog>
+    <Modal open={isModalOpen} onClose={onClose}>
+      <div>
+        create areaManager
+      </div>
+    </Modal>
   );
 };
 
