@@ -1,9 +1,17 @@
 "use client";
 
 import { Card } from "@/components/Card";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { PopoverClose } from "@radix-ui/react-popover";
 import axios from "axios";
-import { CircleEllipsis, Loader2 } from "lucide-react";
+import { Ellipsis, EllipsisVertical, Loader2 } from "lucide-react";
 import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
@@ -20,7 +28,6 @@ const page = () => {
   const [updateLoader, setUpdateLoader] = useState(false); // loader when a user's details are updated
   const [tempResults, setTempResults] = useState([]); // temp results stores all users which helps in searching user
   const [selectedTab, setSelectedTab] = useState(0);
-  const [showDropDown, setShowDropDown] = useState(null);
 
   const context = useContext(UserContext);
   const {
@@ -434,43 +441,46 @@ const page = () => {
                             ? "BOTH"
                             : user?.order[0]?.tiffinTime}
                         </h1>
-                        <button
-                          onClick={() => setShowDropDown(user.id)}
-                          className="w-[20%] flex items-center justify-center"
-                        >
-                          <CircleEllipsis />
-                        </button>
+                        <Popover>
+                          <PopoverTrigger>
+                            <Button variant="ghost">
+                              <EllipsisVertical className="w-5 h-5" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-2">
+                            {/* <div className="font-semibold text-base mb-2">
+                              Actions
+                            </div>
+                            <Separator/> */}
+                            <PopoverClose className="flex flex-col w-full items-center">
+                              <Button
+                                className="w-full flex justify-start"
+                                variant="ghost"
+                              >
+                                Update
+                              </Button>
+                              <Button
+                                className="w-full flex justify-start"
+                                variant="ghost"
+                              >
+                                Tiffin history
+                              </Button>
+                              <Button
+                                className="w-full flex justify-start"
+                                variant="ghost"
+                              >
+                                Recharge history
+                              </Button>
+                              <Button
+                                className="w-full flex justify-start"
+                                variant="ghost"
+                              >
+                                Add subscription
+                              </Button>
+                            </PopoverClose>
+                          </PopoverContent>
+                        </Popover>
                       </div>
-                      {showDropDown == user.id && (
-                        <div className="absolute border right-[4%] border-gray-300 bg-gray-300 w-[16%] border-t-0 rounded-lg rounded-t-none z-40">
-                          <button className="border-b-2 border-white py-2 text-center w-full">
-                            Update
-                          </button>
-                          <Link
-                            href={`/kitchenHead/user?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
-                          >
-                            <button className="border-b-2 border-white py-2 text-center w-full">
-                              Show History
-                            </button>
-                          </Link>
-                          <Link
-                            href={`/kitchenHead/user/recharges?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
-                          >
-                            <button className="border-b-2 border-white py-2 text-center w-full">
-                              Recharge History
-                            </button>
-                          </Link>
-                          {user.order.length==0 && (
-                            <Link
-                              href={`/kitchenHead/user/subscription?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
-                            >
-                              <button className="border-b-2 border-white py-2 text-center w-full">
-                                Add Subscription
-                              </button>
-                            </Link>
-                          )}
-                        </div>
-                      )}
                     </>
                   );
                 })}

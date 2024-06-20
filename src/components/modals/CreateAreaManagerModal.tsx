@@ -1,10 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import { Dialog, DialogDescription, DialogTitle } from "../ui/dialog";
-import { Input } from "../ui/input";
 import { useModal } from "@/hooks/use-modal-store";
-import { DialogContent } from "@radix-ui/react-dialog";
 import Modal from "../ui/modal";
 
 interface CreateAreaManagerModalProps {}

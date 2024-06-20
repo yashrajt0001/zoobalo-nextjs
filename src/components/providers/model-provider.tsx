@@ -16,7 +16,7 @@ const ModalProvider = () => {
 
   return (
     <>
-      <CreateAreaManagerModal/>
+      <CreateAreaManagerModal />
     </>
   );
 };

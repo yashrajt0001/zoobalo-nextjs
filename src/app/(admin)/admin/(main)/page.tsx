@@ -17,7 +17,7 @@ const page = () => {
   const [areaManagers, setAreaManagers] = useState([]);
   const [states, setStates] = useState([]);
 
-  const {onOpen} = useModal()
+  const { onOpen } = useModal();
 
   useEffect(() => {
     async function getAllCities() {
@@ -472,7 +472,7 @@ const page = () => {
 
         {selectedTab == 1 && (
           <>
-            <Button onClick={()=>onOpen('createAreaManager')}>create</Button>
+            <Button onClick={() => onOpen("createAreaManager")}>create</Button>
             <div className="pt-8 bg-[#F6F6F6] relative">
               <div className="pb-8 px-8">
                 <div className="flex py-6 text-2xl font-semibold">
@@ -483,7 +483,7 @@ const page = () => {
                   <h1 className="w-[25%] text-center">Address</h1>
                 </div>
 
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto h-[60%]">
                   {areaManagers.map((areaManager: any) => (
                     <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
                       <h1 className="w-[25%] text-center">
@@ -515,30 +515,34 @@ const page = () => {
                 <h1 className="w-[50%] text-center">Security Deposit</h1>
               </div>
 
-              {cities.map((city: any) => (
-                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                  <h1 className="w-[50%] text-center">{city.name}</h1>
-                  <h1 className="w-[50%] text-center">
-                    {city.securityDeposit}
-                  </h1>
-                </div>
-              ))}
+              <div className="h-[60%]">
+                {cities.map((city: any) => (
+                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                    <h1 className="w-[50%] text-center">{city.name}</h1>
+                    <h1 className="w-[50%] text-center">
+                      {city.securityDeposit}
+                    </h1>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {selectedTab == 3 && (
-          <div className="pt-8 bg-[#F6F6F6] relative">
+          <div className="pt-8 bg-[#F6F6F6]">
             <div className="pb-8 px-8">
               <div className="flex mt-6 text-2xl font-semibold px-2">
                 <h1>Name</h1>
               </div>
 
-              {states.map((state: any) => (
-                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
-                  <h1>{state.name}</h1>
-                </div>
-              ))}
+              <div className="mt-2 overflow-y-scroll h-80">
+                {states.map((state: any) => (
+                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
+                    <h1>{state.name}</h1>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
