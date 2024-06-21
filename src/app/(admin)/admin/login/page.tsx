@@ -1,8 +1,11 @@
-import { ShowLogin } from '@/components/ShowLogin'
-import { FC } from 'react'
+import { ShowLogin } from "@/components/ShowLogin";
 
 const page = () => {
-  return <ShowLogin name='admin'/>
-}
+  return (
+    <div>
+      <ShowLogin name="admin" />
+    </div>
+  );
+};
 
-export default page
+export default page;

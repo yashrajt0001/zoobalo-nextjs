@@ -21,6 +21,7 @@ const page = () => {
   const [kitchens, setKitchens] = useState([]);
 
   const { onOpen } = useModal();
+  const { onOpen } = useModal();
 
   useEffect(() => {
     async function getAllCities() {
@@ -415,7 +416,7 @@ const page = () => {
                   <h1 className="w-[25%] text-center">Address</h1>
                 </div>
 
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto h-[60%]">
                   {areaManagers.map((areaManager: any) => (
                     <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
                       <h1 className="w-[25%] text-center">
@@ -454,6 +455,7 @@ const page = () => {
                   <h1 className="w-[50%] text-center">Security Deposit</h1>
                 </div>
 
+              <div className="h-[60%]">
                 {cities.map((city: any) => (
                   <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
                     <h1 className="w-[50%] text-center">{city.name}</h1>
@@ -464,7 +466,7 @@ const page = () => {
                 ))}
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {selectedTab == 3 && (
