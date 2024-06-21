@@ -130,7 +130,8 @@ const page = () => {
   };
 
   return (
-    <div>
+    <div className="flex h-[calc(100vh-65px)]">
+      <div className="flex-1 overflow-y-auto p-8 pt-4">
         <div className="pb-8 min-h-full">
           <div className="flex mt-7">
             <div className="ml-12 flex flex-col gap-3 w-[43%]">
@@ -176,7 +177,7 @@ const page = () => {
                 onClick={handleKitchenCreate}
                 className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
               >
-                {kitchenLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
+                {kitchenLoader && <Loader2 className="animate-spin mr-2" />}
                 Create
               </button>
             </div>
@@ -239,9 +240,7 @@ const page = () => {
                 onClick={handleKitchenHeadCreate}
                 className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
               >
-                {kitchenHeadLoader && (
-                  <Loader2 className=" animate-spin mr-2" />
-                )}{" "}
+                {kitchenHeadLoader && <Loader2 className="animate-spin mr-2" />}
                 Create
               </button>
             </div>
@@ -275,13 +274,14 @@ const page = () => {
                 className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
               >
                 {kitchenHeadAssignLoader && (
-                  <Loader2 className=" animate-spin mr-2" />
-                )}{" "}
+                  <Loader2 className="animate-spin mr-2" />
+                )}
                 Assign
               </button>
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 };

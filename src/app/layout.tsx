@@ -32,10 +32,13 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Toaster containerClassName="text-3xl" position="bottom-center" />
-        <ModalProvider />
-        <UserState>{children}</UserState>
+        <UserState>
+          <Toaster containerClassName="text-3xl" position="bottom-center" />
+          <ModalProvider />
+          {children}
+        </UserState>
       </body>
     </html>
   );
 }
+

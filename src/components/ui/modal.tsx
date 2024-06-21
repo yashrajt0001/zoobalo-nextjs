@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 interface ModalProps {
     open: boolean
     onClose: () => void
-    children: React.ReactNode
+  children: React.ReactNode
 }
 
 export default function Modal({ open, onClose, children }: ModalProps) {
@@ -12,7 +12,7 @@ export default function Modal({ open, onClose, children }: ModalProps) {
     <div
       onClick={onClose}
       className={`
-        fixed z-10 inset-0 flex justify-center items-center transition-colors
+        fixed z-10 inset-0 flex justify-center items-center transition-colors overflow-y-auto
         ${open ? "visible bg-black/20" : "invisible"}
       `}
     >
@@ -20,7 +20,7 @@ export default function Modal({ open, onClose, children }: ModalProps) {
       <div
         onClick={(e) => e.stopPropagation()}
         className={`
-          bg-white z-20 rounded-xl shadow p-6 transition-all
+          bg-white z-20 absolute top-[20%] rounded-xl shadow transition-all w-[40%] p-6
           ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
         `}
       >

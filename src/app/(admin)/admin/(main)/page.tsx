@@ -14,10 +14,13 @@ const page = () => {
   const [selectedCity, setSelectedCity] = useState(1);
   const [kitchenLoader, setKitchenLoader] = useState(false);
   const [cities, setCities] = useState([]);
-  const [areaManagers, setAreaManagers] = useState([]);
   const [states, setStates] = useState([]);
+  const [areaManagers, setAreaManagers] = useState([]);
+  const [searchinput, setSearchinput] = useState("");
+  const [isFetchloading, setIsFetchloading] = useState(false);
+  const [kitchens, setKitchens] = useState([]);
 
-  const {onOpen} = useModal()
+  const { onOpen } = useModal();
 
   useEffect(() => {
     async function getAllCities() {
@@ -25,18 +28,6 @@ const page = () => {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
         setCities(res.data);
         setSelectedCity(res.data[0].id);
-      } catch (error: any) {
-        toast.error(error?.response?.data);
-      }
-    }
-
-    async function getAllStates() {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_HOST}/state/get`
-        );
-        console.log(res.data);
-        setStates(res.data);
       } catch (error: any) {
         toast.error(error?.response?.data);
       }
@@ -63,10 +54,45 @@ const page = () => {
       }
     };
 
+    async function getAllStates() {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/state/get`
+        );
+        console.log(res.data);
+        setStates(res.data);
+      } catch (error: any) {
+        toast.error(error?.response?.data);
+      }
+    }
     getAllStates();
+
     getAreaManagers();
     getAllCities();
   }, []);
+
+  // gets all kitchens
+  useEffect(() => {
+    async function getAllKitchens() {
+      setIsFetchloading(true);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/kitchen/get?cityId=${selectedCity}`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setKitchens(res.data.kitchens);
+      } catch (error: any) {
+        toast.error(error.response.data);
+      } finally {
+        setIsFetchloading(false);
+      }
+    }
+    getAllKitchens();
+  }, [selectedCity]);
 
   const [userDetails, setUserDetails] = useState({
     name: "",
@@ -105,13 +131,8 @@ const page = () => {
   const [delBoyLoader, setDelBoyLoader] = useState(false);
   const [areaManagerId, setAreaManagerId] = useState(null);
   const [cityId, setCityId] = useState(null);
-  const [stateName, setStateName] = useState("");
-  const [cityName, setCityName] = useState("");
-  const [stateId, setStateId] = useState("");
   const [areaManagerLoader, setAreaManagerLoader] = useState(false);
   const [assignAreaManagerLoader, setAssignAreaManagerLoader] = useState(false);
-  const [stateLoader, setStateLoader] = useState(false);
-  const [cityLoader, setCityLoader] = useState(false);
   const [skipTiming, setSkipTiming] = useState("");
   const [skipLoader, setSkipLoader] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
@@ -252,64 +273,6 @@ const page = () => {
     }
   };
 
-  const handleCreateAreaManager = async () => {
-    if (
-      !areaManagerDetails.name ||
-      !areaManagerDetails.username ||
-      !areaManagerDetails.password ||
-      !areaManagerDetails.email ||
-      !areaManagerDetails.phone ||
-      !areaManagerDetails.alternatePhone ||
-      !areaManagerDetails.emergencyPhone ||
-      !areaManagerDetails.residentAddress ||
-      !areaManagerDetails.officeAddress ||
-      !areaManagerDetails.aadhar ||
-      !areaManagerDetails.pan ||
-      !areaManagerDetails.agreement ||
-      !areaManagerDetails.stateId ||
-      !areaManagerDetails.district
-    ) {
-      return toast.error("Please enter details!");
-    }
-
-    if (!selectedFile) {
-      return toast.error("Please select a file");
-    }
-
-    try {
-      setAreaManagerLoader(true);
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/areaManager/create`,
-        {
-          name: areaManagerDetails.name,
-          username: areaManagerDetails.username,
-          password: areaManagerDetails.password,
-          email: areaManagerDetails.email,
-          phone: areaManagerDetails.phone,
-          alternatePhone: areaManagerDetails.alternatePhone,
-          emergencyPhone: areaManagerDetails.emergencyPhone,
-          residentAddress: areaManagerDetails.residentAddress,
-          officeAddress: areaManagerDetails.officeAddress,
-          aadhar: areaManagerDetails.aadhar,
-          pan: areaManagerDetails.pan,
-          agreement: areaManagerDetails.agreement,
-          stateId: parseInt(areaManagerDetails.stateId),
-          district: areaManagerDetails.district,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      console.log(data);
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setAreaManagerLoader(false);
-    }
-  };
-
   const handleAreaHeadAssign = async () => {
     if (!areaManagerId || !cityId) {
       return toast.error("Please enter details!");
@@ -334,58 +297,7 @@ const page = () => {
     } finally {
       setAssignAreaManagerLoader(false);
     }
-  };
-
-  const handleStateCreation = async () => {
-    if (!stateName) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setStateLoader(true);
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/state/create`,
-        {
-          name: stateName,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setStateLoader(false);
-    }
-  };
-
-  const handleCityCreation = async () => {
-    if (!cityName) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setCityLoader(true);
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/city/create`,
-        {
-          name: cityName,
-          stateId: parseInt(stateId),
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setCityLoader(false);
-    }
-  };
+  }; 
 
   const handleSkip = async () => {
     setSkipLoader(true);
@@ -409,7 +321,8 @@ const page = () => {
   };
 
   return (
-    <>
+      <div className="flex h-[calc(100vh-65px)]">
+      <div className="flex-1 overflow-y-auto">
       <div className="bg-slate-50">
         <div className="flex px-4 gap-12 border-b border-gray-300 ">
           <button
@@ -468,11 +381,30 @@ const page = () => {
               State
             </h1>
           </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 4 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(4)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Kitchens
+            </h1>
+          </button>
         </div>
 
         {selectedTab == 1 && (
           <>
-            <Button onClick={()=>onOpen('createAreaManager')}>create</Button>
+            <Button
+              className="ml-8 mt-5"
+              onClick={() => onOpen("createAreaManager")}
+            >
+              Create
+            </Button>
             <div className="pt-8 bg-[#F6F6F6] relative">
               <div className="pb-8 px-8">
                 <div className="flex py-6 text-2xl font-semibold">
@@ -508,26 +440,41 @@ const page = () => {
         )}
 
         {selectedTab == 2 && (
-          <div className="pt-8 bg-[#F6F6F6] relative">
-            <div className="pb-8 px-8">
-              <div className="flex mt-6 text-2xl font-semibold">
-                <h1 className="w-[50%] text-center">Name</h1>
-                <h1 className="w-[50%] text-center">Security Deposit</h1>
-              </div>
-
-              {cities.map((city: any) => (
-                <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                  <h1 className="w-[50%] text-center">{city.name}</h1>
-                  <h1 className="w-[50%] text-center">
-                    {city.securityDeposit}
-                  </h1>
+          <>
+            <Button
+              className="ml-8 mt-5"
+              onClick={() => onOpen("createCity")}
+            >
+              Create
+            </Button>
+            <div className="pt-8 bg-[#F6F6F6] relative">
+              <div className="pb-8 px-8">
+                <div className="flex mt-6 text-2xl font-semibold">
+                  <h1 className="w-[50%] text-center">Name</h1>
+                  <h1 className="w-[50%] text-center">Security Deposit</h1>
                 </div>
-              ))}
+
+                {cities.map((city: any) => (
+                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                    <h1 className="w-[50%] text-center">{city.name}</h1>
+                    <h1 className="w-[50%] text-center">
+                      {city.securityDeposit}
+                    </h1>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </>
         )}
 
         {selectedTab == 3 && (
+          <>
+            <Button
+              className="ml-8 mt-5"
+              onClick={() => onOpen("createState")}
+            >
+              Create
+            </Button>
           <div className="pt-8 bg-[#F6F6F6] relative">
             <div className="pb-8 px-8">
               <div className="flex mt-6 text-2xl font-semibold px-2">
@@ -540,7 +487,54 @@ const page = () => {
                 </div>
               ))}
             </div>
-          </div>
+            </div>
+            </>
+        )}
+
+        {selectedTab == 4 && (
+          <>
+            <div className="flex items-center mt-6 ml-8">
+              <input
+                type="text"
+                value={searchinput}
+                onChange={(e) => setSearchinput(e.target.value)}
+                placeholder="Search a Kitchen"
+                className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
+              />
+
+              <select
+                onChange={(e) => setSelectedCity(parseInt(e.target.value))}
+                value={selectedCity}
+                className="py-2 px-4 rounded-md bg-green-400 text-white ml-6"
+              >
+                {cities.map((city: any) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {isFetchloading ? (
+              <Loader2 className="animate-spin w-8 h-8" />
+            ) : (
+              <div className="pt-8 bg-[#F6F6F6] relative">
+                <div className="pb-8 px-8">
+                  <div className="flex mt-6 text-2xl font-semibold">
+                    <h1 className="w-[50%] text-center">Name</h1>
+                    <h1 className="w-[50%] text-center">Address</h1>
+                  </div>
+
+                  {kitchens.map((kitchen: any) => (
+                    <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                      <h1 className="w-[50%] text-center">{kitchen.name}</h1>
+                      <h1 className="w-[50%] text-center">{kitchen.address}</h1>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {selectedTab == 0 && (
@@ -749,293 +743,9 @@ const page = () => {
               </button>
             </div>
           </div> */}
-
-        {/* <div className="flex ml-16 mt-4">
-            <div className="flex flex-col gap-4 w-[40%]">
-              <h1 className="text-3xl">Create Area Manager:</h1>
-              <input
-                type="text"
-                name="name"
-                value={areaManagerDetails.name}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Name"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="username"
-                value={areaManagerDetails.username}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Username"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="password"
-                value={areaManagerDetails.password}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Password"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="email"
-                value={areaManagerDetails.email}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="E-mail"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="phone"
-                value={areaManagerDetails.phone}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Phone No."
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="alternatePhone"
-                value={areaManagerDetails.alternatePhone}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Alternate Phone No."
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="emergencyPhone"
-                value={areaManagerDetails.emergencyPhone}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Emergency Phone No."
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="residentAddress"
-                value={areaManagerDetails.residentAddress}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Residential address"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="officeAddress"
-                value={areaManagerDetails.officeAddress}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Office Address"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="aadhar"
-                value={areaManagerDetails.aadhar}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Aadhar No."
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="pan"
-                value={areaManagerDetails.pan}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Pan Card No."
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="agreement"
-                value={areaManagerDetails.agreement}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="agreement"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="stateId"
-                value={areaManagerDetails.stateId}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="State Id"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="district"
-                value={areaManagerDetails.district}
-                onChange={(e) => {
-                  setAreaManagerDetails({
-                    ...areaManagerDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="District"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input type="file" onChange={handleFileChange} />
-              <button
-                onClick={handleCreateAreaManager}
-                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
-              >
-                {areaManagerLoader && (
-                  <Loader2 className=" animate-spin mr-2" />
-                )}{" "}
-                Create
-              </button>
-            </div>
-
-            <div className="w-[50%]">
-              <div className="ml-28 flex flex-col gap-3">
-                <h1 className="text-3xl">Assign AreaManager to City:</h1>
-                <input
-                  type="number"
-                  name="areaHeadId"
-                  value={areaManagerId as any}
-                  onChange={(e) => {
-                    setAreaManagerId(e.target.value as any);
-                  }}
-                  placeholder="Area Head Id"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <input
-                  type="number"
-                  name="cityId"
-                  value={cityId as any}
-                  onChange={(e) => {
-                    setCityId(e.target.value as any);
-                  }}
-                  placeholder="City Id"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <button
-                  onClick={handleAreaHeadAssign}
-                  className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
-                >
-                  {assignAreaManagerLoader && (
-                    <Loader2 className=" animate-spin mr-2" />
-                  )}{" "}
-                  Assign
-                </button>
-              </div>
-
-              <div className="ml-28 flex flex-col gap-3 mt-12">
-                <h1 className="text-3xl">Create State:</h1>
-                <input
-                  type="text"
-                  name="name"
-                  value={stateName}
-                  onChange={(e) => {
-                    setStateName(e.target.value);
-                  }}
-                  placeholder="State Name"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <button
-                  onClick={handleStateCreation}
-                  className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
-                >
-                  {stateLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
-                  Create
-                </button>
-              </div>
-
-              <div className="ml-28 flex flex-col gap-3 mt-12">
-                <h1 className="text-3xl">Create City:</h1>
-                <input
-                  type="text"
-                  name="name"
-                  value={cityName}
-                  onChange={(e) => {
-                    setCityName(e.target.value);
-                  }}
-                  placeholder="City Name"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <input
-                  type="number"
-                  name="stateId"
-                  value={stateId}
-                  onChange={(e) => {
-                    setStateId(e.target.value);
-                  }}
-                  placeholder="State Id"
-                  className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <button
-                  onClick={handleCityCreation}
-                  className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
-                >
-                  {cityLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
-                  Create
-                </button>
-              </div>
-            </div>
-          </div> */}
+        </div>
       </div>
-    </>
+      </div>
   );
 };
 

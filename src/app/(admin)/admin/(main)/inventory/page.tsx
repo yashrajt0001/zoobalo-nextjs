@@ -33,11 +33,9 @@ const page = () => {
         setTotalTiffinDelivered(totalDelivered);
         setTotalTiffinPicked(totalPicked);
         setHistory(data);
-      }
-      catch (error: any) {
-      toast.error(error.response.data);
-      }
-      finally {
+      } catch (error: any) {
+        toast.error(error.response.data);
+      } finally {
         setIsFetchloading(false);
       }
     };
@@ -52,43 +50,47 @@ const page = () => {
   const todayDate = `${date}/${month}/${year}`;
 
   return (
-    <div className="pt-8 bg-[#F6F6F6] relative">
-      <div className="pb-8 px-8 min-h-screen">
-        <h1 className="text-3xl text-green-500">{todayDate}</h1>
-        <div className="flex mt-6 px-16 text-2xl font-semibold">
-          <h1 className="w-[20%] text-center">Time</h1>
-          <h1 className="w-[20%] text-center">User</h1>
-          <h1 className="w-[20%] text-center">Mobile</h1>
-          <h1 className="w-[20%] text-center">Delivered</h1>
-          <h1 className="w-[20%] text-center">Picked</h1>
-          <h1 className="w-[20%] text-center">Due</h1>
+    <div className="flex h-[calc(100vh-65px)]">
+      <div className="flex-1 overflow-y-auto">
+        <div className="pt-8 bg-[#F6F6F6] relative">
+          <div className="pb-8 px-8 min-h-screen">
+            <h1 className="text-3xl text-green-500">{todayDate}</h1>
+            <div className="flex mt-6 px-16 text-2xl font-semibold">
+              <h1 className="w-[20%] text-center">Time</h1>
+              <h1 className="w-[20%] text-center">User</h1>
+              <h1 className="w-[20%] text-center">Mobile</h1>
+              <h1 className="w-[20%] text-center">Delivered</h1>
+              <h1 className="w-[20%] text-center">Picked</h1>
+              <h1 className="w-[20%] text-center">Due</h1>
+            </div>
+            {isFetchloading ? (
+              <Loader2 className="w-8 h-8 animate-spin" />
+            ) : (
+              history &&
+              history.map((user: any) => (
+                <TodaysCard
+                  key={user.id}
+                  name={user.user.name}
+                  mobile={user.user.phone}
+                  delivered={user.deliveredTiffin}
+                  picked={user.pickedTiffin}
+                  dateTime={user.createdAt}
+                  due={user.user.dueTiffin}
+                />
+              ))
+            )}
+          </div>
+          <div className="bottom-0 px-24 flex items-center py-4 bg-green-500 text-white w-full sticky text-2xl">
+            <h1 className="w-[25%] text-center">Total :</h1>
+            <h1 className="w-[25%] text-center"></h1>
+            <h1 className="w-[25%] text-center"></h1>
+            <h1 className="w-[25%] text-center">{totalTiffinDelivered}</h1>
+            <h1 className="w-[25%] text-center">{totalTiffinPicked}</h1>
+            <h1 className="w-[25%] text-center">
+              {totalTiffinDelivered - totalTiffinPicked}
+            </h1>
+          </div>
         </div>
-        {isFetchloading ? (
-          <Loader2 className="w-8 h-8 animate-spin" />
-        ) : (
-          history &&
-          history.map((user: any) => (
-            <TodaysCard
-              key={user.id}
-              name={user.user.name}
-              mobile={user.user.phone}
-              delivered={user.deliveredTiffin}
-              picked={user.pickedTiffin}
-              dateTime={user.createdAt}
-              due={user.user.dueTiffin}
-            />
-          ))
-        )}
-      </div>
-      <div className="bottom-0 px-24 flex items-center py-4 bg-green-500 text-white w-full sticky text-2xl">
-        <h1 className="w-[25%] text-center">Total :</h1>
-        <h1 className="w-[25%] text-center"></h1>
-        <h1 className="w-[25%] text-center"></h1>
-        <h1 className="w-[25%] text-center">{totalTiffinDelivered}</h1>
-        <h1 className="w-[25%] text-center">{totalTiffinPicked}</h1>
-        <h1 className="w-[25%] text-center">
-          {totalTiffinDelivered - totalTiffinPicked}
-        </h1>
       </div>
     </div>
   );

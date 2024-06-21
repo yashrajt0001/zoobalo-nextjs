@@ -53,31 +53,35 @@ const page = ({ params }: PageInterface) => {
   }, []);
 
   return (
-    <div className="pt-8 bg-[#F6F6F6] relative">
-      <div className="px-8 pb-8 min-h-screen">
-        <h1 className="text-3xl text-green-500">{name}</h1>
-        <h1 className="text-2xl text-orange-500 mt-1">{mobile}</h1>
-        <div className="flex mt-6 px-16 text-2xl font-semibold">
-          <h1 className="w-[25%] text-center">Time</h1>
-          <h1 className="w-[25%] text-center">Date</h1>
-          <h1 className="w-[25%] text-center">Delivered</h1>
-          <h1 className="w-[25%] text-center">Picked</h1>
-          <h1 className="w-[25%] text-center">Due</h1>
+    <div className="flex h-[calc(100vh-65px)]">
+      <div className="flex-1 overflow-y-auto">
+        <div className="pt-8 bg-[#F6F6F6] relative">
+          <div className="px-8 pb-8 min-h-screen">
+            <h1 className="text-3xl text-green-500">{name}</h1>
+            <h1 className="text-2xl text-orange-500 mt-1">{mobile}</h1>
+            <div className="flex mt-6 px-16 text-2xl font-semibold">
+              <h1 className="w-[25%] text-center">Time</h1>
+              <h1 className="w-[25%] text-center">Date</h1>
+              <h1 className="w-[25%] text-center">Delivered</h1>
+              <h1 className="w-[25%] text-center">Picked</h1>
+              <h1 className="w-[25%] text-center">Due</h1>
+            </div>
+            {isFetchLoading ? (
+              <Loader2 className="animate-spin w-8 h-8" />
+            ) : (
+              users.map((user) => <HistoryCard user={user} />)
+            )}
+          </div>
+          <div className="bottom-0 px-24 flex items-center py-4 bg-green-500 text-white w-full sticky text-2xl">
+            <h1 className="w-[25%] text-center">Total :</h1>
+            <h1 className="w-[25%] text-center"></h1>
+            <h1 className="w-[25%] text-center">{totalTiffinDelivered}</h1>
+            <h1 className="w-[25%] text-center">{totalTiffinPicked}</h1>
+            <h1 className="w-[25%] text-center">
+              {totalTiffinDelivered - totalTiffinPicked}
+            </h1>
+          </div>
         </div>
-        {isFetchLoading ? (
-          <Loader2 className="animate-spin w-8 h-8" />
-        ) : (
-          users.map((user) => <HistoryCard user={user} />)
-        )}
-      </div>
-      <div className="bottom-0 px-24 flex items-center py-4 bg-green-500 text-white w-full sticky text-2xl">
-        <h1 className="w-[25%] text-center">Total :</h1>
-        <h1 className="w-[25%] text-center"></h1>
-        <h1 className="w-[25%] text-center">{totalTiffinDelivered}</h1>
-        <h1 className="w-[25%] text-center">{totalTiffinPicked}</h1>
-        <h1 className="w-[25%] text-center">
-          {totalTiffinDelivered - totalTiffinPicked}
-        </h1>
       </div>
     </div>
   );

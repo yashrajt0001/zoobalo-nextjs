@@ -7,6 +7,7 @@ import { CircleEllipsis, Loader2 } from "lucide-react";
 import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { useModal } from "@/hooks/use-modal-store";
 
 const page = () => {
   const [users, setUsers] = useState([]); // conatins subscribed users
@@ -17,10 +18,12 @@ const page = () => {
   const [showPending, setShowPending] = useState(false); // state which determines the display of pending deliveries
   const [isLoading, setIsLoading] = useState(false); // loader when delivery boy is assigned
   const [totalUsers, setTotalUsers] = useState(0); // state that holds total user's number
-  const [updateLoader, setUpdateLoader] = useState(false); // loader when a user's details are updated
   const [tempResults, setTempResults] = useState([]); // temp results stores all users which helps in searching user
   const [selectedTab, setSelectedTab] = useState(0);
   const [showDropDown, setShowDropDown] = useState(null);
+  const [removeLoader, setRemoveLoader] = useState(0);
+
+  const { onOpen } = useModal();
 
   const context = useContext(UserContext);
   const {
@@ -37,6 +40,7 @@ const page = () => {
     setDueTiffins,
     setMob,
     setBalance,
+    setTiming,
     userId,
   } = context as UserContextType;
 
@@ -214,33 +218,6 @@ const page = () => {
     }
   };
 
-  // update details of a user
-  const handleUpdate = async () => {
-    setUpdateLoader(true);
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/user/update/${userId}`,
-        {
-          name: userName,
-          phone: mob,
-          morningAddress,
-          eveningAddress,
-          balance,
-          dueTiffin: dueTiffins,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setUpdateLoader(false);
-    }
-  };
-
   // shows users who have addons
   const handleAddOns = () => {
     setSelectedTab(7);
@@ -259,137 +236,138 @@ const page = () => {
   };
 
   return (
-    <>
-      <div className="w-[100%]">
-        <div className="flex px-4 gap-12 border-b border-gray-300">
-          <button
-            className={`py-3 ${
-              selectedTab == 0 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handleAllUsers}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+    <div className="flex h-[calc(100vh-65px)]">
+      <div className="flex-1 overflow-y-auto">
+        <div className="w-[100%] pb-8">
+          <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300">
+            <button
+              className={`py-3 ${
+                selectedTab == 0 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handleAllUsers}
             >
-              All Users
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 1 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handleSubscribe}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                All Users
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 1 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handleSubscribe}
             >
-              Subscribed
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 2 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handleCancel}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Subscribed
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 2 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handleCancel}
             >
-              Cancelled
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 3 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handlePaused}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Cancelled
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 3 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handlePaused}
             >
-              Paused
-            </h1>
-          </button>
+              <h1
+                className={`text-xl ${
+                  selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Paused
+              </h1>
+            </button>
 
-          <button
-            className={`py-3 ${
-              selectedTab == 4 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handleUnsubscribed}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+            <button
+              className={`py-3 ${
+                selectedTab == 4 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handleUnsubscribed}
             >
-              Unsubscribed
-            </h1>
-          </button>
+              <h1
+                className={`text-xl ${
+                  selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Unsubscribed
+              </h1>
+            </button>
 
-          <button
-            className={`py-3 ${
-              selectedTab == 5 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handlePendingDeliveries}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+            <button
+              className={`py-3 ${
+                selectedTab == 5 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handlePendingDeliveries}
             >
-              Pending
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 6 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handleLowBalance}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Pending
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 6 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handleLowBalance}
             >
-              Low Balance
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 7 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={handleAddOns}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Low Balance
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 7 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={handleAddOns}
             >
-              Addons
-            </h1>
-          </button>
-        </div>
-
-        <div className="bg-slate-50 pl-12 mt-6">
-          <div>
-            <input
-              type="text"
-              value={searchinput}
-              onChange={(e) => setSearchinput(e.target.value)}
-              placeholder="Search a User"
-              className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
-            />
+              <h1
+                className={`text-xl ${
+                  selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Addons
+              </h1>
+            </button>
           </div>
 
-          {/* <div className="flex items-center gap-2">
+          <div className="bg-slate-50 pl-12 mt-6">
+            <div>
+              <input
+                type="text"
+                value={searchinput}
+                onChange={(e) => setSearchinput(e.target.value)}
+                placeholder="Search a User"
+                className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
+              />
+            </div>
+
+            {/* <div className="flex items-center gap-2">
           <button
             onClick={handleDeliveryBoyAssign}
             disabled={isLoading}
@@ -401,182 +379,172 @@ const page = () => {
             {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
           </button>
         </div> */}
-          <div>
-            <h1 className="mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
-          </div>
-          {isFetchloading ? (
-            <Loader2 className="animate-spin w-8 h-8" />
-          ) : !showPending ? (
-            <div className="text-2xl font-semibold w-[100%] pr-[4%]">
-              <div className="flex mb-2 w-full">
-                <h1 className="w-[20%] text-center">Name</h1>
-                <h1 className="w-[20%] text-center">Phone</h1>
-                <h1 className="w-[20%] text-center">Balance</h1>
-                <h1 className="w-[20%] text-center">Tiffin Time</h1>
-                <h1 className="w-[20%] text-center"></h1>
-              </div>
-              <div className="w-[100%]">
-                {results.map((user: any) => {
-                  return (
-                    <>
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.name}
-                        </h1>
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.phone}
-                        </h1>
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.balance?.toString()}
-                        </h1>
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.order?.length > 1
-                            ? "BOTH"
-                            : user?.order[0]?.tiffinTime}
-                        </h1>
-                        <button
-                          onClick={() => setShowDropDown(user.id)}
-                          className="w-[20%] flex items-center justify-center"
-                        >
-                          <CircleEllipsis />
-                        </button>
-                      </div>
-                      {showDropDown == user.id && (
-                        <div className="absolute border right-[4%] border-gray-300 bg-gray-300 w-[16%] border-t-0 rounded-lg rounded-t-none z-40">
-                          <button className="border-b-2 border-white py-2 text-center w-full">
-                            Update
+            <div>
+              <h1 className="mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
+            </div>
+            {isFetchloading ? (
+              <Loader2 className="animate-spin w-8 h-8" />
+            ) : !showPending ? (
+              <div className="text-2xl w-[100%] pr-[4%]">
+                <div className="flex mb-2 w-full font-semibold">
+                  <h1 className="w-[20%] text-center">Name</h1>
+                  <h1 className="w-[20%] text-center">Phone</h1>
+                  <h1 className="w-[20%] text-center">Balance</h1>
+                  <h1 className="w-[20%] text-center">Tiffin Time</h1>
+                  <h1 className="w-[20%] text-center"></h1>
+                </div>
+                <div className="w-[100%]">
+                  {results.map((user: any) => {
+                    return (
+                      <>
+                        <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                          <h1 className="w-[20%] text-center truncate">
+                            {user?.name}
+                          </h1>
+                          <h1 className="w-[20%] text-center truncate">
+                            {user?.phone}
+                          </h1>
+                          <h1 className="w-[20%] text-center truncate">
+                            {user?.balance?.toString()}
+                          </h1>
+                          <h1 className="w-[20%] text-center truncate">
+                            {user?.order?.length > 1
+                              ? "BOTH"
+                              : user?.order[0]?.tiffinTime}
+                          </h1>
+                          <button
+                            onClick={() => setShowDropDown(user.id)}
+                            className="w-[20%] flex items-center justify-center"
+                          >
+                            <CircleEllipsis />
                           </button>
-                          <Link
-                            href={`/kitchenHead/user?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
-                          >
-                            <button className="border-b-2 border-white py-2 text-center w-full">
-                              Show History
+                        </div>
+                        {showDropDown == user.id && (
+                          <div className="absolute border right-[4%] border-gray-300 bg-gray-300 w-[16%] border-t-0 rounded-lg rounded-t-none z-40">
+                            <button
+                              onClick={() => {
+                                setUserName(user.name);
+                                setMorningAddress(user.morningAddress);
+                                setEveningAddress(user.eveningAddress);
+                                setMob(user.phone);
+                                setBalance(user.balance);
+                                setDueTiffins(user.order[0].dueTiffin);
+                                setTiming(
+                                  user.order.length > 1
+                                    ? "BOTH"
+                                    : user.order[0].tiffinTime
+                                );
+                                onOpen("userUpdate");
+                              }}
+                              className="border-b-2 border-white py-2 text-center w-full"
+                            >
+                              Update
                             </button>
-                          </Link>
-                          <Link
-                            href={`/kitchenHead/user/recharges?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
-                          >
-                            <button className="border-b-2 border-white py-2 text-center w-full">
-                              Recharge History
-                            </button>
-                          </Link>
-                          {user.order.length==0 && (
                             <Link
-                              href={`/kitchenHead/user/subscription?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                              href={`/admin/user?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
                             >
                               <button className="border-b-2 border-white py-2 text-center w-full">
-                                Add Subscription
+                                Show History
                               </button>
                             </Link>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  );
-                })}
-              </div>
-
-              {/* {userName != "" && (
-              <div className="w-[40%] ml-12 -mt-14">
-                <div className="sticky top-24 z-10 bg-white flex flex-col gap-2">
-                  <h1 className="text-3xl">Update:</h1>
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-
-                  {(timing == "MORNING" || timing == "BOTH") && (
-                    <input
-                      type="text"
-                      placeholder="Morning Address"
-                      className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                      value={morningAddress}
-                      onChange={(e) => setMorningAddress(e.target.value)}
-                    />
-                  )}
-
-                  {(timing == "EVENING" || timing == "BOTH") && (
-                    <input
-                      type="text"
-                      placeholder="Evening Address"
-                      className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                      value={eveningAddress}
-                      onChange={(e) => setEveningAddress(e.target.value)}
-                    />
-                  )}
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={mob}
-                    maxLength={10}
-                    onChange={(e) => setMob(e.target.value)}
-                  />
-                  <input
-                    type="number"
-                    placeholder="User's Balance"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={balance}
-                    onChange={(e) => setBalance(e.target.value)}
-                  />
-
-                  <input
-                    type="number"
-                    placeholder="Due Tiffins"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={dueTiffins}
-                    onChange={(e) => setDueTiffins(e.target.value)}
-                  />
-                  <button
-                    onClick={handleUpdate}
-                    className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}
-                  >
-                    Update{" "}
-                    {updateLoader && <Loader2 className="animate-spin mr-2" />}
-                  </button>
+                            {/* <Link
+                              href={`/kitchenHead/user/recharges?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                            >
+                              <button className="border-b-2 border-white py-2 text-center w-full">
+                                Recharge History
+                              </button>
+                            </Link> */}
+                            {user.order.length == 0 && (
+                              <Link
+                                href={`/admin/user/subscription?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                              >
+                                <button className="border-b-2 border-white py-2 text-center w-full">
+                                  Add Subscription
+                                </button>
+                              </Link>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })}
                 </div>
+
+                {/* {userName != "" && (
+              <div className="w-[40%] ml-12 -mt-14">
+                
               </div>
             )} */}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {results.map((user: any, index) => {
-                return (
-                  <Card
-                    className={`flex w-[50%]`}
-                    id={user.id}
-                    key={index}
-                    _name={user?.user?.name}
-                    _morningAddress={user?.user?.morningAddress}
-                    _eveningAddress={user?.user?.eveningAddress}
-                    _balance={user?.user?.balance?.toString()}
-                    _location={user?.user?.address}
-                    _mobile={user?.user?.phone}
-                    dueTiffin={user?.dueTiffin}
-                    _type={user?.order?.tiffinTime}
-                    _isSubscribed={user?.order?.length == 0 ? false : true}
-                    _isPaused={
-                      user.order.length > 0 && user.order[0].NextMeal.isPause
-                        ? true
-                        : false
-                    }
-                    _order={user.order}
-                    nextMeal={
-                      user.order.length > 0 ? user.order[0].NextMeal : {}
-                    }
-                    user={user}
-                    isPending={showPending}
-                  />
-                );
-              })}
-            </div>
-          )}
+              </div>
+            ) : (
+              <>
+                <div className="flex mb-2 w-full font-semibold text-2xl pr-[4%]">
+                  <h1 className="w-[24%] text-center">Name</h1>
+                  <h1 className="w-[24%] text-center">Phone</h1>
+                  <h1 className="w-[24%] text-center">Balance</h1>
+                  <h1 className="w-[24%] text-center">Tiffin Time</h1>
+                  {/* <h1 className="w-[20%] text-center"></h1> */}
+                </div>
+                <div className="flex flex-col pr-[4%]">
+                  {results.map((user: any) => {
+                    return (
+                      <>
+                        <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                          <h1 className="w-[24%] text-center truncate">
+                            {user?.user?.name}
+                          </h1>
+                          <h1 className="w-[24%] text-center truncate">
+                            {user?.user?.phone}
+                          </h1>
+                          <h1 className="w-[24%] text-center truncate">
+                            {user?.user?.balance?.toString()}
+                          </h1>
+                          <h1 className="w-[24%] text-center truncate">
+                            {user?.order?.length > 1
+                              ? "BOTH"
+                              : user?.order?.tiffinTime}
+                          </h1>
+                          {/* <button
+                          className="w-[20%] flex items-center justify-center text-red-500"
+                          onClick={async () => {
+                            setRemoveLoader(user.id);
+                            try {
+                              await axios.post(
+                                `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/queue/remove`,
+                                {
+                                  queueDeliveryId: user.id,
+                                },
+                                {
+                                  headers: {
+                                    "auth-token":
+                                      localStorage.getItem("auth-token"),
+                                  },
+                                }
+                              );
+                              handlePendingDeliveries();
+                            } catch (error: any) {
+                              toast.error(error.response.data);
+                            } finally {
+                              setRemoveLoader(0);
+                            }
+                          }}
+                        >
+                          Remove
+                          {removeLoader == user.id && (
+                            <Loader2 className="animate-spin w-6 h-6 ml-3" />
+                          )}
+                        </button> */}
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

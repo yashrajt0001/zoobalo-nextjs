@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ModalType = "createAreaManager"
+export type ModalType = "createAreaManager" | "createCity" | "createState" | "userUpdate"
 
 interface ModalData {
   name?: string
