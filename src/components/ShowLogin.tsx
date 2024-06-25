@@ -56,7 +56,7 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
         }
       );
       localStorage.setItem("auth-token", data.token);
-      return router.push("/admin");
+      return router.push("/kitchenHead");
     } catch (error: any) {
       // todo: show toast error
       console.log(createErrorMessage(error));
@@ -82,7 +82,7 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
         <h2 className="text-4xl font-semibold mb-10">Login</h2>
         <input
           type="text"
-          placeholder="Email"
+          placeholder={name === 'kitchenHead' ? 'Username' : 'Email'}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
