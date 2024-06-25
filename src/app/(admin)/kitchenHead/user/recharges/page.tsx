@@ -45,6 +45,8 @@ const page = ({ params }: PageInterface) => {
   }, []);
 
   return (
+    <div className="flex h-[calc(100vh-65px)] bg-slate-50">
+      <div className="flex-1 overflow-y-auto">
     <div className="pt-8 bg-[#F6F6F6] relative">
       <div className="pb-8 px-8 min-h-screen">
         <h1 className="text-3xl text-green-500">{name}</h1>
@@ -105,7 +107,9 @@ const page = ({ params }: PageInterface) => {
           </div>
         </div>
       </div>
-    </div>
+        </div>
+      </div>
+      </div>
   );
 };
 

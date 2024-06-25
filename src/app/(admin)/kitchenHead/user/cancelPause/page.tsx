@@ -188,198 +188,205 @@ const page = ({ params }: PageInterface) => {
         }
       );
       setResumeLoader(false);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error?.response?.data);
     }
   };
 
   return (
-    <div className="bg-white py-8 px-8 min-h-full">
-      <h1 className="text-3xl text-green-500">{name}</h1>
-      <h1 className="text-2xl text-orange-500 mt-1">{mobile}</h1>
-      <div>
-        <h1 className="text-3xl mt-5">Cancel Today's meal:</h1>
-        {(userDetails?.order.length > 1 ||
-          userDetails?.order[0].tiffinTime == "MORNING") &&
-          (cancelledMeal.includes("Lunch") ? (
-            <button
-              className="flex flex-row items-center mt-8"
-              onClick={() => {
-                const result = cancelledMeal.filter((meal: string) => {
-                  return meal != "Lunch";
-                });
-                setCancelledMeal(result);
-              }}
-            >
-              <div className="border-white rounded-xl w-6 h-6 bg-[#22AA00]"></div>
-              <div>
-                <h1
-                  className={`ml-3 text-2xl ${
-                    hours >= 9 ? "text-[#BDBDBD]" : "text-black"
-                  }`}
-                  style={{ fontFamily: "Poppins_500Medium" }}
+    <div className="flex h-[calc(100vh-65px)] bg-slate-50">
+      <div className="flex-1 overflow-y-auto">
+        <div className="bg-white py-8 px-8 min-h-full">
+          <h1 className="text-3xl text-green-500">{name}</h1>
+          <h1 className="text-2xl text-orange-500 mt-1">{mobile}</h1>
+          <div>
+            <h1 className="text-3xl mt-5">Cancel Today's meal:</h1>
+            {(userDetails?.order.length > 1 ||
+              userDetails?.order[0].tiffinTime == "MORNING") &&
+              (cancelledMeal.includes("Lunch") ? (
+                <button
+                  className="flex flex-row items-center mt-8"
+                  onClick={() => {
+                    const result = cancelledMeal.filter((meal: string) => {
+                      return meal != "Lunch";
+                    });
+                    setCancelledMeal(result);
+                  }}
                 >
-                  Lunch
-                </h1>
-              </div>
-              <h1
-                className="text-red-400 text-xs ml-2"
-                style={{ fontFamily: "Poppins_400Regular" }}
-              >
-                (You can cancel before 9:00AM)
-              </h1>
-            </button>
-          ) : (
-            <button
-              className="flex flex-row items-center mt-8"
-              disabled={hours >= 9 ? true : false}
-              onClick={() => setCancelledMeal([...cancelledMeal, "Lunch"])}
-            >
-              <div
-                className={`rounded-xl w-6 h-6 ${
-                  hours >= 9 ? "bg-[#BDBDBD]" : "border bg-white"
-                }`}
-              ></div>
-
-              <div>
-                <h1
-                  className={`text-2xl ml-3 ${
-                    hours >= 9 ? "text-[#BDBDBD]" : "text-black"
-                  }`}
+                  <div className="border-white rounded-xl w-6 h-6 bg-[#22AA00]"></div>
+                  <div>
+                    <h1
+                      className={`ml-3 text-2xl ${
+                        hours >= 9 ? "text-[#BDBDBD]" : "text-black"
+                      }`}
+                      style={{ fontFamily: "Poppins_500Medium" }}
+                    >
+                      Lunch
+                    </h1>
+                  </div>
+                  <h1
+                    className="text-red-400 text-xs ml-2"
+                    style={{ fontFamily: "Poppins_400Regular" }}
+                  >
+                    (You can cancel before 9:00AM)
+                  </h1>
+                </button>
+              ) : (
+                <button
+                  className="flex flex-row items-center mt-8"
+                  disabled={hours >= 9 ? true : false}
+                  onClick={() => setCancelledMeal([...cancelledMeal, "Lunch"])}
                 >
-                  Lunch
-                </h1>
-              </div>
-              <h1 className="text-red-400 text-xs ml-2">
-                (You can cancel before 9:00AM)
-              </h1>
-            </button>
-          ))}
+                  <div
+                    className={`rounded-xl w-6 h-6 ${
+                      hours >= 9 ? "bg-[#BDBDBD]" : "border bg-white"
+                    }`}
+                  ></div>
 
-        {(userDetails?.order.length > 1 ||
-          userDetails?.order[0].tiffinTime == "EVENING") &&
-          (cancelledMeal.includes("Dinner") ? (
-            <button
-              className="flex flex-row items-center mt-8"
-              onClick={() => {
-                const result = cancelledMeal.filter((meal: string) => {
-                  return meal != "Dinner";
-                });
-                setCancelledMeal(result);
-              }}
-            >
-              <div className="border-white rounded-xl w-6 h-6 bg-[#22AA00]"></div>
-              <div>
-                <h1
-                  className={`ml-3 text-2xl ${
-                    hours >= 15 ? "text-[#BDBDBD]" : "text-black"
-                  }`}
-                  style={{ fontFamily: "Poppins_500Medium" }}
+                  <div>
+                    <h1
+                      className={`text-2xl ml-3 ${
+                        hours >= 9 ? "text-[#BDBDBD]" : "text-black"
+                      }`}
+                    >
+                      Lunch
+                    </h1>
+                  </div>
+                  <h1 className="text-red-400 text-xs ml-2">
+                    (You can cancel before 9:00AM)
+                  </h1>
+                </button>
+              ))}
+
+            {(userDetails?.order.length > 1 ||
+              userDetails?.order[0].tiffinTime == "EVENING") &&
+              (cancelledMeal.includes("Dinner") ? (
+                <button
+                  className="flex flex-row items-center mt-8"
+                  onClick={() => {
+                    const result = cancelledMeal.filter((meal: string) => {
+                      return meal != "Dinner";
+                    });
+                    setCancelledMeal(result);
+                  }}
                 >
-                  Dinner
-                </h1>
-              </div>
-              <h1
-                className="text-red-400 text-xs ml-2"
-                style={{ fontFamily: "Poppins_400Regular" }}
-              >
-                (You can cancel before 3:00PM)
-              </h1>
-            </button>
-          ) : (
-            <button
-              className="flex flex-row items-center mt-8"
-              disabled={hours >= 15 ? true : false}
-              onClick={() => setCancelledMeal([...cancelledMeal, "Dinner"])}
-            >
-              <div
-                className={`rounded-xl w-6 h-6 ${
-                  hours >= 15 ? "bg-[#BDBDBD]" : "border bg-white"
-                }`}
-              ></div>
-
-              <div>
-                <h1
-                  className={`text-2xl ml-3 ${
-                    hours >= 15 ? "text-[#BDBDBD]" : "text-black"
-                  }`}
+                  <div className="border-white rounded-xl w-6 h-6 bg-[#22AA00]"></div>
+                  <div>
+                    <h1
+                      className={`ml-3 text-2xl ${
+                        hours >= 15 ? "text-[#BDBDBD]" : "text-black"
+                      }`}
+                      style={{ fontFamily: "Poppins_500Medium" }}
+                    >
+                      Dinner
+                    </h1>
+                  </div>
+                  <h1
+                    className="text-red-400 text-xs ml-2"
+                    style={{ fontFamily: "Poppins_400Regular" }}
+                  >
+                    (You can cancel before 3:00PM)
+                  </h1>
+                </button>
+              ) : (
+                <button
+                  className="flex flex-row items-center mt-8"
+                  disabled={hours >= 15 ? true : false}
+                  onClick={() => setCancelledMeal([...cancelledMeal, "Dinner"])}
                 >
-                  Dinner
-                </h1>
-              </div>
-              <h1 className="text-red-400 text-xs ml-2">
-                (You can cancel before 3:00PM)
-              </h1>
-            </button>
-          ))}
-      </div>
+                  <div
+                    className={`rounded-xl w-6 h-6 ${
+                      hours >= 15 ? "bg-[#BDBDBD]" : "border bg-white"
+                    }`}
+                  ></div>
 
-      <button
-        onClick={handleCancel}
-        disabled={isLoading}
-        className={`flex items-center py-2 px-5 mt-6 rounded-lg text-white ${
-          isLoading ? "bg-[#949494]" : "bg-green-500"
-        }`}
-      >
-        Confirm Cancel
-        {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
-      </button>
-      <div className="calendar-container mt-12">
-        <h1 className="text-2xl">Pause Meal</h1>
-        <div className="current-month">
-          {new Date(currentYear, currentMonth).toLocaleString("default", {
-            month: "long",
-            year: "numeric",
-          })}
-        </div>
-        <div className="calendar-nav">
-          <button onClick={loadPreviousMonth}>Previous Month</button>
-          <button onClick={loadNextMonth}>Next Month</button>
-        </div>
-        <div className="calendar-grid">
-          {getDatesForMonth(currentYear, currentMonth, pausedDates).map(
-            (date, index) => (
-              <div
-                key={index}
-                className={`calendar-date ${
-                  selectedDates.some(
-                    (selectedDate) => selectedDate.getTime() === date.getTime()
-                  )
-                    ? "selected"
-                    : ""
-                } ${isDateDisabled(date, pausedDates) ? "disabled" : ""}`}
-                onClick={() => handleDateClick(date)}
-              >
-                {date.getDate()}
-              </div>
-            )
-          )}
-        </div>
-        <div className="flex items-center">
+                  <div>
+                    <h1
+                      className={`text-2xl ml-3 ${
+                        hours >= 15 ? "text-[#BDBDBD]" : "text-black"
+                      }`}
+                    >
+                      Dinner
+                    </h1>
+                  </div>
+                  <h1 className="text-red-400 text-xs ml-2">
+                    (You can cancel before 3:00PM)
+                  </h1>
+                </button>
+              ))}
+          </div>
+
           <button
-            onClick={handlePause}
-            disabled={pauseLoader}
-            className={`flex items-center py-2 px-5 mt-5 rounded-lg text-white ${
-              pauseLoader ? "bg-[#949494]" : "bg-green-500"
+            onClick={handleCancel}
+            disabled={isLoading}
+            className={`flex items-center py-2 px-5 mt-6 rounded-lg text-white ${
+              isLoading ? "bg-[#949494]" : "bg-green-500"
             }`}
           >
-            Confirm Pause
-            {pauseLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+            Confirm Cancel
+            {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
           </button>
-          {pausedDates?.length > 0 && (
-            <button
-              onClick={handleResume}
-              disabled={resumeLoader}
-              className={`ml-4 flex items-center py-2 px-5 mt-5 rounded-lg text-white ${
-                resumeLoader ? "bg-[#949494]" : "bg-green-500"
-              }`}
-            >
-              Resume Meals
-              {resumeLoader && (
-                <Loader2 className="animate-spin w-8 h-8 ml-3" />
+          <div className="calendar-container mt-12">
+            <h1 className="text-2xl">Pause Meal</h1>
+            <div className="current-month">
+              {new Date(currentYear, currentMonth).toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              })}
+            </div>
+            <div className="calendar-nav">
+              <button onClick={loadPreviousMonth}>Previous Month</button>
+              <button onClick={loadNextMonth}>Next Month</button>
+            </div>
+            <div className="calendar-grid">
+              {getDatesForMonth(currentYear, currentMonth, pausedDates).map(
+                (date, index) => (
+                  <div
+                    key={index}
+                    className={`calendar-date ${
+                      selectedDates.some(
+                        (selectedDate) =>
+                          selectedDate.getTime() === date.getTime()
+                      )
+                        ? "selected"
+                        : ""
+                    } ${isDateDisabled(date, pausedDates) ? "disabled" : ""}`}
+                    onClick={() => handleDateClick(date)}
+                  >
+                    {date.getDate()}
+                  </div>
+                )
               )}
-            </button>
-          )}
+            </div>
+            <div className="flex items-center">
+              <button
+                onClick={handlePause}
+                disabled={pauseLoader}
+                className={`flex items-center py-2 px-5 mt-5 rounded-lg text-white ${
+                  pauseLoader ? "bg-[#949494]" : "bg-green-500"
+                }`}
+              >
+                Confirm Pause
+                {pauseLoader && (
+                  <Loader2 className="animate-spin w-8 h-8 ml-3" />
+                )}
+              </button>
+              {pausedDates?.length > 0 && (
+                <button
+                  onClick={handleResume}
+                  disabled={resumeLoader}
+                  className={`ml-4 flex items-center py-2 px-5 mt-5 rounded-lg text-white ${
+                    resumeLoader ? "bg-[#949494]" : "bg-green-500"
+                  }`}
+                >
+                  Resume Meals
+                  {resumeLoader && (
+                    <Loader2 className="animate-spin w-8 h-8 ml-3" />
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

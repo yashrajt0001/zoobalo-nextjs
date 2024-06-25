@@ -17,41 +17,46 @@ const items = [
   {
     name: "Home",
     icon: null,
-    route: "/admin",
+    route: "/kitchenHead",
   },
   {
     name: "Users",
     icon: null,
-    route: "/admin/AllUsers",
+    route: "/kitchenHead/AllUsers",
   },
   {
     name: "Today's History",
     icon: null,
-    route: "/admin/inventory"
+    route: "/kitchenHead/inventory",
   },
   {
     name: "All History",
     icon: null,
-    route: "/admin/tiffinHistory",
+    route: "/kitchenHead/tiffinHistory",
+  },
+  {
+    name: "Demo Tiffins",
+    icon: null,
+    route: "/kitchenHead/demoTiffins",
+  },
+  {
+    name: "Recharges",
+    icon: null,
+    route: "/kitchenHead/recharges",
   },
   {
     name: "Feedback",
     icon: null,
-    route: "/admin/feedbacks",
+    route: "/kitchenHead/feedbacks",
   },
   {
-    name: "Notifications",
+    name: "Extra Tiffins",
     icon: null,
-    route: "/admin/notifications",
+    route: "/kitchenHead/extraTiffin",
   },
-  {
-    name: "Manage",
-    icon: null,
-    route : "/admin/manage"
-  }
 ];
 
-export default function Sidebar({ show, setter }: SidebarProps) {
+export default function KitchenHeadSidebar({ show, setter }: SidebarProps) {
   const pathname = usePathname();
   const className =
     "bg-black w-[250px] transition-[margin-left] ease-in-out duration-500 fixed md:static h-[calc(100vh-65px)] md:top-0 top-[65px] bottom-0 left-0 z-40";
@@ -86,13 +91,14 @@ export default function Sidebar({ show, setter }: SidebarProps) {
     />
   );
 
-
   return (
     <>
       <div className={`${className}${appendClass}`}>
         <div className="flex flex-col py-6">
           {items.map((item) => {
-              return <MenuItem name={item.name} icon={item.icon} route={item.route} />;
+            return (
+              <MenuItem name={item.name} icon={item.icon} route={item.route} />
+            );
           })}
         </div>
       </div>

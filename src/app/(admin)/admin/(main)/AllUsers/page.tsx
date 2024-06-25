@@ -11,7 +11,12 @@ import { Separator } from "@/components/ui/separator";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import { PopoverClose } from "@radix-ui/react-popover";
 import axios from "axios";
-import { Ellipsis, EllipsisVertical, Loader2 } from "lucide-react";
+import {
+  Ellipsis,
+  EllipsisIcon,
+  EllipsisVertical,
+  Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
@@ -375,6 +380,9 @@ const page = () => {
               />
             </div>
 
+            <div>
+              <h1 className="mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
+            </div>
             {/* <div className="flex items-center gap-2">
           <button
             onClick={handleDeliveryBoyAssign}
@@ -387,64 +395,79 @@ const page = () => {
             {isLoading && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
           </button>
         </div> */}
-          <div>
-            <h1 className="mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
-          </div>
-          {isFetchloading ? (
-            <Loader2 className="animate-spin w-8 h-8" />
-          ) : !showPending ? (
-            <div className="text-2xl font-semibold w-[100%] pr-[4%]">
-              <div className="flex mb-2 w-full">
-                <h1 className="w-[20%] text-center">Name</h1>
-                <h1 className="w-[20%] text-center">Phone</h1>
-                <h1 className="w-[20%] text-center">Balance</h1>
-                <h1 className="w-[20%] text-center">Tiffin Time</h1>
-                <h1 className="w-[20%] text-center"></h1>
-              </div>
-              <div className="w-[100%]">
-                {results.map((user: any) => {
-                  return (
-                    <>
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.name}
-                        </h1>
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.phone}
-                        </h1>
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.balance?.toString()}
-                        </h1>
-                        <h1 className="w-[20%] text-center truncate">
-                          {user?.order?.length > 1
-                            ? "BOTH"
-                            : user?.order[0]?.tiffinTime}
-                        </h1>
-                        <Popover>
-                          <PopoverTrigger>
-                            <Button variant="ghost">
-                              <EllipsisVertical className="w-5 h-5" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="p-2">
-                            {/* <div className="font-semibold text-base mb-2">
+            {isFetchloading ? (
+              <Loader2 className="animate-spin w-8 h-8" />
+            ) : !showPending ? (
+              <div className="text-2xl w-[100%] pr-[6%]">
+                <div className="flex mb-2 w-full font-semibold">
+                  <h1 className="w-[22%] text-center">Name</h1>
+                  <h1 className="w-[22%] text-center">Phone</h1>
+                  <h1 className="w-[22%] text-center">Balance</h1>
+                  <h1 className="w-[22%] text-center">Tiffin Time</h1>
+                  {/* <h1 className="w-[20%] text-center"></h1> */}
+                </div>
+                <div className="w-[100%]">
+                  {results.map((user: any) => {
+                    return (
+                      <>
+                        <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                          <h1 className="w-[22%] text-center truncate">
+                            {user?.name}
+                          </h1>
+                          <h1 className="w-[22%] text-center truncate">
+                            {user?.phone}
+                          </h1>
+                          <h1 className="w-[22%] text-center truncate">
+                            {user?.balance?.toString()}
+                          </h1>
+                          <h1 className="w-[22%] text-center truncate">
+                            {user?.order?.length > 1
+                              ? "BOTH"
+                              : user?.order[0]?.tiffinTime}
+                          </h1>
+                          <Popover>
+                            <PopoverTrigger>
+                              <Button variant="ghost">
+                                <EllipsisIcon className="w-5 h-5" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-2">
+                              {/* <div className="font-semibold text-base mb-2">
                               Actions
                             </div>
                             <Separator/> */}
-                            <PopoverClose className="flex flex-col w-full items-center">
-                              <Button
-                                className="w-full flex justify-start"
-                                variant="ghost"
-                              >
-                                Update
-                              </Button>
-                              <Button
-                                className="w-full flex justify-start"
-                                variant="ghost"
-                              >
-                                Tiffin history
-                              </Button>
-                              <Button
+                              <PopoverClose className="flex flex-col w-full items-center">
+                                <Button
+                                  onClick={() => {
+                                    setUserName(user.name);
+                                    setMorningAddress(user.morningAddress);
+                                    setEveningAddress(user.eveningAddress);
+                                    setMob(user.phone);
+                                    setBalance(user.balance);
+                                    setTiming(
+                                      user.order.length > 1
+                                        ? "BOTH"
+                                        : user.order[0].tiffinTime
+                                    );
+                                    setDueTiffins(user.order[0].dueTiffin);
+                                    onOpen("userUpdate");
+                                  }}
+                                  className="w-full flex justify-center"
+                                  variant="ghost"
+                                >
+                                  Update
+                                </Button>
+                                <Link
+                                  href={`/admin/user?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
+                                >
+                                  <Button
+                                    className="w-full flex justify-start"
+                                    variant="ghost"
+                                  >
+                                    Tiffin history
+                                  </Button>
+                                </Link>
+                                {/* <Button
                                 className="w-full flex justify-start"
                                 variant="ghost"
                               >
@@ -455,15 +478,15 @@ const page = () => {
                                 variant="ghost"
                               >
                                 Add subscription
-                              </Button>
-                            </PopoverClose>
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
+                              </Button> */}
+                              </PopoverClose>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
 
                 {/* {userName != "" && (
               <div className="w-[40%] ml-12 -mt-14">

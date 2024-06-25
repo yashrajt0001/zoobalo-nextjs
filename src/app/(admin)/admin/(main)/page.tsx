@@ -15,12 +15,10 @@ const page = () => {
   const [kitchenLoader, setKitchenLoader] = useState(false);
   const [cities, setCities] = useState([]);
   const [states, setStates] = useState([]);
-  const [areaManagers, setAreaManagers] = useState([]);
   const [searchinput, setSearchinput] = useState("");
   const [isFetchloading, setIsFetchloading] = useState(false);
   const [kitchens, setKitchens] = useState([]);
 
-  const { onOpen } = useModal();
   const { onOpen } = useModal();
 
   useEffect(() => {
@@ -34,27 +32,6 @@ const page = () => {
       }
     }
 
-    const getAreaManagers = async () => {
-      try {
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_HOST}/areaManager/get`,
-          {
-            stateId: 1,
-          },
-          {
-            headers: {
-              "auth-token": localStorage.getItem("auth-token"),
-            },
-          }
-        );
-        setAreaManagers(data);
-      } catch (error: any) {
-        toast.error(error?.response?.data);
-      } finally {
-        setIsFetchLoading(false);
-      }
-    };
-
     async function getAllStates() {
       try {
         const res = await axios.get(
@@ -67,8 +44,6 @@ const page = () => {
       }
     }
     getAllStates();
-
-    getAreaManagers();
     getAllCities();
   }, []);
 
@@ -105,28 +80,6 @@ const page = () => {
     password: "",
   });
 
-  const [kitchenDetails, setKitchenDetails] = useState({
-    name: "",
-    address: "",
-  });
-
-  const [areaManagerDetails, setAreaManagerDetails] = useState({
-    name: "",
-    username: "",
-    password: "",
-    email: "",
-    phone: "",
-    alternatePhone: "",
-    emergencyPhone: "",
-    residentAddress: "",
-    officeAddress: "",
-    aadhar: "",
-    pan: "",
-    agreement: "",
-    photo: "",
-    stateId: "",
-    district: "",
-  });
 
   const [userloader, setUserloader] = useState(false);
   const [delBoyLoader, setDelBoyLoader] = useState(false);
@@ -168,33 +121,6 @@ const page = () => {
       toast.error(error.response.data);
     } finally {
       setDelBoyLoader(false);
-    }
-  };
-
-  const handleKitchenCreate = async () => {
-    if (!kitchenDetails.name || !kitchenDetails.address) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setKitchenLoader(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchen/create`,
-        {
-          name: kitchenDetails.name,
-          cityId: selectedCity,
-          address: kitchenDetails.address,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setKitchenLoader(false);
     }
   };
 
@@ -342,20 +268,6 @@ const page = () => {
           </button>
           <button
             className={`py-3 ${
-              selectedTab == 1 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={() => setSelectedTab(1)}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 1 ? "text-blue-400" : "text-gray-400"
-              }`}
-            >
-              Area Manager
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
               selectedTab == 2 ? "border-b-2 border-blue-400" : ""
             }`}
             onClick={() => setSelectedTab(2)}
@@ -382,63 +294,7 @@ const page = () => {
               State
             </h1>
           </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 4 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={() => setSelectedTab(4)}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 4 ? "text-blue-400" : "text-gray-400"
-              }`}
-            >
-              Kitchens
-            </h1>
-          </button>
         </div>
-
-        {selectedTab == 1 && (
-          <>
-            <Button
-              className="ml-8 mt-5"
-              onClick={() => onOpen("createAreaManager")}
-            >
-              Create
-            </Button>
-            <div className="pt-8 bg-[#F6F6F6] relative">
-              <div className="pb-8 px-8">
-                <div className="flex py-6 text-2xl font-semibold">
-                  <h1 className="w-[25%] text-center">Name</h1>
-                  {/* <h1 className="w-[20%] text-center">State</h1> */}
-                  <h1 className="w-[25%] text-center">District</h1>
-                  <h1 className="w-[25%] text-center">Phone</h1>
-                  <h1 className="w-[25%] text-center">Address</h1>
-                </div>
-
-                <div className="overflow-y-auto h-[60%]">
-                  {areaManagers.map((areaManager: any) => (
-                    <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                      <h1 className="w-[25%] text-center">
-                        {areaManager.name}
-                      </h1>
-                      {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
-                      <h1 className="w-[25%] text-center">
-                        {areaManager.district}
-                      </h1>
-                      <h1 className="w-[25%] text-center">
-                        {areaManager.phone}
-                      </h1>
-                      <h1 className="w-[25%] text-center">
-                        {areaManager.officeAddress}
-                      </h1>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        )}
 
         {selectedTab == 2 && (
           <>
@@ -464,9 +320,10 @@ const page = () => {
                     </h1>
                   </div>
                 ))}
-              </div>
-            </div>
-          </div>
+                  </div>
+                  </div>
+                </div>
+                </>
         )}
 
         {selectedTab == 3 && (

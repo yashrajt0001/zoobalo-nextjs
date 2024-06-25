@@ -5,7 +5,7 @@ import { Dialog, DialogDescription, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { useModal } from "@/hooks/use-modal-store";
 import Modal from "../ui/modal";
-import { Loader2 } from "lucide-react";
+import { CheckCircleIcon, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -18,6 +18,9 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
   const [areaManagerLoader, setAreaManagerLoader] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [states, setStates] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [citiesArray, setCitiesArray] = useState([] as any);
+  const [cities, setCities] = useState([]);
   const [areaManagerDetails, setAreaManagerDetails] = useState({
     name: "",
     username: "",
@@ -49,6 +52,16 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
       }
     }
     getAllStates();
+    async function getAllCities() {
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
+        console.log(res.data);
+        setCities(res.data);
+      } catch (error: any) {
+        toast.error(error?.response?.data);
+      }
+    }
+    getAllCities();
   }, []);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -100,6 +113,7 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
           agreement: areaManagerDetails.agreement,
           stateId: parseInt(areaManagerDetails.stateId),
           district: areaManagerDetails.district,
+          cities:citiesArray
         },
         {
           headers: {
@@ -114,11 +128,55 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
       setAreaManagerLoader(false);
     }
   };
-  
+
+  console.log("c :", citiesArray);
+
   return (
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="flex flex-col gap-4 w-full px-3">
         <h1 className="text-3xl">Create Area Manager:</h1>
+        <div className="relative">
+          <button
+            onClick={() => setOpen(true)}
+            className="mt-5 w-full border border-gray-200 p-3"
+          >
+            <h1 className="text-xl">Select City</h1>
+          </button>
+          {open && (
+            <div className="p-2 w-full absolute bg-gray-100 border-4 border-gray-200 border-t-none flex flex-col rounded-lg rounded-t-none z-20">
+              {cities.map((city: any) => {
+                let consists = citiesArray.includes(city.id);
+                return consists ? (
+                  <button
+                    key={city.id}
+                    className="border-b mb-1 text-lg flex justify-between items-center"
+                    onClick={() => {
+                      const updated = citiesArray.filter(
+                        (item: any) => item != city.id
+                      );
+                      setCitiesArray(updated);
+                      setOpen(false);
+                    }}
+                  >
+                    {city.name}
+                    <CheckCircleIcon size={24} color="green" />
+                  </button>
+                ) : (
+                  <button
+                    key={city.id}
+                    className="border-b mb-1 text-lg"
+                    onClick={() => {
+                      setCitiesArray([...citiesArray, city.id]);
+                      setOpen(false);
+                    }}
+                  >
+                    {city.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
         <input
           type="text"
           name="name"
