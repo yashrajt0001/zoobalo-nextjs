@@ -14,15 +14,10 @@ import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
 
 const page = () => {
-<<<<<<< HEAD
   const [kitchenDetails, setKitchenDetails] = useState({
     name: "",
     address: "",
   });
-=======
-  const [login, setLogin] = useState(true);
-
->>>>>>> 8cfb730c3dacf749a8bb1dc113293550ab02444c
   const [kitchenHeadDetails, setKitchenHeadDetails] = useState({
     name: "",
     username: "",
@@ -41,12 +36,7 @@ const page = () => {
   const { onOpen } = useModal();
 
   useEffect(() => {
-<<<<<<< HEAD
-    async function getAllCities() {
-=======
-    setLogin(!localStorage.getItem("auth-token"));
     async function getKitchens() {
->>>>>>> 8cfb730c3dacf749a8bb1dc113293550ab02444c
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/kitchen/get`,
@@ -66,14 +56,12 @@ const page = () => {
     getKitchens();
   }, []);
 
-<<<<<<< HEAD
   const handleKitchenCreate = async () => {
     if (!kitchenDetails.name || !kitchenDetails.address) {
       return toast.error("Please enter details!");
     }
 
     try {
-      setKitchenLoader(true);
       await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/kitchen/create`,
         {
@@ -90,12 +78,7 @@ const page = () => {
     } catch (error: any) {
       toast.error(error.response.data);
     } finally {
-      setKitchenLoader(false);
     }
-=======
-  const isLoggedIn = () => {
-    setLogin(false);
->>>>>>> 8cfb730c3dacf749a8bb1dc113293550ab02444c
   };
 
   const handleKitchenHeadCreate = async () => {
