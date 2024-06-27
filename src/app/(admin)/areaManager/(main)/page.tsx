@@ -1,14 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { PopoverClose } from "@radix-ui/react-popover";
 import axios from "axios";
-import { EllipsisIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
