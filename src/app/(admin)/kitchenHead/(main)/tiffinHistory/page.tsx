@@ -70,6 +70,8 @@ const page = () => {
   }, []);
 
   return (
+    <div className="flex h-[calc(100vh-65px)] bg-slate-50">
+      <div className="flex-1 overflow-y-auto">
     <div className="pt-8 bg-[#F6F6F6] relative">
       <div className="pb-8 px-8 min-h-screen">
         {isFetchloading ? null : <div className="text-green-500 text-3xl">{`${startingDate} - ${endingDate}`}</div>}
@@ -133,7 +135,9 @@ const page = () => {
           </div>
         </div>
       </div>
-    </div>
+        </div>
+      </div>
+      </div>
   );
 };
 

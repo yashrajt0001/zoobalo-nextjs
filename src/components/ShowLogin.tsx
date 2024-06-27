@@ -19,6 +19,8 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
   const [isLoading, setisLoading] = useState(false);
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  console.log(pathname)
+
   const router = useRouter();
 
   useEffect(() => {
@@ -56,7 +58,13 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
         }
       );
       localStorage.setItem("auth-token", data.token);
+<<<<<<< HEAD
       return router.push(`/${name}`);
+=======
+      let extractedPart = pathname.split('/login')[0];
+      console.log("ext:", extractedPart);
+      return router.push(extractedPart);
+>>>>>>> 8cfb730c3dacf749a8bb1dc113293550ab02444c
     } catch (error: any) {
       // todo: show toast error
       console.log(createErrorMessage(error));

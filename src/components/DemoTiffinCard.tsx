@@ -9,6 +9,8 @@ import React, {
   useState,
 } from "react";
 import toast from "react-hot-toast";
+import { useModal } from "@/hooks/use-modal-store";
+
 interface userInterface extends HTMLAttributes<HTMLDivElement> {
   data: any;
 }
@@ -25,8 +27,11 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
     handleSelection();
   }, [isPaid, gotDelivered, gotPicked]);
 
+  const { onOpen } = useModal();
+
   const context = useContext(UserContext);
-  const { getDemoDeliveries, showCompleted } = context as UserContextType;
+  const { getDemoDeliveries, showCompleted, setUserId } =
+    context as UserContextType;
 
   const handleSelection = async () => {
     try {
@@ -198,7 +203,7 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
       </div>
 
       <h1 className="text-lg">Review:</h1>
-      <div className="flex w-full flex-row justify-between">
+      <div className="flex w-full flex-row justify-end items-center">
         {showCompleted ? (
           <div>
             <h1 className="text-base">{data.DemoTiffinReview[0].review}</h1>
@@ -216,9 +221,18 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
         {!showCompleted && (
           <div>
             <button
+              onClick={() => {
+                setUserId(data.user.id);
+                onOpen("assignAgentDemoDelivery");
+              }}
+              className={`p-3 mr-3 font-bold rounded-xl flex justify-center items-center bg-white text-black`}
+            >
+              Assign
+            </button>
+            <button
               onClick={handleRemove}
               disabled={removeLoader}
-              className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
+              className={`p-3 mr-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
                 removeLoader ? "bg-[#949494]" : "bg-red-400 text-white"
               }`}
             >

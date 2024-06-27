@@ -1,10 +1,25 @@
 import { create } from "zustand";
 
-export type ModalType = "createAreaManager" | "createCity" | "createState" | "userUpdate"
+export type ModalType =
+  | "createAreaManager"
+  | "createCity"
+  | "createState"
+  | "userUpdate"
+  | "kitchenHeadUpdate"
+  | "kitchenUpdate"
+  | "updateAreaManager"
+  | "createKitchen"
+  | "createKitchenHead"
+  | "createAgent"
+  | "updateAgent"
+  | "userRecharge"
+  | "assignAgent"
+  | "assignAgentDemoDelivery"
+  ;
 
 interface ModalData {
-  name?: string
-  address?: string
+  name?: string;
+  address?: string;
 }
 
 interface ModalStore {

@@ -30,6 +30,28 @@ const UserState = (props: any) => {
   const [tiffinPackageName, setTiffinPackageName] = useState("");
   const [packageContain, setPackageContain] = useState("");
   const [price, setPrice] = useState(0);
+  const [kitchenHeadId, setKitchenHeadId] = useState(0);
+  const [kitchenHeadName, setKitchenHeadName] = useState("");
+  const [kitchenHeadUsername, setKitchenHeadUsername] = useState("");
+  const [kitchenHeadPassword, setKitchenHeadPassword] = useState("");
+  const [kitchenHeadPhone, setKitchenHeadPhone] = useState("");
+  const [kitchenHeadStatus, setKitchenHeadStatus] = useState(true);
+  const [kitchenId, setKitchenId] = useState(0);
+  const [kitchenName, setKitchenName] = useState("");
+  const [kitchenAddress, setKitchenAddress] = useState("");
+  const [areaManagerId, setAreaManagerId] = useState(0);
+  const [areaManagerName, setAreaManagerName] = useState("");
+  const [areaManagerUsername, setAreaManagerUsername] = useState("");
+  const [areaManagerPassword, setAreaManagerPassword] = useState("");
+  const [areaManagerEmail, setAreaManagerEmail] = useState("");
+  const [areaManagerPhone, setAreaManagerPhone] = useState("");
+  const [areaManagerAlternatePhone, setAreaManagerAlternatePhone] =
+    useState("");
+  const [areaManagerEmergencyPhone, setAreaManagerEmergencyPhone] =
+    useState("");
+  const [areaManagerResidentAddress, setAreaManagerResidentAddress] =
+    useState("");
+  const [areaManagerOfficeAddress, setAreaManagerOfficeAddress] = useState("");
 
   const cancelMeal = async (id: number) => {
     try {
@@ -205,6 +227,44 @@ const UserState = (props: any) => {
         setPackageContain,
         price,
         setPrice,
+        kitchenHeadId,
+        setKitchenHeadId,
+        kitchenHeadName,
+        setKitchenHeadName,
+        kitchenHeadUsername,
+        setKitchenHeadUsername,
+        kitchenHeadPassword,
+        setKitchenHeadPassword,
+        kitchenHeadPhone,
+        setKitchenHeadPhone,
+        kitchenHeadStatus,
+        setKitchenHeadStatus,
+        kitchenId,
+        setKitchenId,
+        kitchenName,
+        setKitchenName,
+        kitchenAddress,
+        setKitchenAddress,
+        areaManagerId,
+        setAreaManagerId,
+        areaManagerName,
+        setAreaManagerName,
+        areaManagerUsername,
+        setAreaManagerUsername,
+        areaManagerEmail,
+        setAreaManagerEmail,
+        areaManagerPhone,
+        setAreaManagerPhone,
+        areaManagerPassword,
+        setAreaManagerPassword,
+        areaManagerAlternatePhone,
+        setAreaManagerAlternatePhone,
+        areaManagerEmergencyPhone,
+        setAreaManagerEmergencyPhone,
+        areaManagerResidentAddress,
+        setAreaManagerResidentAddress,
+        areaManagerOfficeAddress,
+        setAreaManagerOfficeAddress,
       }}
     >
       {props.children}

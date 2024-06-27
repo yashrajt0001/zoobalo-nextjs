@@ -15,7 +15,6 @@ const page = () => {
   const [kitchenLoader, setKitchenLoader] = useState(false);
   const [cities, setCities] = useState([]);
   const [states, setStates] = useState([]);
-  const [areaManagers, setAreaManagers] = useState([]);
   const [searchinput, setSearchinput] = useState("");
   const [isFetchloading, setIsFetchloading] = useState(false);
   const [kitchens, setKitchens] = useState([]);
@@ -33,27 +32,6 @@ const page = () => {
       }
     }
 
-    const getAreaManagers = async () => {
-      try {
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_HOST}/areaManager/get`,
-          {
-            stateId: 1,
-          },
-          {
-            headers: {
-              "auth-token": localStorage.getItem("auth-token"),
-            },
-          }
-        );
-        setAreaManagers(data);
-      } catch (error: any) {
-        toast.error(error?.response?.data);
-      } finally {
-        setIsFetchLoading(false);
-      }
-    };
-
     async function getAllStates() {
       try {
         const res = await axios.get(
@@ -66,8 +44,6 @@ const page = () => {
       }
     }
     getAllStates();
-
-    getAreaManagers();
     getAllCities();
   }, []);
 
@@ -104,28 +80,6 @@ const page = () => {
     password: "",
   });
 
-  const [kitchenDetails, setKitchenDetails] = useState({
-    name: "",
-    address: "",
-  });
-
-  const [areaManagerDetails, setAreaManagerDetails] = useState({
-    name: "",
-    username: "",
-    password: "",
-    email: "",
-    phone: "",
-    alternatePhone: "",
-    emergencyPhone: "",
-    residentAddress: "",
-    officeAddress: "",
-    aadhar: "",
-    pan: "",
-    agreement: "",
-    photo: "",
-    stateId: "",
-    district: "",
-  });
 
   const [userloader, setUserloader] = useState(false);
   const [delBoyLoader, setDelBoyLoader] = useState(false);
@@ -167,33 +121,6 @@ const page = () => {
       toast.error(error.response.data);
     } finally {
       setDelBoyLoader(false);
-    }
-  };
-
-  const handleKitchenCreate = async () => {
-    if (!kitchenDetails.name || !kitchenDetails.address) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setKitchenLoader(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchen/create`,
-        {
-          name: kitchenDetails.name,
-          cityId: selectedCity,
-          address: kitchenDetails.address,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setKitchenLoader(false);
     }
   };
 
@@ -323,121 +250,51 @@ const page = () => {
   return (
     <div className="flex h-[calc(100vh-65px)]">
       <div className="flex-1 overflow-y-auto">
-        <div className="bg-slate-50">
-          <div className="flex px-4 gap-12 border-b border-gray-300 ">
-            <button
-              className={`py-3 ${
-                selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+      <div className="bg-slate-50">
+        <div className="flex px-4 gap-12 border-b border-gray-300 ">
+          <button
+            className={`py-3 ${
+              selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(0)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 0 ? "text-blue-400" : "text-gray-400"
               }`}
-              onClick={() => setSelectedTab(0)}
             >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                Queue
-              </h1>
-            </button>
-            <button
-              className={`py-3 ${
-                selectedTab == 1 ? "border-b-2 border-blue-400" : ""
+              Queue
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 2 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(2)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 2 ? "text-blue-400" : "text-gray-400"
               }`}
-              onClick={() => setSelectedTab(1)}
             >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 1 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                Area Manager
-              </h1>
-            </button>
-            <button
-              className={`py-3 ${
-                selectedTab == 2 ? "border-b-2 border-blue-400" : ""
+              City
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 3 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={() => setSelectedTab(3)}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 3 ? "text-blue-400" : "text-gray-400"
               }`}
-              onClick={() => setSelectedTab(2)}
             >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 2 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                City
-              </h1>
-            </button>
-            <button
-              className={`py-3 ${
-                selectedTab == 3 ? "border-b-2 border-blue-400" : ""
-              }`}
-              onClick={() => setSelectedTab(3)}
-            >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 3 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                State
-              </h1>
-            </button>
-            <button
-              className={`py-3 ${
-                selectedTab == 4 ? "border-b-2 border-blue-400" : ""
-              }`}
-              onClick={() => setSelectedTab(4)}
-            >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 4 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                Kitchens
-              </h1>
-            </button>
-          </div>
-
-          {selectedTab == 1 && (
-            <>
-              <Button
-                className="ml-8 mt-5"
-                onClick={() => onOpen("createAreaManager")}
-              >
-                Create
-              </Button>
-              <div className="pt-8 bg-[#F6F6F6] relative">
-                <div className="pb-8 px-8">
-                  <div className="flex py-6 text-2xl font-semibold">
-                    <h1 className="w-[25%] text-center">Name</h1>
-                    {/* <h1 className="w-[20%] text-center">State</h1> */}
-                    <h1 className="w-[25%] text-center">District</h1>
-                    <h1 className="w-[25%] text-center">Phone</h1>
-                    <h1 className="w-[25%] text-center">Address</h1>
-                  </div>
-
-                  <div className="overflow-y-auto h-[60%]">
-                    {areaManagers.map((areaManager: any) => (
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                        <h1 className="w-[25%] text-center">
-                          {areaManager.name}
-                        </h1>
-                        {/* <h1 className="w-[20%] text-center">{areaManager.state}</h1> */}
-                        <h1 className="w-[25%] text-center">
-                          {areaManager.district}
-                        </h1>
-                        <h1 className="w-[25%] text-center">
-                          {areaManager.phone}
-                        </h1>
-                        <h1 className="w-[25%] text-center">
-                          {areaManager.officeAddress}
-                        </h1>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+              State
+            </h1>
+          </button>
+        </div>
 
           {selectedTab == 2 && (
             <>
@@ -454,20 +311,20 @@ const page = () => {
                     <h1 className="w-[50%] text-center">Security Deposit</h1>
                   </div>
 
-                  <div className="h-[60%]">
-                    {cities.map((city: any) => (
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                        <h1 className="w-[50%] text-center">{city.name}</h1>
-                        <h1 className="w-[50%] text-center">
-                          {city.securityDeposit}
-                        </h1>
-                      </div>
-                    ))}
+              <div className="h-[60%]">
+                {cities.map((city: any) => (
+                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                    <h1 className="w-[50%] text-center">{city.name}</h1>
+                    <h1 className="w-[50%] text-center">
+                      {city.securityDeposit}
+                    </h1>
+                  </div>
+                ))}
+                  </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+                </>
+        )}
 
           {selectedTab == 3 && (
             <>

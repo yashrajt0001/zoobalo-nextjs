@@ -120,6 +120,7 @@ const page = () => {
 
   const handleUpdateSecurityDepositCall = async () => {
     setSecurityDepositLoader(true);
+    console.log("city: ", selectedCity);
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/areaManager/securityDeposit/update`,
@@ -252,7 +253,7 @@ const page = () => {
 
               {tiffinPackageId != "" && (
                 <div className="w-[40%] ml-12 -mt-14">
-                  <div className="sticky top-24 z-10 bg-white flex flex-col gap-2">
+                  <div className="sticky top-24 z-10 flex flex-col gap-2">
                     <h1 className="text-3xl">Update:</h1>
                     <input
                       type="text"

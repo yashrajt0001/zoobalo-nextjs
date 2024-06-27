@@ -3,12 +3,21 @@
 import { Card } from "@/components/Card";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { EllipsisIcon, Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { useModal } from "@/hooks/use-modal-store";
+import Link from "next/link";
 
 const page = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([] as any);
   const [allUsers, setAllUsers] = useState([]);
   const [isFetchloading, setIsFetchloading] = useState(true);
   const [searchinput, setSearchinput] = useState("");
@@ -18,6 +27,10 @@ const page = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [updateLoader, setUpdateLoader] = useState(false);
   const [tempResults, setTempResults] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [removeLoader, setRemoveLoader] = useState(0);
+
+  const { onOpen } = useModal();
 
   const context = useContext(UserContext);
   const {
@@ -28,13 +41,16 @@ const page = () => {
     mob,
     balance,
     timing,
+    setTiming,
     setUserName,
     setMorningAddress,
     setEveningAddress,
     setDueTiffins,
     setMob,
     setBalance,
-    userId
+    userId,
+    setUserId,
+    setUserDetails,
   } = context as UserContextType;
 
   useEffect(() => {
@@ -68,7 +84,7 @@ const page = () => {
     if (searchinput) {
       finalResults = tempResults.filter((user: any) =>
         !showPending
-          ? user.name.toLowerCase().includes(searchinput.toLowerCase())
+          ? user.user.name.toLowerCase().includes(searchinput.toLowerCase())
           : user.user.name.toLowerCase().includes(searchinput.toLowerCase())
       );
     }
@@ -77,9 +93,10 @@ const page = () => {
   }, [searchinput, tempResults]);
 
   const handleCancel = () => {
+    setSelectedTab(2);
     setShowPending(false);
     const cancelledUsers = users.filter((user: any) => {
-      for (const order of user.order) {
+      for (const order of user.user.order) {
         if (order.NextMeal.isCancel) return true;
       }
     });
@@ -89,43 +106,48 @@ const page = () => {
   };
 
   const handleAllUsers = () => {
+    setSelectedTab(0);
     setShowPending(false);
     setResults(allUsers);
     setTempResults(allUsers);
     setTotalUsers(allUsers.length);
   };
 
-  // const handleSubscribe = () => {
-  //   setShowPending(false);
-  //   const subscribedUsers = allUsers.filter((user: any) => {
-  //     return user.order.length > 0;
-  //   });
-  //   setResults(subscribedUsers);
-  //   setTempResults(subscribedUsers);
-  //   setTotalUsers(subscribedUsers.length);
-  // };
+  const handleSubscribe = () => {
+    setSelectedTab(1);
+    setShowPending(false);
+    const subscribedUsers = allUsers.filter((user: any) => {
+      return user.user.order.length > 0;
+    });
+    setResults(subscribedUsers);
+    setTempResults(subscribedUsers);
+    setTotalUsers(subscribedUsers.length);
+  };
 
   const handlePaused = () => {
+    setSelectedTab(3);
     setShowPending(false);
     const pausedUsers = users.filter((user: any) => {
-      return user.order[0].NextMeal.isPause == true;
+      return user.user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
     setTempResults(pausedUsers);
     setTotalUsers(pausedUsers.length);
   };
 
-  // const handleUnsubscribed = () => {
-  //   setShowPending(false);
-  //   const unsubscribedUsers = allUsers.filter((user: any) => {
-  //     return user.order.length == 0;
-  //   });
-  //   setResults(unsubscribedUsers);
-  //   setTempResults(unsubscribedUsers);
-  //   setTotalUsers(unsubscribedUsers.length);
-  // };
+  const handleUnsubscribed = () => {
+    setSelectedTab(4);
+    setShowPending(false);
+    const unsubscribedUsers = allUsers.filter((user: any) => {
+      return user.user.order.length == 0;
+    });
+    setResults(unsubscribedUsers);
+    setTempResults(unsubscribedUsers);
+    setTotalUsers(unsubscribedUsers.length);
+  };
 
   const handlePendingDeliveries = async () => {
+    setSelectedTab(5);
     setShowPending(true);
     setIsFetchloading(true);
     try {
@@ -138,22 +160,21 @@ const page = () => {
         }
       );
       setResults(data);
-      console.log("pending : ",data);
+      console.log("pending : ", data);
       setTempResults(data);
       setTotalUsers(data.length);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       toast.error(error?.response?.data);
-    }
-    finally {
+    } finally {
       setIsFetchloading(false);
     }
   };
 
   const handleLowBalance = async () => {
+    setSelectedTab(6);
     setShowPending(false);
     const lowBalanceUser = users.filter((user: any) => {
-      if (user.order[0].amount * 2 >= user.balance) return true;
+      if (user.user.order[0].amount * 2 >= user.balance) return true;
     });
 
     setResults(lowBalanceUser);
@@ -220,11 +241,12 @@ const page = () => {
   };
 
   const handleAddOns = () => {
+    setSelectedTab(7);
     setShowPending(false);
     const haveAddOn = users.filter((user: any) => {
       if (
-        user.order[0].orderAddon.length > 0 ||
-        (user.order.length > 1 && user.order[1].orderAddon.length > 0)
+        user.user.order[0].orderAddon.length > 0 ||
+        (user.user.order.length > 1 && user.user.order[1].orderAddon.length > 0)
       )
         return true;
     });
@@ -237,7 +259,7 @@ const page = () => {
   const handleAgentAssign = () => {
     setShowPending(false);
     const requestedUsers = allUsers.filter((user: any) => {
-      return user.agentId == null;
+      return user.user.agentId == null;
     });
     setResults(requestedUsers);
     setTempResults(requestedUsers);
@@ -245,9 +267,126 @@ const page = () => {
   };
 
   return (
-    <>
-      <div className="ml-10 mt-4 pb-8">
-        <div className="flex items-center">
+    <div className="flex h-[calc(100vh-65px)] bg-slate-50">
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300">
+          <button
+            className={`py-3 ${
+              selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handleAllUsers}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              All Users
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 1 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handleSubscribe}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Subscribed
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 2 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handleCancel}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Cancelled
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 3 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handlePaused}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Paused
+            </h1>
+          </button>
+
+          <button
+            className={`py-3 ${
+              selectedTab == 4 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handleUnsubscribed}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Unsubscribed
+            </h1>
+          </button>
+
+          <button
+            className={`py-3 ${
+              selectedTab == 5 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handlePendingDeliveries}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Pending
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 6 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handleLowBalance}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Low Balance
+            </h1>
+          </button>
+          <button
+            className={`py-3 ${
+              selectedTab == 7 ? "border-b-2 border-blue-400" : ""
+            }`}
+            onClick={handleAddOns}
+          >
+            <h1
+              className={`text-xl ${
+                selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+              }`}
+            >
+              Addons
+            </h1>
+          </button>
+        </div>
+
+        <div className="mt-6 ml-8">
           <input
             type="text"
             value={searchinput}
@@ -256,224 +395,196 @@ const page = () => {
             className="p-2 border border-gray-200 rounded-lg outline-none w-[25%]"
           />
 
-          <div className="flex gap-2 ml-8">
-            <button
-              onClick={handleAllUsers}
-              className="bg-orange-500 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              All Users
-            </button>
-
-            <button
-              onClick={handleCancel}
-              className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Cancelled
-            </button>
-
-            <button
-              onClick={handlePaused}
-              className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Paused
-            </button>
-
-            <button
-              onClick={handlePendingDeliveries}
-              className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Pending
-            </button>
-
-            <button
-              onClick={handleLowBalance}
-              className="bg-red-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Low balance
-            </button>
-
-            <button
-              onClick={handleAddOns}
-              className="bg-green-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              AddOns
-            </button>
-
-            <button
-              onClick={handleAgentAssign}
-              className="bg-yellow-400 items-center justify-center h-fit w-fit py-2 px-4 rounded-lg text-white flex gap-2"
-            >
-              Assign agent
-            </button>
+          <div className="flex justify-between w-1/2 items-center">
+            <h1 className=" mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
           </div>
-        </div>
-
-        <div className="flex justify-between w-1/2 items-center">
-          <h1 className=" mt-6 text-3xl mb-5">Total Users: {totalUsers}</h1>
-        </div>
-        {isFetchloading ? (
-          <Loader2 className="animate-spin w-8 h-8" />
-        ) : !showPending ? (
-          <div className="flex w-full">
-            <div className="flex flex-col gap-3 w-[50%]">
-              {results.map((user: any) => {
-                return (
-                  <Card
-                    className={`flex`}
-                    id={user.user.id}
-                    key={user.id}
-                    _name={user?.user?.name}
-                    _morningAddress={user?.user?.morningAddress}
-                    _eveningAddress={user?.user?.eveningAddress}
-                    _balance={user?.user?.balance?.toString()}
-                    _mobile={user?.user?.phone}
-                    dueTiffin={user?.user?.dueTiffin}
-                    _type={
-                      user?.user?.order?.length > 1
-                        ? "BOTH"
-                        : user?.user?.order[0]?.tiffinTime
-                    }
-                    _isSubscribed={user?.user?.order.length == 0 ? false : true}
-                    _isPaused={
-                      user.user.order.length > 0 &&
-                      user.user.order[0].NextMeal.isPause
-                        ? true
-                        : false
-                    }
-                    _order={user.user.order}
-                    nextMeal={
-                      user.user.order.length > 0
-                        ? user.user.order[0].NextMeal
-                        : {}
-                    }
-                    user={user}
-                  isPending={showPending}
-                  />
-                );
-              })}
-            </div>
-
-            {userName != "" && (
-              <div className="w-[40%] ml-12 -mt-14">
-                <div className="sticky top-24 z-10 bg-white flex flex-col gap-2">
-                  <h1 className="text-3xl">Update:</h1>
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-
-                  {(timing == "MORNING" || timing == "BOTH") && (
-                    <input
-                      type="text"
-                      placeholder="Morning Address"
-                      className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                      value={morningAddress}
-                      onChange={(e) => setMorningAddress(e.target.value)}
-                    />
-                  )}
-
-                  {(timing == "EVENING" || timing == "BOTH") && (
-                    <input
-                      type="text"
-                      placeholder="Evening Address"
-                      className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                      value={eveningAddress}
-                      onChange={(e) => setEveningAddress(e.target.value)}
-                    />
-                  )}
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={mob}
-                    maxLength={10}
-                    onChange={(e) => setMob(e.target.value)}
-                  />
-                  <input
-                    type="number"
-                    placeholder="User's Balance"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={balance}
-                    onChange={(e) => setBalance(e.target.value)}
-                  />
-
-                  <input
-                    type="number"
-                    placeholder="Due Tiffins"
-                    className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
-                    value={dueTiffins}
-                    onChange={(e) => setDueTiffins(e.target.value)}
-                  />
-                  {/* <div className="border-2 pr-4 border-gray-200 rounded-lg flex">
-                    <select
-                      onChange={(e) => {
-                        setTiming(e.target.value);
-                      }}
-                      name="type"
-                      id="type"
-                      className="p-5 w-full"
-                      value={timing}
-                    >
-                      <option value="MORNING">MORNING</option>
-                      <option value="EVENING">EVENING</option>
-                      <option value="BOTH">BOTH</option>
-                    </select>
-                  </div> */}
-                  <button
-                    onClick={handleUpdate}
-                    className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}
-                  >
-                    Update{" "}
-                    {updateLoader && <Loader2 className="animate-spin mr-2" />}
-                  </button>
-                </div>
+          {isFetchloading ? (
+            <Loader2 className="animate-spin w-8 h-8" />
+          ) : !showPending ? (
+            <div className="text-2xl w-[100%] pr-[6%]">
+              <div className="flex mb-2 w-full font-semibold">
+                <h1 className="w-[22%] text-center">Name</h1>
+                <h1 className="w-[22%] text-center">Phone</h1>
+                <h1 className="w-[22%] text-center">Balance</h1>
+                <h1 className="w-[22%] text-center">Tiffin Time</h1>
+                {/* <h1 className="w-[20%] text-center"></h1> */}
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {results.map((user: any) => {
-              return (
-                <Card
-                  className={`flex w-[50%]`}
-                  id={user.user.id}
-                  key={user.id}
-                  _name={user?.user?.name}
-                  _morningAddress={user?.user?.morningAddress}
-                  _eveningAddress={user?.user?.eveningAddress}
-                  _balance={user?.user?.balance?.toString()}
-                  _mobile={user?.user?.phone}
-                  dueTiffin={user?.user?.dueTiffin}
-                  _type={
-                    user?.user?.order?.length > 1
-                      ? "BOTH"
-                      : user?.user?.order[0]?.tiffinTime
-                  }
-                  _isSubscribed={user?.user?.order.length == 0 ? false : true}
-                  _isPaused={
-                    user.user.order.length > 0 &&
-                    user.user.order[0].NextMeal.isPause
-                      ? true
-                      : false
-                  }
-                  _order={user.user.order}
-                  nextMeal={
-                    user.user.order.length > 0
-                      ? user.user.order[0].NextMeal
-                      : {}
-                  }
-                  user={user}
-                  isPending={showPending}
-                />
-              );
-            })}
-          </div>
-        )}
+              <div className="w-[100%]">
+                {results.map((user: any) => {
+                  return (
+                    <>
+                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                        <h1 className="w-[22%] text-center truncate">
+                          {user?.user?.name}
+                        </h1>
+                        <h1 className="w-[22%] text-center truncate">
+                          {user?.user?.phone}
+                        </h1>
+                        <h1 className="w-[22%] text-center truncate">
+                          {user?.user?.balance?.toString()}
+                        </h1>
+                        <h1 className="w-[22%] text-center truncate">
+                          {user?.user?.order?.length > 1
+                            ? "BOTH"
+                            : user?.user?.order[0]?.tiffinTime}
+                        </h1>
+                        <Popover>
+                          <PopoverTrigger>
+                            <Button variant="ghost">
+                              <EllipsisIcon className="w-5 h-5" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-2">
+                            <PopoverClose className="flex flex-col w-full items-center">
+                              <Button
+                                onClick={() => {
+                                  setUserName(user.user.name);
+                                  setMorningAddress(user.user.morningAddress);
+                                  setEveningAddress(user.user.eveningAddress);
+                                  setMob(user.user.phone);
+                                  setBalance(user.user.balance);
+                                  setTiming(
+                                    user.user.order.length > 1
+                                      ? "BOTH"
+                                      : user.user.order[0].tiffinTime
+                                  );
+                                  setDueTiffins(user.user.order[0].dueTiffin);
+                                  onOpen("userUpdate");
+                                }}
+                                className="w-full flex justify-center"
+                                variant="ghost"
+                              >
+                                Update
+                              </Button>
+                              <Link
+                                href={`/kitchenHead/user?userId=${user.user.id}&name=${user.user.name}&mobile=${user.user.phone}`}
+                              >
+                                <Button
+                                  className="w-full flex justify-center"
+                                  variant="ghost"
+                                >
+                                  Tiffin history
+                                </Button>
+                              </Link>
+                              <Link
+                                href={`/kitchenHead/user/recharges?userId=${user.user.id}&name=${user.user.name}&mobile=${user.user.phone}`}
+                              >
+                                <Button
+                                  className="w-full flex justify-center"
+                                  variant="ghost"
+                                >
+                                  Recharge history
+                                </Button>
+                              </Link>
+                              {user.user.order.length > 0 && (
+                                <>
+                                  <Link
+                                    href={`/kitchenHead/user/cancelPause?userId=${user.user.id}&name=${user.user.name}&mobile=${user.user.phone}`}
+                                  >
+                                    <Button
+                                      onClick={() => setUserDetails(user.user)}
+                                      className="w-full flex justify-center"
+                                      variant="ghost"
+                                    >
+                                      Cancel / Pause
+                                    </Button>
+                                  </Link>
+
+                                  <Button
+                                    onClick={() => {
+                                      setUserId(user.user.id);
+                                      onOpen("userRecharge");
+                                    }}
+                                    className="w-full flex justify-center"
+                                    variant="ghost"
+                                  >
+                                    Recharge
+                                  </Button>
+                                </>
+                              )}
+                              {user.agentId == null && (
+                                <Button
+                                  onClick={() => {
+                                    setUserId(user.user.id);
+                                    onOpen("assignAgent");
+                                  }}
+                                  className="w-full flex justify-center"
+                                  variant="ghost"
+                                >
+                                  Assign
+                                </Button>
+                              )}
+                            </PopoverClose>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex mb-2 w-full font-semibold text-2xl pr-[4%]">
+                <h1 className="w-[26%] text-center">Name</h1>
+                <h1 className="w-[26%] text-center">Phone</h1>
+                <h1 className="w-[26%] text-center">Balance</h1>
+                <h1 className="w-[18%] text-center"></h1>
+              </div>
+              <div className="flex flex-col pr-[4%]">
+                {results.map((user: any) => {
+                  return (
+                    <>
+                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                        <h1 className="w-[26%] text-center truncate">
+                          {user?.user?.name}
+                        </h1>
+                        <h1 className="w-[26%] text-center truncate">
+                          {user?.user?.phone}
+                        </h1>
+                        <h1 className="w-[26%] text-center truncate">
+                          {user?.user?.balance?.toString()}
+                        </h1>
+                        <button
+                          className="w-[18%] flex items-center justify-center text-red-500"
+                          onClick={async () => {
+                            setRemoveLoader(user.id);
+                            try {
+                              await axios.post(
+                                `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/queue/remove`,
+                                {
+                                  queueDeliveryId: user.id,
+                                },
+                                {
+                                  headers: {
+                                    "auth-token":
+                                      localStorage.getItem("auth-token"),
+                                  },
+                                }
+                              );
+                              handlePendingDeliveries();
+                            } catch (error: any) {
+                              toast.error(error.response.data);
+                            } finally {
+                              setRemoveLoader(0);
+                            }
+                          }}
+                        >
+                          Remove
+                          {removeLoader == user.id && (
+                            <Loader2 className="animate-spin w-6 h-6 ml-3" />
+                          )}
+                        </button>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
