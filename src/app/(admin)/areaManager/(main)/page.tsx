@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const page = () => {
-  const [login, setLogin] = useState(true);
   const [kitchenDetails, setKitchenDetails] = useState({
     name: "",
     address: "",
@@ -26,7 +25,6 @@ const page = () => {
   const [kitchenHeadAssignLoader, setKitchenHeadAssignLoader] = useState(false);
 
   useEffect(() => {
-    setLogin(!localStorage.getItem("auth-token"));
     async function getAllCities() {
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
@@ -38,10 +36,6 @@ const page = () => {
     }
     getAllCities();
   }, []);
-
-  const isLoggedIn = () => {
-    setLogin(false);
-  };
 
   const handleKitchenCreate = async () => {
     if (!kitchenDetails.name || !kitchenDetails.address) {

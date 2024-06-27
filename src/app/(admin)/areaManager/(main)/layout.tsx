@@ -6,6 +6,7 @@ import axios from "axios";
 import { createErrorMessage } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import AdminNavbar from "@/components/AdminNavbar";
+import { WebBannerSection } from "@/components/WebBannerSection";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -38,6 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex">
           <Sidebar show={showSidebar} setter={setShowSidebar} />
           <div className="bg-[#f6f6f6] flex flex-col flex-grow w-screen md:w-full">
+            <WebBannerSection />
             {children}
           </div>
         </div>

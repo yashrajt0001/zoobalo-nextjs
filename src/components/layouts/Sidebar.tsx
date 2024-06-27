@@ -86,8 +86,8 @@ export default function Sidebar({ show, setter }: SidebarProps) {
     <>
       <div className={`${className}${appendClass}`}>
         <div className="flex flex-col py-6">
-          {items.map((item) => {
-              return <MenuItem name={item.name} icon={item.icon} route={item.route} />;
+          {items.map((item, index) => {
+            return <MenuItem key={index} name={item.name} icon={item.icon} route={item.route} />;
           })}
         </div>
       </div>

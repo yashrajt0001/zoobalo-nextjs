@@ -27,7 +27,6 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/state/get`
         );
-        console.log(res.data);
         setStates(res.data);
       } catch (error: any) {
         toast.error(error?.response?.data);
@@ -60,10 +59,7 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
     } finally {
       setCityLoader(false);
     }
-    };
-    
-  console.log("stateId: ",stateId);
-
+  };
 
   return (
     <Modal open={isModalOpen} onClose={onClose}>

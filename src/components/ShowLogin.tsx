@@ -56,7 +56,7 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
         }
       );
       localStorage.setItem("auth-token", data.token);
-      return router.push("/kitchenHead");
+      return router.push(`/${name}`);
     } catch (error: any) {
       // todo: show toast error
       console.log(createErrorMessage(error));
