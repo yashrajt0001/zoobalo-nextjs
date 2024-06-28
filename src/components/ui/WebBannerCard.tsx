@@ -35,13 +35,11 @@ const WebBannerCard: FC<WebBannerCardProps> = ({ item, setItems }) => {
   return (
     <div>
       <div
-        className={`h-20 aspect-video relative rounded-lg bg-[url('${
-          process.env.NEXT_PUBLIC_HOST
-        }/image/webBanner/${encodeURIComponent(item.image)}')]`}
+        className={`h-20 aspect-video relative rounded-lg`}
         style={{
-          background: `url(${
+          backgroundImage: `url('${
             process.env.NEXT_PUBLIC_HOST + "/image/webBanner/" + item.image
-          })`,
+          }')`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",

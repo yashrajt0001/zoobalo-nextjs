@@ -1,5 +1,3 @@
-"use client";
-
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import WebBannerCard from "./ui/WebBannerCard";
@@ -31,10 +29,9 @@ export function WebBannerSection() {
 
   const handleUpdate = async () => {
     try {
-      setIsLoading(true)
-      let itemsIds: number[] = [];
-      items.map((item) => itemsIds.push(item.id));
-      const { data } = await axios.patch(
+      setIsLoading(true);
+      let itemsIds = items.map((item) => item.id);
+      await axios.patch(
         `${process.env.NEXT_PUBLIC_HOST}/areaManager/webBanner/update`,
         { items: itemsIds },
         {
@@ -44,22 +41,21 @@ export function WebBannerSection() {
         }
       );
     } catch (error) {
-      // todo: show toast msg
       console.log(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-between items-center px-10 w-full">
+    <div className="flex items-center justify-between px-8 w-full overflow-hidden">
       <Reorder.Group
         axis="x"
         values={items}
         onReorder={setItems}
-        className="w-full"
+        className="flex overflow-x-auto max-w-[80%]"
       >
-        <div className="flex p-6 gap-4 max-w-[90%] overflow-x-auto">
+        <div className="flex p-6 gap-4 min-w-[200px]">
           {items.map((item, index) => (
             <Reorder.Item key={item.id} value={item} className="cursor-grab">
               <WebBannerCard item={item} setItems={setItems} />
@@ -68,17 +64,17 @@ export function WebBannerSection() {
               </div>
             </Reorder.Item>
           ))}
-          <ImageUpload/>
+          <ImageUpload setItems={setItems} />
         </div>
       </Reorder.Group>
       <Button
         variant="zoobaloSuccess"
         onClick={handleUpdate}
         disabled={isLoading}
-        className={`${isLoading ? 'bg-green-300': 'bg-green-500'}`}
+        className={`${isLoading ? "bg-green-300" : "bg-green-500"}`}
       >
         Update
-       {isLoading && <Loader2 className="h-4 w-4 animate-spin ml-2"/>}
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin ml-2" />}
       </Button>
     </div>
   );

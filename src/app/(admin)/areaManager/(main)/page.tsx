@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
+import { WebBannerSection } from "@/components/WebBannerSection";
 
 const page = () => {
   const [kitchenDetails, setKitchenDetails] = useState({
@@ -136,6 +137,7 @@ const page = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-65px)]">
+      <WebBannerSection />
       <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300 ">
         <button
           className={`py-3 ${
@@ -189,7 +191,10 @@ const page = () => {
                   {kitchens.map((cities: any) => {
                     let city = cities.name;
                     return cities.kitchen.map((kitchen: any) => (
-                      <div key={kitchen.id} className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
+                      <div
+                        key={kitchen.id}
+                        className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2"
+                      >
                         <h1 className="w-[32%] text-center truncate">
                           {kitchen?.name}
                         </h1>
@@ -242,7 +247,10 @@ const page = () => {
                 {kitchens.map((user: any, index) => {
                   return (
                     <>
-                      <div key={index} className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                      <div
+                        key={index}
+                        className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative"
+                      >
                         {/* <h1 className="w-[22%] text-center truncate">
                             {user?.name}
                           </h1>

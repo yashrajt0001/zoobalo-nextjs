@@ -11,7 +11,7 @@ interface adminNavbarProps {
 
 const AdminNavbar: FC<adminNavbarProps> = ({setter}) => {
   return (
-    <div className="bg-white border-b border-slate-200 sticky top-0 flex justify-between px-8 sm:px-12 py-2 z-[10000]">
+    <div className="bg-white border-b border-slate-200 sticky top-0 flex justify-between px-8 sm:px-12 py-2 z-[100]">
       <div className="flex w-full items-center justify-between">
         <Image src={logo1} alt="logo" className="w-28 h-12" />
         <MenuBarMobile setter={setter} />
