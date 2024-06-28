@@ -189,7 +189,7 @@ const page = () => {
                   {kitchens.map((cities: any) => {
                     let city = cities.name;
                     return cities.kitchen.map((kitchen: any) => (
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
+                      <div key={kitchen.id} className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
                         <h1 className="w-[32%] text-center truncate">
                           {kitchen?.name}
                         </h1>
@@ -239,10 +239,10 @@ const page = () => {
                 {/* <h1 className="w-[20%] text-center"></h1> */}
               </div>
               <div className="w-[100%]">
-                {kitchens.map((user: any) => {
+                {kitchens.map((user: any, index) => {
                   return (
                     <>
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                      <div key={index} className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
                         {/* <h1 className="w-[22%] text-center truncate">
                             {user?.name}
                           </h1>

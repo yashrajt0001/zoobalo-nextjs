@@ -35,9 +35,11 @@ const WebBannerCard: FC<WebBannerCardProps> = ({ item, setItems }) => {
   return (
     <div>
       <div
-        className={`h-20 aspect-video relative rounded-lg`}
+        className={`h-20 aspect-video relative rounded-lg bg-[url('${
+          process.env.NEXT_PUBLIC_HOST
+        }/image/webBanner/${encodeURIComponent(item.image)}')]`}
         style={{
-          backgroundImage: `url(${
+          background: `url(${
             process.env.NEXT_PUBLIC_HOST + "/image/webBanner/" + item.image
           })`,
           backgroundSize: "contain",
@@ -46,11 +48,17 @@ const WebBannerCard: FC<WebBannerCardProps> = ({ item, setItems }) => {
         }}
       >
         <button
-          className={`${isRemoveLoading ? 'bg-red-300' : 'bg-red-500'} rounded-full absolute right-0 top-0 transform translate-x-[50%] translate-y-[-50%] p-2 hover:bg-red-400 cursor-pointer`}
+          className={`${
+            isRemoveLoading ? "bg-red-300" : "bg-red-500"
+          } rounded-full absolute right-0 top-0 transform translate-x-[50%] translate-y-[-50%] p-2 hover:bg-red-400 cursor-pointer`}
           onClick={handleRemove}
           disabled={isRemoveLoading}
         >
-          { isRemoveLoading ? <Loader2 className="h-4 w-4 text-white animate-spin"/> : <X className="h-4 w-4 text-white" />}
+          {isRemoveLoading ? (
+            <Loader2 className="h-4 w-4 text-white animate-spin" />
+          ) : (
+            <X className="h-4 w-4 text-white" />
+          )}
         </button>
       </div>
     </div>
