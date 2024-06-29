@@ -8,6 +8,8 @@ import Modal from "../ui/modal";
 import { CheckCircleIcon, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface CreateAreaManagerModalProps {}
 
@@ -48,7 +50,7 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
         console.log(res.data);
         setStates(res.data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllStates();
@@ -58,7 +60,7 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
         console.log(res.data);
         setCities(res.data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllCities();
@@ -113,7 +115,7 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
           agreement: areaManagerDetails.agreement,
           stateId: parseInt(areaManagerDetails.stateId),
           district: areaManagerDetails.district,
-          cities:citiesArray
+          cities: citiesArray,
         },
         {
           headers: {
@@ -123,7 +125,7 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
       );
       console.log(data);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAreaManagerLoader(false);
     }

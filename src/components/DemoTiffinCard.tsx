@@ -10,6 +10,8 @@ import React, {
 } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface userInterface extends HTMLAttributes<HTMLDivElement> {
   data: any;
@@ -50,7 +52,7 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     }
   };
 
@@ -74,7 +76,7 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
       setReviewText("");
       await getDemoDeliveries();
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setRemoveLoader(false);
     }
@@ -101,7 +103,7 @@ export const DemoTiffinCard: FC<userInterface> = ({ data }) => {
       setReviewText("");
       await getDemoDeliveries();
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setDoneLoader(false);
     }

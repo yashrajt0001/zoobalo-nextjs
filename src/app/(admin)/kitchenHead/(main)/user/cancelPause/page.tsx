@@ -8,6 +8,8 @@ import "./MyCalendar.css";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import moment from "moment-timezone";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface PageInterface {
   params: {
@@ -62,7 +64,7 @@ const page = ({ params }: PageInterface) => {
         }
       });
     }
-  }, [userDetails]);
+  }, []);
 
   var today = new Date();
   var hours = today.getHours();
@@ -189,7 +191,7 @@ const page = ({ params }: PageInterface) => {
       );
       setResumeLoader(false);
     } catch (error: any) {
-      toast.error(error?.response?.data);
+      toast.error(createErrorMessage(error));
     }
   };
 

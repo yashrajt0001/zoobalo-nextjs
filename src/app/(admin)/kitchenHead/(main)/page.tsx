@@ -1,9 +1,25 @@
 "use client";
 import { ShowLogin } from "@/components/ShowLogin";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { CheckCircle2, Loader2 } from "lucide-react";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { CheckCircle2, EllipsisIcon, Loader2 } from "lucide-react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
+import { useModal } from "@/hooks/use-modal-store";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { PopoverClose } from "@radix-ui/react-popover";
+import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
 
 const page = () => {
   const [kitchens, setKitchens] = useState([]);
@@ -20,16 +36,26 @@ const page = () => {
     phone: "",
     code: "",
     alternateNumber: "",
-    kitchenId:""
+    kitchenId: "",
   });
-  const [delBoyLoader, setDelBoyLoader] = useState(false);
   const [timing, setTiming] = useState("");
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
-  const [usersArray, setUsersArray] = useState([] as any);
-  const [open, setOpen] = useState(false);
   const [addUserLoader, setAddUserLoader] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [allAgents, setAllAgents] = useState([]);
+  const [isFetchLoading, setIsFetchLoading] = useState(true);
+
+  const { onOpen } = useModal();
+
+  const context = useContext(UserContext);
+  const {
+    setDeliveryAgentName,
+    setDeliveryAgentId,
+    setDeliveryAgentMob,
+    setDeliveryAgentPartnerCode,
+  } = context as UserContextType;
 
   useEffect(() => {
     async function getAllKitchens() {
@@ -44,29 +70,29 @@ const page = () => {
         );
         setKitchens(res.data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
+      }
+    }
+    async function getAllAgents() {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/agent/get`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setAllAgents(res.data);
+      } catch (error: any) {
+        toast.error(createErrorMessage(error));
+      } finally {
+        setIsFetchLoading(false);
       }
     }
     getAllKitchens();
+    getAllAgents();
   }, []);
-
-  const handleLogin = async () => {
-    try {
-      if (!username || !password) {
-        return toast.error("Please enter email and password");
-      }
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/login`,
-        {
-          username,
-          password,
-        }
-      );
-      localStorage.setItem("auth-token", data.token);
-    } catch (error: any) {
-      toast.error(error.response.data);
-    }
-  };
 
   const handleCreate = async () => {
     if (!userDetails.name || !userDetails.phone) {
@@ -87,7 +113,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setUserloader(false);
     }
@@ -96,43 +122,6 @@ const page = () => {
       name: "",
       phone: "",
     });
-  };
-
-  const handleDelBoySubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (
-      !delBoyDetails.name ||
-      !delBoyDetails.phone ||
-      !delBoyDetails.code ||
-      !delBoyDetails.alternateNumber ||
-      !delBoyDetails.kitchenId
-    ) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setDelBoyLoader(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/agent/create`,
-        {
-          name:delBoyDetails.name,
-          phone:delBoyDetails.phone,
-          status:true,
-          partnerCode:delBoyDetails.code,
-          alternateNumber:delBoyDetails.alternateNumber,
-          kitchenId: parseInt(delBoyDetails.kitchenId)
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-      setDelBoyLoader(false);
-    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -176,7 +165,7 @@ const page = () => {
       );
       setUsers(res.data);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     }
   };
 
@@ -196,23 +185,18 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAddUserLoader(false);
     }
   };
 
   return (
-    <div>
-        <div className="pb-16 min-h-full">
-          <div className="flex items-center">
-            <h1 className="text-4xl mt-5 ml-12 text-[#FF5F1F]">
-              Hi! <span className="text-green-500">Admin</span>{" "}
-            </h1>
-          </div>
-
-          <div className="flex mb-6">
-            <div className="ml-16 flex flex-col gap-3 w-[40%]">
+    <div className="flex h-[calc(100vh-65px)] bg-slate-50">
+      <div className="flex-1 overflow-y-auto">
+        <div className="pb-8 min-h-full">
+          {/* <div className="flex mb-6">
+          <div className="ml-16 flex flex-col gap-3 w-[40%]">
               <h1 className="text-3xl mt-5">Create a User:</h1>
               <input
                 type="text"
@@ -249,96 +233,93 @@ const page = () => {
               </button>
             </div>
 
-            <div className="ml-16 flex flex-col gap-3 w-[40%] mt-5">
-              <h1 className="text-3xl mb-4">Add User in Delivery Queue :</h1>
-              <div className="flex items-center">
-                <h1 className="text-xl mr-4">QueueDelivery Timing :</h1>
-                <select
-                  onChange={(e) => {
-                    setTiming(e.target.value);
-                    async function getUsersForCurrentTiming() {
-                      try {
-                        const res = await axios.post(
-                          `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/queue/search?search=${search}`,
-                          {
-                            tiffinTime: e.target.value,
+          <div className="ml-16 flex flex-col gap-3 w-[40%] mt-5">
+            <h1 className="text-3xl mb-4">Add User in Delivery Queue :</h1>
+            <div className="flex items-center">
+              <h1 className="text-xl mr-4">QueueDelivery Timing :</h1>
+              <select
+                onChange={(e) => {
+                  setTiming(e.target.value);
+                  async function getUsersForCurrentTiming() {
+                    try {
+                      const res = await axios.post(
+                        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/queue/search?search=${search}`,
+                        {
+                          tiffinTime: e.target.value,
+                        },
+                        {
+                          headers: {
+                            "auth-token": localStorage.getItem("auth-token"),
                           },
-                          {
-                            headers: {
-                              "auth-token": localStorage.getItem("auth-token"),
-                            },
-                          }
-                        );
-                        setUsers(res.data);
-                        console.log("data: ", res.data);
-                      } catch (error: any) {
-                        console.log(error.response.data);
-                      }
+                        }
+                      );
+                      setUsers(res.data);
+                      console.log("data: ", res.data);
+                    } catch (error: any) {
+                      console.log(error.response.data);
                     }
-                    getUsersForCurrentTiming();
-                  }}
-                  value={timing}
-                  className="py-2 px-4 text-center rounded-md w-[40%]"
-                >
-                  <option value="" disabled>
-                    Select Timing
-                  </option>
-                  <option value="MORNING">MORNING</option>
-                  <option value="EVENING">EVENING</option>
-                </select>
-              </div>
-              {timing != "" && (
-                <>
-                  <div className="relative">
-                    <button
-                      onClick={() => setOpen(true)}
-                      className="mt-5 w-full border border-gray-200 p-3"
-                    >
-                      <h1 className="text-xl">Select User</h1>
-                    </button>
-                    {open && (
-                      <div className="p-2 w-full absolute bg-gray-100 border-4 border-gray-200 border-t-none flex flex-col rounded-lg rounded-t-none z-20">
-                        <input
-                          type="text"
-                          placeholder="Search User"
-                          value={search}
-                          onChange={getUsers}
-                          className="rounded-xl p-2"
-                        />
-                        {users.map((user: any) => (
-                          <button
-                            key={user.id}
-                            className="border-b mb-1 text-lg"
-                            onClick={() => {
-                              setSelectedUserId(user.id);
-                              setOpen(false);
-                            }}
-                          >
-                            {user.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex justify-end mt-8">
-                    <button
-                      onClick={handleAdd}
-                      className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
-                    >
-                      {addUserLoader && (
-                        <Loader2 className="animate-spin mr-2" />
-                      )}{" "}
-                      Add
-                    </button>
-                  </div>
-                </>
-              )}
+                  }
+                  getUsersForCurrentTiming();
+                }}
+                value={timing}
+                className="py-2 px-4 text-center rounded-md w-[40%]"
+              >
+                <option value="" disabled>
+                  Select Timing
+                </option>
+                <option value="MORNING">MORNING</option>
+                <option value="EVENING">EVENING</option>
+              </select>
             </div>
-          </div>
+            {timing != "" && (
+              <>
+                <div className="relative">
+                  <button
+                    onClick={() => setOpen(true)}
+                    className="mt-5 w-full border border-gray-200 p-3"
+                  >
+                    <h1 className="text-xl">Select User</h1>
+                  </button>
+                  {open && (
+                    <div className="p-2 w-full absolute bg-gray-100 border-4 border-gray-200 border-t-none flex flex-col rounded-lg rounded-t-none z-20">
+                      <input
+                        type="text"
+                        placeholder="Search User"
+                        value={search}
+                        onChange={getUsers}
+                        className="rounded-xl p-2"
+                      />
+                      {users.map((user: any) => (
+                        <button
+                          key={user.id}
+                          className="border-b mb-1 text-lg"
+                          onClick={() => {
+                            setSelectedUserId(user.id);
+                            setOpen(false);
+                          }}
+                        >
+                          {user.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-          <div className="flex ml-16">
-            <div className="flex flex-col gap-4 w-[45%]">
+                <div className="flex justify-end mt-8">
+                  <button
+                    onClick={handleAdd}
+                    className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+                  >
+                    {addUserLoader && <Loader2 className="animate-spin mr-2" />}{" "}
+                    Add
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div> */}
+
+          {/* <div className="flex flex-col gap-4 w-[45%]">
               <h1 className="text-3xl">Upload Image:</h1>
               <input type="file" onChange={handleFileChange} />
               <button
@@ -347,88 +328,100 @@ const page = () => {
               >
                 Upload Image
               </button>
-            </div>
+            </div> */}
 
-            <form
-              onSubmit={handleDelBoySubmit}
-              className="ml-10 flex flex-col gap-3 w-[40%]"
+          <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300">
+            <button
+              className={`py-3 ${
+                selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+              }`}
+              onClick={() => setSelectedTab(0)}
             >
-              <h1 className="text-3xl">Create a Delivery Boy Account:</h1>
-              <input
-                type="text"
-                name="name"
-                value={delBoyDetails.name}
-                onChange={(e) => {
-                  setDelBoyDetails({
-                    ...delBoyDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Name"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="tel"
-                name="phone"
-                value={delBoyDetails.phone}
-                onChange={(e) => {
-                  setDelBoyDetails({
-                    ...delBoyDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Phone Number"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="text"
-                name="code"
-                value={delBoyDetails.code}
-                onChange={(e) => {
-                  setDelBoyDetails({
-                    ...delBoyDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Partner Code"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <input
-                type="tel"
-                name="alternateNumber"
-                value={delBoyDetails.alternateNumber}
-                onChange={(e) => {
-                  setDelBoyDetails({
-                    ...delBoyDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="ALternate Number"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-                />
-                <input
-                type="number"
-                name="kitchenId"
-                value={delBoyDetails.kitchenId}
-                onChange={(e) => {
-                  setDelBoyDetails({
-                    ...delBoyDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Kitchen Id"
-                className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <button
-                type="submit"
-                className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+                }`}
               >
-                {delBoyLoader && <Loader2 className=" animate-spin mr-2" />}{" "}
-                Create
-              </button>
-            </form>
+                Agents
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 1 ? "border-b-2 border-blue-400" : ""
+              }`}
+              onClick={() => setSelectedTab(1)}
+            >
+              <h1
+                className={`text-xl ${
+                  selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Uploads
+              </h1>
+            </button>
           </div>
+
+          {selectedTab == 0 && (
+            <>
+              <Button
+                className="ml-8 mt-5"
+                onClick={() => onOpen("createAgent")}
+              >
+                Create
+              </Button>
+              <div className="flex text-2xl mb-2 w-full font-semibold mt-4 pr-[4%]">
+                <h1 className="w-[47%] text-center">Name</h1>
+                <h1 className="w-[47%] text-center">Phone</h1>
+              </div>
+
+              {isFetchLoading ? (
+                <Loader2 className="animate-spin w-8 h-8" />
+              ) : (
+                <div className="text-2xl pr-[4%] ml-5">
+                  {allAgents.map((agent: any) => {
+                    return (
+                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                        <h1 className="w-[47%] text-center truncate">
+                          {agent?.name}
+                        </h1>
+                        <h1 className="w-[47%] text-center truncate">
+                          {agent?.phone}
+                        </h1>
+                        <Popover>
+                          <PopoverTrigger>
+                            <Button variant="ghost">
+                              <EllipsisIcon className="w-5 h-5" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-2">
+                            <PopoverClose className="flex flex-col w-full items-center">
+                              <Button
+                                onClick={() => {
+                                  setDeliveryAgentId(agent.id);
+                                  setDeliveryAgentMob(agent.phone);
+                                  setDeliveryAgentName(agent.name);
+                                  setDeliveryAgentPartnerCode(
+                                    agent.partnerCode
+                                  );
+                                  onOpen("updateAgent");
+                                }}
+                                className="w-full flex justify-center"
+                                variant="ghost"
+                              >
+                                Update
+                              </Button>
+                            </PopoverClose>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
         </div>
+      </div>
     </div>
   );
 };

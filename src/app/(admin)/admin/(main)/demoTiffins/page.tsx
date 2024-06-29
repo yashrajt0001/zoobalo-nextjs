@@ -5,6 +5,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(true);
@@ -81,15 +83,13 @@ const page = () => {
             },
           }
         );
-      })
-    }
-    catch (error:any) {
-      toast.error(error.response.data);
-    }
-    finally {
+      });
+    } catch (error: any) {
+      toast.error(createErrorMessage(error));
+    } finally {
       setIsDemoLoading(false);
     }
-};
+  };
 
   return (
     <div className="ml-10 mt-4 pb-8">

@@ -12,6 +12,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const searchParams = useSearchParams();
@@ -61,7 +63,7 @@ const page = () => {
         setTotalTiffinPicked(totalPicked);
         setHistory(data.allDeliveries);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }

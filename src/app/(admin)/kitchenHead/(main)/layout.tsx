@@ -1,13 +1,17 @@
 "use client"
 
+import AdminNavbar from "@/components/AdminNavbar";
 import KitchenHeadNavbar from "@/components/KitchenHeadNavbar"
+import KitchenHeadSidebar from "@/components/layouts/KitchenHeadSideBar";
 import { createErrorMessage } from "@/lib/utils";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
-    const router = useRouter()
+  const router = useRouter();
+  const [showSidebar, setShowSidebar] = useState(false);
+
 
     useEffect(() => {
       const authToken = localStorage.getItem("auth-token");
@@ -22,7 +26,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             // todo: show toast of invalid authToken
             console.log(createErrorMessage(error));
             localStorage.removeItem("auth-token");
-            return router.push("/admin/login");
+            return router.push("/kitchenHead/login");
           });
       } else {
         return router.push("/kitchenHead/login");
@@ -30,8 +34,15 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return <>
-        <KitchenHeadNavbar/>
-        {children}
+        <div className="flex flex-col">
+        <AdminNavbar setter={setShowSidebar} />
+        <div className="flex">
+          <KitchenHeadSidebar show={showSidebar} setter={setShowSidebar} />
+          <div className="bg-[#f6f6f6] flex flex-col flex-grow w-screen md:w-full">
+            {children}
+          </div>
+        </div>
+      </div>
     </>
 }
 

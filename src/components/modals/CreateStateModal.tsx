@@ -9,6 +9,8 @@ import Modal from "../ui/modal";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface CreateStateModalProps {}
 
@@ -38,7 +40,7 @@ const CreateStateModal: FC<CreateStateModalProps> = ({}) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setStateLoader(false);
     }

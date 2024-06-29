@@ -9,6 +9,8 @@ import Modal from "../ui/modal";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface CreateCityModalProps {}
 
@@ -30,7 +32,7 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
         console.log(res.data);
         setStates(res.data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllStates();
@@ -56,14 +58,13 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setCityLoader(false);
     }
-    };
-    
-  console.log("stateId: ",stateId);
+  };
 
+  console.log("stateId: ", stateId);
 
   return (
     <Modal open={isModalOpen} onClose={onClose}>

@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { useModal } from "@/hooks/use-modal-store";
 import Link from "next/link";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [users, setUsers] = useState([] as any);
@@ -70,7 +72,7 @@ const page = () => {
         setTotalUsers(res.length);
         setAllUsers(res);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }
@@ -95,7 +97,7 @@ const page = () => {
   const handleCancel = () => {
     setSelectedTab(2);
     setShowPending(false);
-    const cancelledUsers = users.filter((user: any) => {
+    const cancelledUsers = allUsers.filter((user: any) => {
       for (const order of user.user.order) {
         if (order.NextMeal.isCancel) return true;
       }
@@ -127,7 +129,7 @@ const page = () => {
   const handlePaused = () => {
     setSelectedTab(3);
     setShowPending(false);
-    const pausedUsers = users.filter((user: any) => {
+    const pausedUsers = allUsers.filter((user: any) => {
       return user.user.order[0].NextMeal.isPause == true;
     });
     setResults(pausedUsers);
@@ -164,7 +166,7 @@ const page = () => {
       setTempResults(data);
       setTotalUsers(data.length);
     } catch (error: any) {
-      toast.error(error?.response?.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsFetchloading(false);
     }
@@ -173,7 +175,7 @@ const page = () => {
   const handleLowBalance = async () => {
     setSelectedTab(6);
     setShowPending(false);
-    const lowBalanceUser = users.filter((user: any) => {
+    const lowBalanceUser = allUsers.filter((user: any) => {
       if (user.user.order[0].amount * 2 >= user.balance) return true;
     });
 
@@ -207,7 +209,7 @@ const page = () => {
         );
       });
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -234,7 +236,7 @@ const page = () => {
       );
       console.log(res.data);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setUpdateLoader(false);
     }
@@ -243,7 +245,7 @@ const page = () => {
   const handleAddOns = () => {
     setSelectedTab(7);
     setShowPending(false);
-    const haveAddOn = users.filter((user: any) => {
+    const haveAddOn = allUsers.filter((user: any) => {
       if (
         user.user.order[0].orderAddon.length > 0 ||
         (user.user.order.length > 1 && user.user.order[1].orderAddon.length > 0)
@@ -564,7 +566,7 @@ const page = () => {
                               );
                               handlePendingDeliveries();
                             } catch (error: any) {
-                              toast.error(error.response.data);
+                              toast.error(createErrorMessage(error));
                             } finally {
                               setRemoveLoader(0);
                             }

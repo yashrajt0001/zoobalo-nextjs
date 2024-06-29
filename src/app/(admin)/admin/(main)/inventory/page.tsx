@@ -5,6 +5,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [history, setHistory] = useState([]);
@@ -34,7 +36,7 @@ const page = () => {
         setTotalTiffinPicked(totalPicked);
         setHistory(data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }

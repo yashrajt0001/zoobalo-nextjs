@@ -9,6 +9,8 @@ import Modal from "../ui/modal";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface CreateKitchenModalProps {}
 
@@ -31,7 +33,7 @@ const CreateKitchenModal: FC<CreateKitchenModalProps> = ({}) => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllCities();
@@ -58,7 +60,7 @@ const CreateKitchenModal: FC<CreateKitchenModalProps> = ({}) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setKitchenLoader(false);
     }

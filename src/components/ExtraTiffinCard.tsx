@@ -9,6 +9,9 @@ import React, {
   useState,
 } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
+
 interface userInterface extends HTMLAttributes<HTMLDivElement> {
   data: any;
 }
@@ -29,7 +32,6 @@ const ExtraTiffinCard: FC<userInterface> = ({ data }) => {
   const { getExtraTiffinDeliveries, showCompleted } =
     context as UserContextType;
 
-
   const handleSelection = async () => {
     try {
       await axios.patch(
@@ -47,7 +49,8 @@ const ExtraTiffinCard: FC<userInterface> = ({ data }) => {
         }
       );
     } catch (error: any) {
-      toast.error(error);
+      // console.log(error.message);
+      toast.error(createErrorMessage(error));
     }
   };
 
@@ -71,9 +74,9 @@ const ExtraTiffinCard: FC<userInterface> = ({ data }) => {
       setReviewText("");
       await getExtraTiffinDeliveries();
     } catch (error: any) {
-      toast.error(error?.response?.data);
-    }
-    finally {
+      console.log(error.message);
+      // toast.error(createErrorMessage(error))
+    } finally {
       setRemoveLoader(false);
     }
   };
@@ -99,7 +102,8 @@ const ExtraTiffinCard: FC<userInterface> = ({ data }) => {
       setReviewText("");
       await getExtraTiffinDeliveries();
     } catch (error: any) {
-      toast.error(error.response.data);
+      console.log(error.message);
+      // toast.error(createErrorMessage(error));
     } finally {
       setDoneLoader(false);
     }
@@ -216,30 +220,30 @@ const ExtraTiffinCard: FC<userInterface> = ({ data }) => {
           </div>
         )}
         {!showCompleted && (
-          <div>
-          <button
-            onClick={handleRemove}
-            disabled={removeLoader}
-            className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
-              removeLoader ? "bg-[#949494]" : "bg-red-400 text-white"
-            }`}
-          >
-            Remove
-            {removeLoader && (
-              <Loader2 className="animate-spin w-8 h-8 ml-3" />
-            )}
-          </button>
-          <button
-            onClick={handleDone}
-            disabled={doneLoader}
-            className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
-              doneLoader ? "bg-[#949494]" : "bg-white text-black"
-            }`}
-          >
-            Done
-            {doneLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
-          </button>
-        </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleRemove}
+              disabled={removeLoader}
+              className={`p-2 font-bold rounded-xl flex justify-center items-center gap-2 ${
+                removeLoader ? "bg-[#949494]" : "bg-red-400 text-white"
+              }`}
+            >
+              Remove
+              {removeLoader && (
+                <Loader2 className="animate-spin w-8 h-8 ml-3" />
+              )}
+            </button>
+            <button
+              onClick={handleDone}
+              disabled={doneLoader}
+              className={`p-2 font-bold rounded-xl flex justify-center items-center gap-2 ${
+                doneLoader ? "bg-[#949494]" : "bg-white text-black"
+              }`}
+            >
+              Done
+              {doneLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -17,9 +17,6 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState<undefined | string>(undefined);
   const [isLoading, setisLoading] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  console.log(pathname)
 
   const router = useRouter();
 
@@ -36,12 +33,6 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
       router.push(`/${name}`);
     }
   }, []);
-
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     return router.push("/admin");
-  //   }
-  // }, [isLoggedIn]);
 
   const handleLogin = async () => {
     try {

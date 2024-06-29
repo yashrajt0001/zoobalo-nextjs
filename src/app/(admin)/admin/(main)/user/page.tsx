@@ -5,6 +5,8 @@ import axios from "axios";
 import HistoryCard from "@/components/HistoryCard";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface PageInterface {
   params: {
@@ -44,7 +46,7 @@ const page = ({ params }: PageInterface) => {
         setTotalTiffinPicked(totalPicked);
         setUsers(data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchLoading(false);
       }

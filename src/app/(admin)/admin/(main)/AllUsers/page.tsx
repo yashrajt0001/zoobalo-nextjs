@@ -21,6 +21,7 @@ import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
+import { createErrorMessage } from "@/lib/utils";
 
 const page = () => {
   const [users, setUsers] = useState([]); // conatins subscribed users
@@ -79,7 +80,7 @@ const page = () => {
         setTotalUsers(data.length);
         setAllUsers(data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       }
     };
     getUsers();
@@ -180,7 +181,7 @@ const page = () => {
       setTempResults(res);
       setTotalUsers(res.length);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsFetchloading(false);
     }
@@ -225,7 +226,7 @@ const page = () => {
         );
       });
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -541,7 +542,7 @@ const page = () => {
                               );
                               handlePendingDeliveries();
                             } catch (error: any) {
-                              toast.error(error.response.data);
+                              toast.error(createErrorMessage(error));
                             } finally {
                               setRemoveLoader(0);
                             }

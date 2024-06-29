@@ -9,6 +9,8 @@ import { CheckCircleIcon, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface UpdateAreaManagerModalProps {}
 
@@ -66,7 +68,7 @@ const UpdateAreaManagerModal: FC<UpdateAreaManagerModalProps> = ({}) => {
       );
       console.log(data);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAreaManagerLoader(false);
     }

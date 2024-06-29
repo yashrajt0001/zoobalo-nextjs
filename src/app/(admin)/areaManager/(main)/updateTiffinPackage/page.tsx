@@ -6,6 +6,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [packages, setPackages] = useState([]);
@@ -41,7 +43,7 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllCities();
@@ -62,11 +64,9 @@ const page = () => {
       setResults(data.AreaHeadCities[0].city.TiffinPackage);
       setTempResults(data.AreaHeadCities[0].city.TiffinPackage);
       setTotalPackages(data.AreaHeadCities[0].city.TiffinPackage.length);
-    }
-    catch (error: any) {
-      toast.error(error.response.data);
-    }
-    finally {
+    } catch (error: any) {
+      toast.error(createErrorMessage(error));
+    } finally {
       setIsFetchloading(false);
     }
   };
@@ -101,7 +101,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setUpdateLoader(false);
     }
@@ -135,7 +135,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setSecurityDepositLoader(false);
     }

@@ -4,6 +4,8 @@ import axios from "axios";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [lowNotificationDetails, setLowNotificationDetails] = useState({
@@ -54,7 +56,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setLowNotificationLoader(false);
     }
@@ -79,7 +81,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setGlobalNotificationLoader(false);
     }
@@ -105,7 +107,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setPersonalNotificationLoader(false);
     }
@@ -125,7 +127,7 @@ const page = () => {
       );
       setUsers(res.data);
     } catch (error: any) {
-      console.log(error);
+      toast.error(createErrorMessage(error));
     }
   };
 
@@ -143,7 +145,7 @@ const page = () => {
         );
         setUsers(res.data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getUser();

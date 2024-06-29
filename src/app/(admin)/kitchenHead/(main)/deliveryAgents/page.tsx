@@ -6,6 +6,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [deliveryAgents, setDeliveryAgents] = useState([]);
@@ -14,7 +16,6 @@ const page = () => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalDeliveryAgents, setTotalDeliveryAgents] = useState(0);
-
 
   const context = useContext(UserContext);
   const {
@@ -25,7 +26,7 @@ const page = () => {
     setDeliveryAgentMob,
     setDeliveryAgentPartnerCode,
     deliveryAgentId,
-    setDeliveryAgentId
+    setDeliveryAgentId,
   } = context as UserContextType;
 
   useEffect(() => {
@@ -42,11 +43,9 @@ const page = () => {
         setResults(data);
         setTotalDeliveryAgents(data.length);
         setDeliveryAgents(data);
-      }
-      catch (error: any) {
-        toast.error(error.response.data);
-      }
-      finally {
+      } catch (error: any) {
+        toast.error(createErrorMessage(error));
+      } finally {
         setIsFetchloading(false);
       }
     };
@@ -92,9 +91,8 @@ const page = () => {
       setDeliveryAgentMob("");
       setDeliveryAgentPartnerCode("");
     } catch (error: any) {
-      toast.error(error.response.data);
-    }
-    finally {
+      toast.error(createErrorMessage(error));
+    } finally {
       setIsLoading(false);
     }
   };
@@ -122,10 +120,8 @@ const page = () => {
         ) : (
           <div className="flex w-full">
             <div className="flex flex-col gap-3 w-[50%]">
-              {results.map((deliveryAgent:any) => {
-                return (
-                  <DeliveryAgentCard data={deliveryAgent} />
-                );
+              {results.map((deliveryAgent: any) => {
+                return <DeliveryAgentCard data={deliveryAgent} />;
               })}
             </div>
 

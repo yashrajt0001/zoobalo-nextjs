@@ -4,6 +4,8 @@ import { ChevronLeftIcon, ChevronRight, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const searchParams = useSearchParams();
@@ -27,7 +29,7 @@ const page = () => {
         );
         setHistory(data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }

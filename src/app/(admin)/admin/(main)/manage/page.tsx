@@ -13,6 +13,8 @@ import {
 import { EllipsisIcon, Loader2 } from "lucide-react";
 import { PopoverClose } from "@radix-ui/react-popover";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -58,12 +60,12 @@ const page = () => {
         );
         setAreaManagers(data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchLoading(false);
       }
     };
-    
+
     const getKitchenHeads = async () => {
       try {
         const { data } = await axios.get(
@@ -76,7 +78,7 @@ const page = () => {
         );
         setKitchenHeads(data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchLoading(false);
       }

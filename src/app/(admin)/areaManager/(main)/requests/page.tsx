@@ -4,6 +4,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [selectedKitchen, setSelectedKitchen] = useState(1);
@@ -28,7 +30,7 @@ const page = () => {
         setRequests(res.data);
         setTotalRequests(res.data.length);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchLoading(false);
       }
@@ -46,7 +48,7 @@ const page = () => {
         );
         setKitchens(res.data.kitchens);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllKitchens();
@@ -127,7 +129,7 @@ const page = () => {
                             );
                             toast.success("Assigned Kitchen Successfully");
                           } catch (error: any) {
-                            toast.error(error.response.data);
+                            toast.error(createErrorMessage(error));
                           } finally {
                             setLoader(false);
                           }

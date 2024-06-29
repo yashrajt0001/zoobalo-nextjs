@@ -6,6 +6,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [deliveryAgents, setDeliveryAgents] = useState([]); // conatins all delivery agents
@@ -44,7 +46,7 @@ const page = () => {
         setTotalDeliveryAgents(data.length);
         setDeliveryAgents(data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }
@@ -93,7 +95,7 @@ const page = () => {
       setDeliveryAgentMob("");
       setDeliveryAgentPartnerCode("");
     } catch (error: any) {
-      toast.error(error.response.data)
+      toast.error(createErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

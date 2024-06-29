@@ -10,6 +10,8 @@ import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface UserUpdateModalProps {}
 
@@ -57,7 +59,7 @@ const UserUpdateModal: FC<UserUpdateModalProps> = ({}) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setUpdateLoader(false);
     }

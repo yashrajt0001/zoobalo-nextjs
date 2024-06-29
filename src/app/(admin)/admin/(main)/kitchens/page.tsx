@@ -5,6 +5,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [searchinput, setSearchinput] = useState("");
@@ -21,7 +23,7 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllCities();
@@ -42,7 +44,7 @@ const page = () => {
         );
         setKitchens(res.data.kitchens);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }

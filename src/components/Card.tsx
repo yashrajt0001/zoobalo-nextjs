@@ -13,6 +13,8 @@ import React, {
   useContext,
 } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface userInterface extends HTMLAttributes<HTMLDivElement> {
   id: string;
@@ -47,7 +49,7 @@ export const Card: FC<userInterface> = ({
   nextMeal,
   _order,
   user,
-  isPending
+  isPending,
 }) => {
   const [pausedDates, setPausedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +179,7 @@ export const Card: FC<userInterface> = ({
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -199,7 +201,7 @@ export const Card: FC<userInterface> = ({
       );
       setShowRecharge(false);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setLoader(false);
     }
@@ -222,7 +224,7 @@ export const Card: FC<userInterface> = ({
       );
       setShowAssign(false);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAgentAssignLoader(false);
     }
@@ -230,7 +232,7 @@ export const Card: FC<userInterface> = ({
 
   const handleRemove = async () => {
     setRemoveLoader(true);
-    console.log("k: ",user.id);
+    console.log("k: ", user.id);
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/queue/remove`,
@@ -244,11 +246,11 @@ export const Card: FC<userInterface> = ({
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setRemoveLoader(false);
     }
-  }
+  };
 
   return (
     <div className={className}>
@@ -375,11 +377,13 @@ export const Card: FC<userInterface> = ({
               onClick={handleRemove}
               disabled={removeLoader}
               className={`p-3 font-bold rounded-xl flex justify-center items-center gap-2 ${
-                  removeLoader ? "bg-[#949494]" : "bg-red-400 text-white"
-                }`}
+                removeLoader ? "bg-[#949494]" : "bg-red-400 text-white"
+              }`}
             >
-                Remove
-                {removeLoader && <Loader2 className="animate-spin w-8 h-8 ml-3" />}
+              Remove
+              {removeLoader && (
+                <Loader2 className="animate-spin w-8 h-8 ml-3" />
+              )}
             </button>
           </div>
         )}

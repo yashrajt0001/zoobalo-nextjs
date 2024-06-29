@@ -10,10 +10,14 @@ import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface AssignAgentDemoDeliveryModalProps {}
 
-const AssignAgentDemoDeliveryModal: FC<AssignAgentDemoDeliveryModalProps> = ({}) => {
+const AssignAgentDemoDeliveryModal: FC<
+  AssignAgentDemoDeliveryModalProps
+> = ({}) => {
   const { isOpen, onClose, type } = useModal();
   const isModalOpen = isOpen && type === "assignAgentDemoDelivery";
 
@@ -51,7 +55,7 @@ const AssignAgentDemoDeliveryModal: FC<AssignAgentDemoDeliveryModalProps> = ({})
         `${process.env.NEXT_PUBLIC_HOST}/userAgent/assign`,
         {
           userId,
-          agentId
+          agentId,
         },
         {
           headers: {
@@ -60,7 +64,7 @@ const AssignAgentDemoDeliveryModal: FC<AssignAgentDemoDeliveryModalProps> = ({})
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAgentAssignLoader(false);
     }

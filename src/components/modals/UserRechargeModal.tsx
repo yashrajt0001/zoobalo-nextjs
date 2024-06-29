@@ -10,6 +10,8 @@ import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface UserRechargeModalProps {}
 
@@ -38,7 +40,7 @@ const UserRechargeModal: FC<UserRechargeModalProps> = ({}) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setRechargeLoader(false);
     }

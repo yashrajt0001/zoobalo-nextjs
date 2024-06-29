@@ -10,6 +10,8 @@ import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface UpdateAgentModalProps {}
 
@@ -18,18 +20,18 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
   const isModalOpen = isOpen && type === "updateAgent";
 
   const [AgentLoader, setAgentLoader] = useState(false);
-    
-    const context = useContext(UserContext);
-    const {
-        deliveryAgentName,
-        setDeliveryAgentName,
-        deliveryAgentId,
-        setDeliveryAgentId,
-        deliveryAgentMob,
-        setDeliveryAgentMob,
-        deliveryAgentParnterCode,
-        setDeliveryAgentPartnerCode
-    } = context as UserContextType;
+
+  const context = useContext(UserContext);
+  const {
+    deliveryAgentName,
+    setDeliveryAgentName,
+    deliveryAgentId,
+    setDeliveryAgentId,
+    deliveryAgentMob,
+    setDeliveryAgentMob,
+    deliveryAgentParnterCode,
+    setDeliveryAgentPartnerCode,
+  } = context as UserContextType;
 
   const handleAgentCreation = async () => {
     try {
@@ -37,10 +39,10 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
       await axios.post(
         `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/agent/update`,
         {
-          name: deliveryAgentName ,
+          name: deliveryAgentName,
           phone: deliveryAgentMob,
           partnerCode: deliveryAgentParnterCode,
-          agentId : deliveryAgentId 
+          agentId: deliveryAgentId,
         },
         {
           headers: {
@@ -49,7 +51,7 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAgentLoader(false);
     }

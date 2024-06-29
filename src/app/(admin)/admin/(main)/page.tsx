@@ -6,6 +6,8 @@ import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [timing, setTiming] = useState("");
@@ -28,7 +30,7 @@ const page = () => {
         setCities(res.data);
         setSelectedCity(res.data[0].id);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       }
     }
 
@@ -40,7 +42,7 @@ const page = () => {
         console.log(res.data);
         setStates(res.data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       }
     }
     getAllStates();
@@ -62,7 +64,7 @@ const page = () => {
         );
         setKitchens(res.data.kitchens);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }
@@ -79,7 +81,6 @@ const page = () => {
     email: "",
     password: "",
   });
-
 
   const [userloader, setUserloader] = useState(false);
   const [delBoyLoader, setDelBoyLoader] = useState(false);
@@ -118,7 +119,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setDelBoyLoader(false);
     }
@@ -139,7 +140,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -164,7 +165,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setUserloader(false);
     }
@@ -220,7 +221,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setAssignAreaManagerLoader(false);
     }
@@ -241,7 +242,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setSkipLoader(false);
     }
@@ -250,51 +251,51 @@ const page = () => {
   return (
     <div className="flex h-[calc(100vh-65px)]">
       <div className="flex-1 overflow-y-auto">
-      <div className="bg-slate-50">
-        <div className="flex px-4 gap-12 border-b border-gray-300 ">
-          <button
-            className={`py-3 ${
-              selectedTab == 0 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={() => setSelectedTab(0)}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+        <div className="bg-slate-50">
+          <div className="flex px-4 gap-12 border-b border-gray-300 ">
+            <button
+              className={`py-3 ${
+                selectedTab == 0 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={() => setSelectedTab(0)}
             >
-              Queue
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 2 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={() => setSelectedTab(2)}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Queue
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 2 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={() => setSelectedTab(2)}
             >
-              City
-            </h1>
-          </button>
-          <button
-            className={`py-3 ${
-              selectedTab == 3 ? "border-b-2 border-blue-400" : ""
-            }`}
-            onClick={() => setSelectedTab(3)}
-          >
-            <h1
-              className={`text-xl ${
-                selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+              <h1
+                className={`text-xl ${
+                  selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                City
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 3 ? "border-b-2 border-blue-400" : ""
               }`}
+              onClick={() => setSelectedTab(3)}
             >
-              State
-            </h1>
-          </button>
-        </div>
+              <h1
+                className={`text-xl ${
+                  selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                State
+              </h1>
+            </button>
+          </div>
 
           {selectedTab == 2 && (
             <>
@@ -311,20 +312,20 @@ const page = () => {
                     <h1 className="w-[50%] text-center">Security Deposit</h1>
                   </div>
 
-              <div className="h-[60%]">
-                {cities.map((city: any) => (
-                  <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                    <h1 className="w-[50%] text-center">{city.name}</h1>
-                    <h1 className="w-[50%] text-center">
-                      {city.securityDeposit}
-                    </h1>
-                  </div>
-                ))}
-                  </div>
+                  <div className="h-[60%]">
+                    {cities.map((city: any) => (
+                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                        <h1 className="w-[50%] text-center">{city.name}</h1>
+                        <h1 className="w-[50%] text-center">
+                          {city.securityDeposit}
+                        </h1>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                </>
-        )}
+              </div>
+            </>
+          )}
 
           {selectedTab == 3 && (
             <>

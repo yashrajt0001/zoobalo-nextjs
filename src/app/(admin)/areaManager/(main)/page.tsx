@@ -12,6 +12,8 @@ import { EllipsisIcon, Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [login, setLogin] = useState(true);
@@ -47,7 +49,7 @@ const page = () => {
         );
         setKitchens(res.data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchLoading(false);
       }
@@ -86,7 +88,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setKitchenHeadLoader(false);
     }
@@ -112,7 +114,7 @@ const page = () => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setKitchenHeadAssignLoader(false);
     }

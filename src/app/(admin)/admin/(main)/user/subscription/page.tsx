@@ -4,6 +4,8 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface PageInterface {
   params: {
@@ -60,7 +62,7 @@ const page = ({ params }: PageInterface) => {
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setUserloader(false);
     }

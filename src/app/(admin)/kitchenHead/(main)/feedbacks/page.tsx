@@ -5,6 +5,8 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
+
 
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(false);
@@ -35,7 +37,7 @@ const page = () => {
         );
         setResults(data);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(createErrorMessage(error));
       } finally {
         setIsFetchloading(false);
       }
@@ -72,7 +74,7 @@ const page = () => {
       );
       setResults(updatedArray);
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

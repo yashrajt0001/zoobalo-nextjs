@@ -9,6 +9,8 @@ import Modal from "../ui/modal";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { createErrorMessage } from "@/lib/utils";
+
 
 interface CreateAgentModalProps {}
 
@@ -38,7 +40,7 @@ const CreateAgentModal: FC<CreateAgentModalProps> = ({}) => {
         );
         setKitchens(data);
       } catch (error: any) {
-        toast.error(error?.response?.data);
+        toast.error(createErrorMessage(error));
       }
     };
     getKitchens();
@@ -55,7 +57,7 @@ const CreateAgentModal: FC<CreateAgentModalProps> = ({}) => {
           status: status == "true" ? true : false,
           partnerCode,
           alternateNumber,
-          kitchenId:parseInt(kitchenId),
+          kitchenId: parseInt(kitchenId),
         },
         {
           headers: {

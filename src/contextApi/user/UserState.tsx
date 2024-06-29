@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import UserContext from "./UserContext";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { createErrorMessage } from "@/lib/utils";
 
 const UserState = (props: any) => {
   const [userId, setUserId] = useState(0);
@@ -56,7 +57,7 @@ const UserState = (props: any) => {
   const cancelMeal = async (id: number) => {
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/meal/cancel`,
+        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/meal/cancel`,
         { orderId: id },
         {
           headers: {
@@ -66,7 +67,7 @@ const UserState = (props: any) => {
       );
       return true;
     } catch (error: any) {
-      toast.error(error?.response?.data);
+      toast.error(createErrorMessage(error));
       return false;
     }
   };
@@ -74,7 +75,7 @@ const UserState = (props: any) => {
   const pauseMeal = async (arr: any, id: any) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/meal/pause`,
+        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/meal/pause`,
         {
           dates: arr,
           userId: parseInt(id),
@@ -87,7 +88,7 @@ const UserState = (props: any) => {
       );
       return true;
     } catch (error: any) {
-      toast.error(error.response.data);
+      toast.error(createErrorMessage(error));
       return false;
     }
   };
@@ -104,10 +105,8 @@ const UserState = (props: any) => {
       );
       setResults(data);
       setDemoDeliveries(data);
-      return true;
     } catch (error: any) {
-      toast.error(error.response.data);
-      return false;
+      toast.error(createErrorMessage(error));
     }
   };
 
@@ -123,10 +122,8 @@ const UserState = (props: any) => {
       );
       setResults(data);
       setDemoDeliveries(data);
-      return true;
     } catch (error: any) {
-      toast.error(error.response.data);
-      return false;
+      toast.error(createErrorMessage(error));
     }
   };
 
@@ -142,10 +139,8 @@ const UserState = (props: any) => {
       );
       setResults(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
       setExtraTiffinDeliveries(data.AssignedKitchenHead[0].kitchen.ExtraTiffin);
-      return true;
     } catch (error: any) {
-      toast.error(error?.response?.data);
-      return false;
+      toast.error(createErrorMessage(error))
     }
   };
 
@@ -161,10 +156,8 @@ const UserState = (props: any) => {
       );
       setResults(data);
       setExtraTiffinDeliveries(data);
-      return true;
     } catch (error: any) {
-      toast.error(error?.response?.data);
-      return false;
+      toast.error(createErrorMessage(error))
     }
   };
 
