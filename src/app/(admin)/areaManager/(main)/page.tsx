@@ -1,23 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { PopoverClose } from "@radix-ui/react-popover";
 import axios from "axios";
-import { EllipsisIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
 import { createErrorMessage } from "@/lib/utils";
 
+import { WebBannerSection } from "@/components/WebBannerSection";
 
 const page = () => {
-  const [login, setLogin] = useState(true);
-
+  const [kitchenDetails, setKitchenDetails] = useState({
+    name: "",
+    address: "",
+  });
   const [kitchenHeadDetails, setKitchenHeadDetails] = useState({
     name: "",
     username: "",
@@ -36,7 +33,6 @@ const page = () => {
   const { onOpen } = useModal();
 
   useEffect(() => {
-    setLogin(!localStorage.getItem("auth-token"));
     async function getKitchens() {
       try {
         const res = await axios.get(
@@ -57,8 +53,29 @@ const page = () => {
     getKitchens();
   }, []);
 
-  const isLoggedIn = () => {
-    setLogin(false);
+  const handleKitchenCreate = async () => {
+    if (!kitchenDetails.name || !kitchenDetails.address) {
+      return toast.error("Please enter details!");
+    }
+
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_HOST}/kitchen/create`,
+        {
+          name: kitchenDetails.name,
+          cityId: selectedCity,
+          address: kitchenDetails.address,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        }
+      );
+    } catch (error: any) {
+      toast.error(error.response.data);
+    } finally {
+    }
   };
 
   const handleKitchenHeadCreate = async () => {
@@ -122,6 +139,7 @@ const page = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-65px)]">
+      <WebBannerSection />
       <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300 ">
         <button
           className={`py-3 ${
@@ -175,7 +193,10 @@ const page = () => {
                   {kitchens.map((cities: any) => {
                     let city = cities.name;
                     return cities.kitchen.map((kitchen: any) => (
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2">
+                      <div
+                        key={kitchen.id}
+                        className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2"
+                      >
                         <h1 className="w-[32%] text-center truncate">
                           {kitchen?.name}
                         </h1>
@@ -225,10 +246,13 @@ const page = () => {
                 {/* <h1 className="w-[20%] text-center"></h1> */}
               </div>
               <div className="w-[100%]">
-                {kitchens.map((user: any) => {
+                {kitchens.map((user: any, index) => {
                   return (
                     <>
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative">
+                      <div
+                        key={index}
+                        className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative"
+                      >
                         {/* <h1 className="w-[22%] text-center truncate">
                             {user?.name}
                           </h1>

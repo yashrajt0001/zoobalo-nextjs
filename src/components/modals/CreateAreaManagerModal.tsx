@@ -47,7 +47,6 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/state/get`
         );
-        console.log(res.data);
         setStates(res.data);
       } catch (error: any) {
         toast.error(createErrorMessage(error));
@@ -123,7 +122,6 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
           },
         }
       );
-      console.log(data);
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
