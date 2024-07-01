@@ -6,11 +6,10 @@ import { Input } from "../ui/input";
 import { useModal } from "@/hooks/use-modal-store";
 import { DialogContent } from "@radix-ui/react-dialog";
 import Modal from "../ui/modal";
-import { Loader2 } from "lucide-react";
+import { CheckCircleIcon, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { createErrorMessage } from "@/lib/utils";
-
 
 interface CreateKitchenHeadModalProps {}
 
@@ -26,21 +25,21 @@ const CreateKitchenHeadModal: FC<CreateKitchenHeadModalProps> = ({}) => {
   });
   const [selectedCity, setSelectedCity] = useState(1);
   const [KitchenHeadLoader, setKitchenHeadLoader] = useState(false);
-  const [cities, setCities] = useState([]);
+  const [open, setOpen] = useState(false);
   const [kitchensArray, setKitchensArray] = useState([] as any);
   const [kitchens, setKitchens] = useState([]);
 
   useEffect(() => {
-    async function getAllCities() {
-      try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
-        setCities(res.data);
-        setSelectedCity(res.data[0].id);
-      } catch (error: any) {
-        toast.error(createErrorMessage(error));
-      }
-    }
-    getAllCities();
+    // async function getAllCities() {
+    //   try {
+    //     const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/city/get`);
+    //     setCities(res.data);
+    //     setSelectedCity(res.data[0].id);
+    //   } catch (error: any) {
+    //     toast.error(createErrorMessage(error));
+    //   }
+    // }
+    // getAllCities();
     async function getKitchens() {
       try {
         const res = await axios.get(
@@ -99,7 +98,7 @@ const CreateKitchenHeadModal: FC<CreateKitchenHeadModalProps> = ({}) => {
 
   return (
     <Modal open={isModalOpen} onClose={onClose}>
-      <div className="ml-12 flex flex-col gap-3 w-[43%]">
+      <div className="flex flex-col gap-3">
         <h1 className="text-3xl">Create KitchenHead:</h1>
         <input
           type="text"
@@ -114,6 +113,48 @@ const CreateKitchenHeadModal: FC<CreateKitchenHeadModalProps> = ({}) => {
           placeholder="Name"
           className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
         />
+        <div className="relative">
+          <button
+            onClick={() => setOpen(true)}
+            className="w-full border-2 border-gray-200 p-4 rounded-lg"
+          >
+            <h1 className="text-xl">Select Kitchens</h1>
+          </button>
+          {open && (
+            <div className="p-2 w-full absolute bg-gray-100 border-4 border-gray-200 border-t-none flex flex-col rounded-lg rounded-t-none z-20">
+              {kitchens.map((kitchen: any) => {
+                let consists = kitchensArray.includes(kitchen.id);
+                return consists ? (
+                  <button
+                    key={kitchen.id}
+                    className="border-b mb-1 text-lg flex justify-between items-center"
+                    onClick={() => {
+                      const updated = kitchensArray.filter(
+                        (item: any) => item != kitchen.id
+                      );
+                      setKitchensArray(updated);
+                      setOpen(false);
+                    }}
+                  >
+                    {kitchen.name}
+                    <CheckCircleIcon size={24} color="green" />
+                  </button>
+                ) : (
+                  <button
+                    key={kitchen.id}
+                    className="border-b mb-1 text-lg"
+                    onClick={() => {
+                      setKitchensArray([...kitchensArray, kitchen.id]);
+                      setOpen(false);
+                    }}
+                  >
+                    {kitchen.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
         <input
           type="text"
           name="username"

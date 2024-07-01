@@ -48,7 +48,7 @@ export function WebBannerSection() {
   };
 
   return (
-    <div className="flex items-center justify-between px-8 w-full overflow-hidden">
+    <div className="flex flex-col px-8 overflow-hidden">
       <Reorder.Group
         axis="x"
         values={items}
@@ -71,7 +71,7 @@ export function WebBannerSection() {
         variant="zoobaloSuccess"
         onClick={handleUpdate}
         disabled={isLoading}
-        className={`${isLoading ? "bg-green-300" : "bg-green-500"}`}
+        className={`${isLoading ? "bg-green-300" : "bg-green-500"} w-[15%] ml-24 mt-4`}
       >
         Update
         {isLoading && <Loader2 className="h-4 w-4 animate-spin ml-2" />}

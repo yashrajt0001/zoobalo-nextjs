@@ -7,33 +7,19 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useModal } from "@/hooks/use-modal-store";
 import { createErrorMessage } from "@/lib/utils";
-
 import { WebBannerSection } from "@/components/WebBannerSection";
 
 const page = () => {
-  const [kitchenDetails, setKitchenDetails] = useState({
-    name: "",
-    address: "",
-  });
-  const [kitchenHeadDetails, setKitchenHeadDetails] = useState({
-    name: "",
-    username: "",
-    password: "",
-    phone: "",
-  });
-  const [selectedCity, setSelectedCity] = useState(1);
-  const [kitchenHeadLoader, setKitchenHeadLoader] = useState(false);
-  const [kitchenHeadId, setKitchenHeadId] = useState("");
-  const [kitchenId, setKitchenId] = useState("");
-  const [kitchenHeadAssignLoader, setKitchenHeadAssignLoader] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const [kitchens, setKitchens] = useState([]);
   const [isFetchLoading, setIsFetchLoading] = useState(true);
+  const [kitchenHeads, setKitchenHeads] = useState([]);
 
   const { onOpen } = useModal();
 
   useEffect(() => {
     async function getKitchens() {
+      setIsFetchLoading(true);
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_HOST}/kitchen/get`,
@@ -50,96 +36,30 @@ const page = () => {
         setIsFetchLoading(false);
       }
     }
+    async function getKitchenHeads() {
+      setIsFetchLoading(true);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_HOST}/areaManager/get/kitchenHeads`,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        setKitchenHeads(res.data);
+      } catch (error: any) {
+        toast.error(createErrorMessage(error));
+      } finally {
+        setIsFetchLoading(false);
+      }
+    }
     getKitchens();
+    getKitchenHeads();
   }, []);
-
-  const handleKitchenCreate = async () => {
-    if (!kitchenDetails.name || !kitchenDetails.address) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchen/create`,
-        {
-          name: kitchenDetails.name,
-          cityId: selectedCity,
-          address: kitchenDetails.address,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(error.response.data);
-    } finally {
-    }
-  };
-
-  const handleKitchenHeadCreate = async () => {
-    if (
-      !kitchenHeadDetails.name ||
-      !kitchenHeadDetails.username ||
-      !kitchenHeadDetails.password ||
-      !kitchenHeadDetails.phone
-    ) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setKitchenHeadLoader(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/create`,
-        {
-          name: kitchenHeadDetails.name,
-          username: kitchenHeadDetails.username,
-          password: kitchenHeadDetails.password,
-          phone: kitchenHeadDetails.phone,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(createErrorMessage(error));
-    } finally {
-      setKitchenHeadLoader(false);
-    }
-  };
-
-  const handleKitchenHeadAssign = async () => {
-    if (!kitchenHeadId || !kitchenId) {
-      return toast.error("Please enter details!");
-    }
-
-    try {
-      setKitchenHeadAssignLoader(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/assign`,
-        {
-          kitchenHeadId: parseInt(kitchenHeadId),
-          kitchenId: parseInt(kitchenId),
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(createErrorMessage(error));
-    } finally {
-      setKitchenHeadAssignLoader(false);
-    }
-  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-65px)]">
-      <WebBannerSection />
       <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300 ">
         <button
           className={`py-3 ${
@@ -167,6 +87,20 @@ const page = () => {
             }`}
           >
             Kitchen Head
+          </h1>
+        </button>
+        <button
+          className={`py-3 ${
+            selectedTab == 2 ? "border-b-2 border-blue-400" : ""
+          }`}
+          onClick={() => setSelectedTab(2)}
+        >
+          <h1
+            className={`text-xl ${
+              selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+            }`}
+          >
+            Uploads
           </h1>
         </button>
       </div>
@@ -233,41 +167,37 @@ const page = () => {
           </>
         )}
 
+        {selectedTab == 2 && <WebBannerSection />}
+
         {selectedTab == 1 &&
           (isFetchLoading ? (
             <Loader2 className="animate-spin w-8 h-8" />
           ) : (
-            <div className="text-2xl w-[100%] pr-[6%]">
-              <div className="flex mb-2 w-full font-semibold">
-                <h1 className="w-[22%] text-center">Name</h1>
-                <h1 className="w-[22%] text-center">Phone</h1>
-                <h1 className="w-[22%] text-center">Balance</h1>
-                <h1 className="w-[22%] text-center">Tiffin Time</h1>
-                {/* <h1 className="w-[20%] text-center"></h1> */}
+            <div className="text-2xl w-[100%] pr-[6%] ml-6 mt-4">
+              <Button
+              onClick={() => onOpen("createKitchenHead")}
+            >
+              Create
+            </Button>
+              <div className="flex mb-2 w-full font-semibold mt-4">
+                <h1 className="w-[47%] text-center">Name</h1>
+                <h1 className="w-[47%] text-center">Phone</h1>
               </div>
               <div className="w-[100%]">
-                {kitchens.map((user: any, index) => {
+                {kitchenHeads.map((kitchenHead: any) => {
                   return (
                     <>
                       <div
-                        key={index}
+                        key={kitchenHead.id}
                         className="bg-white border-b-2 border-gray-200 flex text-2xl py-3 px-2 relative"
                       >
-                        {/* <h1 className="w-[22%] text-center truncate">
-                            {user?.name}
+                        <h1 className="w-[47%] text-center truncate">
+                            {kitchenHead?.name}
                           </h1>
-                          <h1 className="w-[22%] text-center truncate">
-                            {user?.phone}
+                          <h1 className="w-[47%] text-center truncate">
+                            {kitchenHead?.phone}
                           </h1>
-                          <h1 className="w-[22%] text-center truncate">
-                            {user?.balance?.toString()}
-                          </h1>
-                          <h1 className="w-[22%] text-center truncate">
-                            {user?.order?.length > 1
-                              ? "BOTH"
-                              : user?.order[0]?.tiffinTime}
-                          </h1>
-                          <Popover>
+                          {/* <Popover>
                             <PopoverTrigger>
                               <Button variant="ghost">
                                 <EllipsisIcon className="w-5 h-5" />
@@ -295,28 +225,6 @@ const page = () => {
                                 >
                                   Update
                                 </Button>
-                                <Lin
-                                  href={`/admin/user?userId=${user.id}&name=${user.name}&mobile=${user.phone}`}
-                                >
-                                  <Button
-                                    className="w-full flex justify-start"
-                                    variant="ghost"
-                                  >
-                                    Tiffin history
-                                  </Button>
-                                </Link>
-                                <Button
-                                className="w-full flex justify-start"
-                                variant="ghost"
-                              >
-                                Recharge history
-                              </Button>
-                              <Button
-                                className="w-full flex justify-start"
-                                variant="ghost"
-                              >
-                                Add subscription
-                              </Button>
                               </PopoverClose>
                             </PopoverContent>
                           </Popover> */}
@@ -325,12 +233,6 @@ const page = () => {
                   );
                 })}
               </div>
-
-              {/* {userName != "" && (
-              <div className="w-[40%] ml-12 -mt-14">
-                
-              </div>
-            )} */}
             </div>
           ))}
       </div>

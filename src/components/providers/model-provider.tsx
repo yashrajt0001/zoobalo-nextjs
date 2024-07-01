@@ -14,6 +14,7 @@ import UpdateAgentModal from "../modals/UpdateAgentModal";
 import UserRechargeModal from "../modals/UserRechargeModal";
 import AssignAgentModal from "../modals/AssignAgentModal";
 import AssignAgentDemoDeliveryModal from "../modals/AssignAgentDemoDelivery";
+import CreateKitchenHeadModal from "../modals/CreateKitchenHeadModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -41,6 +42,7 @@ const ModalProvider = () => {
       <UserRechargeModal />
       <AssignAgentModal />
       <AssignAgentDemoDeliveryModal />
+      <CreateKitchenHeadModal />
     </>
   );
 };

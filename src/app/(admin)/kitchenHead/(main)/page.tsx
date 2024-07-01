@@ -46,6 +46,7 @@ const page = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [allAgents, setAllAgents] = useState([]);
   const [isFetchLoading, setIsFetchLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const { onOpen } = useModal();
 
@@ -94,61 +95,6 @@ const page = () => {
     getAllAgents();
   }, []);
 
-  const handleCreate = async () => {
-    if (!userDetails.name || !userDetails.phone) {
-      return toast.error("Please enter details!");
-    }
-    setUserloader(true);
-    try {
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/kitchenHead/user/create`,
-        {
-          name: userDetails.name,
-          phone: userDetails.phone,
-        },
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-    } catch (error: any) {
-      toast.error(createErrorMessage(error));
-    } finally {
-      setUserloader(false);
-    }
-
-    setUserDetails({
-      name: "",
-      phone: "",
-    });
-  };
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      return toast.error("please select a file");
-    }
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_HOST}/admin/webBanner/upload`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        }
-      );
-      toast.success("Image uploaded successfully.");
-    } catch (error) {
-      toast.error("Error uploading image:");
-    }
-  };
-
   const getUsers = async (e: any) => {
     try {
       setSearch(e.target.value);
@@ -195,44 +141,99 @@ const page = () => {
     <div className="flex h-[calc(100vh-65px)] bg-slate-50">
       <div className="flex-1 overflow-y-auto">
         <div className="pb-8 min-h-full">
-          {/* <div className="flex mb-6">
-          <div className="ml-16 flex flex-col gap-3 w-[40%]">
-              <h1 className="text-3xl mt-5">Create a User:</h1>
-              <input
-                type="text"
-                value={userDetails.name}
-                name="name"
-                onChange={(e) => {
-                  setUserDetails({
-                    ...userDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Name"
-                className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <input
-                type="tel"
-                value={userDetails.phone}
-                name="phone"
-                maxLength={10}
-                onChange={(e) => {
-                  setUserDetails({
-                    ...userDetails,
-                    [e.target.name]: e.target.value,
-                  });
-                }}
-                placeholder="Phone Number"
-                className="p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-              />
-              <button
-                onClick={handleCreate}
-                className="flex mt-8 items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"
+          <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300">
+            <button
+              className={`py-3 ${
+                selectedTab == 0 ? "border-b-2 border-blue-400" : ""
+              }`}
+              onClick={() => setSelectedTab(0)}
+            >
+              <h1
+                className={`text-xl ${
+                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+                }`}
               >
-                {userloader && <Loader2 className="animate-spin mr-2" />} Create
-              </button>
-            </div>
+                Agents
+              </h1>
+            </button>
+            <button
+              className={`py-3 ${
+                selectedTab == 1 ? "border-b-2 border-blue-400" : ""
+              }`}
+              onClick={() => setSelectedTab(1)}
+            >
+              <h1
+                className={`text-xl ${
+                  selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+                }`}
+              >
+                Queue
+              </h1>
+            </button>
+          </div>
 
+          {selectedTab == 0 && (
+            <>
+              <Button
+                className="ml-8 mt-5"
+                onClick={() => onOpen("createAgent")}
+              >
+                Create
+              </Button>
+              <div className="flex text-2xl mb-2 w-full font-semibold mt-4 pr-[4%]">
+                <h1 className="w-[47%] text-center">Name</h1>
+                <h1 className="w-[47%] text-center">Phone</h1>
+              </div>
+
+              {isFetchLoading ? (
+                <Loader2 className="animate-spin w-8 h-8" />
+              ) : (
+                <div className="text-2xl pr-[4%] ml-5">
+                  {allAgents.map((agent: any) => {
+                    return (
+                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
+                        <h1 className="w-[47%] text-center truncate">
+                          {agent?.name}
+                        </h1>
+                        <h1 className="w-[47%] text-center truncate">
+                          {agent?.phone}
+                        </h1>
+                        <Popover>
+                          <PopoverTrigger>
+                            <Button variant="ghost">
+                              <EllipsisIcon className="w-5 h-5" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-2">
+                            <PopoverClose className="flex flex-col w-full items-center">
+                              <Button
+                                onClick={() => {
+                                  setDeliveryAgentId(agent.id);
+                                  setDeliveryAgentMob(agent.phone);
+                                  setDeliveryAgentName(agent.name);
+                                  setDeliveryAgentPartnerCode(
+                                    agent.partnerCode
+                                  );
+                                  onOpen("updateAgent");
+                                }}
+                                className="w-full flex justify-center"
+                                variant="ghost"
+                              >
+                                Update
+                              </Button>
+                            </PopoverClose>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+
+{
+          selectedTab==1 &&
           <div className="ml-16 flex flex-col gap-3 w-[40%] mt-5">
             <h1 className="text-3xl mb-4">Add User in Delivery Queue :</h1>
             <div className="flex items-center">
@@ -316,110 +317,7 @@ const page = () => {
                 </div>
               </>
             )}
-          </div>
-        </div> */}
-
-          {/* <div className="flex flex-col gap-4 w-[45%]">
-              <h1 className="text-3xl">Upload Image:</h1>
-              <input type="file" onChange={handleFileChange} />
-              <button
-                className="bg-green-500 px-3 py-2 rounded-lg text-xl w-fit flex items-center text-white"
-                onClick={handleUpload}
-              >
-                Upload Image
-              </button>
-            </div> */}
-
-          <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300">
-            <button
-              className={`py-3 ${
-                selectedTab == 0 ? "border-b-2 border-blue-400" : ""
-              }`}
-              onClick={() => setSelectedTab(0)}
-            >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                Agents
-              </h1>
-            </button>
-            <button
-              className={`py-3 ${
-                selectedTab == 1 ? "border-b-2 border-blue-400" : ""
-              }`}
-              onClick={() => setSelectedTab(1)}
-            >
-              <h1
-                className={`text-xl ${
-                  selectedTab == 1 ? "text-blue-400" : "text-gray-400"
-                }`}
-              >
-                Uploads
-              </h1>
-            </button>
-          </div>
-
-          {selectedTab == 0 && (
-            <>
-              <Button
-                className="ml-8 mt-5"
-                onClick={() => onOpen("createAgent")}
-              >
-                Create
-              </Button>
-              <div className="flex text-2xl mb-2 w-full font-semibold mt-4 pr-[4%]">
-                <h1 className="w-[47%] text-center">Name</h1>
-                <h1 className="w-[47%] text-center">Phone</h1>
-              </div>
-
-              {isFetchLoading ? (
-                <Loader2 className="animate-spin w-8 h-8" />
-              ) : (
-                <div className="text-2xl pr-[4%] ml-5">
-                  {allAgents.map((agent: any) => {
-                    return (
-                      <div className="bg-white border-b-2 border-gray-200 flex text-2xl py-3">
-                        <h1 className="w-[47%] text-center truncate">
-                          {agent?.name}
-                        </h1>
-                        <h1 className="w-[47%] text-center truncate">
-                          {agent?.phone}
-                        </h1>
-                        <Popover>
-                          <PopoverTrigger>
-                            <Button variant="ghost">
-                              <EllipsisIcon className="w-5 h-5" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="p-2">
-                            <PopoverClose className="flex flex-col w-full items-center">
-                              <Button
-                                onClick={() => {
-                                  setDeliveryAgentId(agent.id);
-                                  setDeliveryAgentMob(agent.phone);
-                                  setDeliveryAgentName(agent.name);
-                                  setDeliveryAgentPartnerCode(
-                                    agent.partnerCode
-                                  );
-                                  onOpen("updateAgent");
-                                }}
-                                className="w-full flex justify-center"
-                                variant="ghost"
-                              >
-                                Update
-                              </Button>
-                            </PopoverClose>
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
+          </div>}
         </div>
       </div>
     </div>
