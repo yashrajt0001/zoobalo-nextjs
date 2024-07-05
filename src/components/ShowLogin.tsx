@@ -49,6 +49,7 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
         }
       );
       localStorage.setItem("auth-token", data.token);
+      localStorage.setItem("user", name)
       let extractedPart = pathname.split('/login')[0];
       console.log("ext:", extractedPart);
       return router.push(extractedPart);
