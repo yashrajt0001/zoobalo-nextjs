@@ -45,7 +45,7 @@ const KitchenUpdateModal: FC<KitchenUpdateModalProps> = ({}) => {
           },
         }
       );
-      console.log("success");
+      onClose();
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message || "An error occurred.";
@@ -59,24 +59,30 @@ const KitchenUpdateModal: FC<KitchenUpdateModalProps> = ({}) => {
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl">Update:</h1>
-        <input
-          type="text"
-          value={kitchenName}
-          onChange={(e) => {
-            setKitchenName(e.target.value);
-          }}
-          placeholder="Name"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={kitchenAddress}
-          onChange={(e) => {
-            setKitchenAddress(e.target.value);
-          }}
-          placeholder="Address"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Name :</h1>
+          <input
+            type="text"
+            value={kitchenName}
+            onChange={(e) => {
+              setKitchenName(e.target.value);
+            }}
+            placeholder="Name"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Address :</h1>
+          <input
+            type="text"
+            value={kitchenAddress}
+            onChange={(e) => {
+              setKitchenAddress(e.target.value);
+            }}
+            placeholder="Address"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
         <button
           onClick={handleUpdate}
           className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"

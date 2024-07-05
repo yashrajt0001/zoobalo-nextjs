@@ -39,6 +39,7 @@ const CreateStateModal: FC<CreateStateModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {

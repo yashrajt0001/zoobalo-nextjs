@@ -65,6 +65,7 @@ const CreateAgentModal: FC<CreateAgentModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message || "An error occurred.";

@@ -12,7 +12,6 @@ import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import { createErrorMessage } from "@/lib/utils";
 
-
 interface AssignAgentDemoDeliveryModalProps {}
 
 const AssignAgentDemoDeliveryModal: FC<
@@ -63,6 +62,7 @@ const AssignAgentDemoDeliveryModal: FC<
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -73,17 +73,20 @@ const AssignAgentDemoDeliveryModal: FC<
   return (
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="z-10 bg-white flex flex-col gap-2">
-        <select
-          onChange={(e) => setAgentId(parseInt(e.target.value))}
-          value={agentId}
-          className="py-5 mt-5 px-4 rounded-md w-[100%] bg-white border-[2px] border-gray-200"
-        >
-          {allAgents.map((agent: any) => (
-            <option key={agent.id} value={agent.id}>
-              {agent.name}
-            </option>
-          ))}
-        </select>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Select Agent :</h1>
+          <select
+            onChange={(e) => setAgentId(parseInt(e.target.value))}
+            value={agentId}
+            className="py-5 mt-5 px-4 rounded-md w-[100%] bg-white border-[2px] border-gray-200"
+          >
+            {allAgents.map((agent: any) => (
+              <option key={agent.id} value={agent.id}>
+                {agent.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           onClick={handleAgentAssign}
           className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}

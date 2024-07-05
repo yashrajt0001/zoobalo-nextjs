@@ -252,7 +252,7 @@ const page = () => {
     <div className="flex h-[calc(100vh-65px)]">
       <div className="flex-1 overflow-y-auto">
         <div className="bg-slate-50">
-          <div className="flex px-4 gap-12 border-b border-gray-300 ">
+          <div className="flex px-4 bg-slate-800 gap-12 border-b border-gray-300 ">
             <button
               className={`py-3 ${
                 selectedTab == 0 ? "border-b-2 border-blue-400" : ""
@@ -261,7 +261,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 0 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Queue
@@ -275,7 +275,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 2 ? "text-blue-400" : "text-white"
                 }`}
               >
                 City
@@ -289,7 +289,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 3 ? "text-blue-400" : "text-white"
                 }`}
               >
                 State

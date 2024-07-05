@@ -11,7 +11,6 @@ import axios from "axios";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import { createErrorMessage } from "@/lib/utils";
 
-
 interface UpdateAreaManagerModalProps {}
 
 const UpdateAreaManagerModal: FC<UpdateAreaManagerModalProps> = ({}) => {
@@ -66,7 +65,7 @@ const UpdateAreaManagerModal: FC<UpdateAreaManagerModalProps> = ({}) => {
           },
         }
       );
-      console.log(data);
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -78,87 +77,116 @@ const UpdateAreaManagerModal: FC<UpdateAreaManagerModalProps> = ({}) => {
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl">Update:</h1>
-        <input
-          type="text"
-          value={areaManagerName}
-          onChange={(e) => {
-            setAreaManagerName(e.target.value);
-          }}
-          placeholder="Name"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerUsername}
-          onChange={(e) => {
-            setAreaManagerUsername(e.target.value);
-          }}
-          placeholder="Username"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerPassword}
-          onChange={(e) => {
-            setAreaManagerPassword(e.target.value);
-          }}
-          placeholder="Password"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerEmail}
-          onChange={(e) => {
-            setAreaManagerEmail(e.target.value);
-          }}
-          placeholder="Email"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerPhone}
-          onChange={(e) => {
-            setAreaManagerPhone(e.target.value);
-          }}
-          placeholder="Phone No."
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerAlternatePhone}
-          onChange={(e) => {
-            setAreaManagerAlternatePhone(e.target.value);
-          }}
-          placeholder="Alternate Phone No."
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerEmergencyPhone}
-          onChange={(e) => {
-            setAreaManagerEmergencyPhone(e.target.value);
-          }}
-          placeholder="Emergency Phone No."
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerResidentAddress}
-          onChange={(e) => {
-            setAreaManagerResidentAddress(e.target.value);
-          }}
-          placeholder="Resident Address"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
-        <input
-          type="text"
-          value={areaManagerOfficeAddress}
-          onChange={(e) => {
-            setAreaManagerOfficeAddress(e.target.value);
-          }}
-          placeholder="Office Address"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Name :</h1>
+          <input
+            type="text"
+            value={areaManagerName}
+            onChange={(e) => {
+              setAreaManagerName(e.target.value);
+            }}
+            placeholder="Name"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Username :</h1>
+          <input
+            type="text"
+            value={areaManagerUsername}
+            onChange={(e) => {
+              setAreaManagerUsername(e.target.value);
+            }}
+            placeholder="Username"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Password :</h1>
+          <input
+            type="text"
+            value={areaManagerPassword}
+            onChange={(e) => {
+              setAreaManagerPassword(e.target.value);
+            }}
+            placeholder="Password"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Email :</h1>
+          <input
+            type="text"
+            value={areaManagerEmail}
+            onChange={(e) => {
+              setAreaManagerEmail(e.target.value);
+            }}
+            placeholder="Email"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Phone No :</h1>
+          <input
+            type="text"
+            value={areaManagerPhone}
+            onChange={(e) => {
+              setAreaManagerPhone(e.target.value);
+            }}
+            placeholder="Phone No."
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Alternate Phone :</h1>
+          <input
+            type="text"
+            value={areaManagerAlternatePhone}
+            onChange={(e) => {
+              setAreaManagerAlternatePhone(e.target.value);
+            }}
+            placeholder="Alternate Phone No."
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Emergency No :</h1>
+          <input
+            type="text"
+            value={areaManagerEmergencyPhone}
+            onChange={(e) => {
+              setAreaManagerEmergencyPhone(e.target.value);
+            }}
+            placeholder="Emergency Phone No."
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">
+            Residential Address :
+          </h1>
+          <input
+            type="text"
+            value={areaManagerResidentAddress}
+            onChange={(e) => {
+              setAreaManagerResidentAddress(e.target.value);
+            }}
+            placeholder="Resident Address"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 className="text-base text-gray-400 ml-1 mb-1">Office Address :</h1>
+          <input
+            type="text"
+            value={areaManagerOfficeAddress}
+            onChange={(e) => {
+              setAreaManagerOfficeAddress(e.target.value);
+            }}
+            placeholder="Office Address"
+            className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
         <button
           onClick={handleUpdateAreaManager}
           className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"

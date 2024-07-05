@@ -89,6 +89,7 @@ const CreateKitchenHeadModal: FC<CreateKitchenHeadModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {

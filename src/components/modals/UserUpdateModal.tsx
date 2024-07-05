@@ -58,6 +58,7 @@ const UserUpdateModal: FC<UserUpdateModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -67,58 +68,74 @@ const UserUpdateModal: FC<UserUpdateModalProps> = ({}) => {
 
   return (
     <Modal open={isModalOpen} onClose={onClose}>
-      <div className="z-10 bg-white flex flex-col gap-2">
+      <div className="z-10 bg-white flex flex-col gap-3">
         <h1 className="text-3xl">Update:</h1>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Name :</h1>
         <input
           type="text"
           placeholder="Name"
-          className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+          className="w-full px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
         />
-
+      </div>
         {(timing == "MORNING" || timing == "BOTH") && (
+          <div>
+            <h1 className="text-base text-gray-400 ml-1 mb-1">Morning Address :</h1>
           <input
             type="text"
             placeholder="Morning Address"
-            className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+            className="w-full px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
             value={morningAddress}
             onChange={(e) => setMorningAddress(e.target.value)}
-          />
+            />
+            </div>
         )}
 
         {(timing == "EVENING" || timing == "BOTH") && (
+          <div>
+            <h1 className="text-base text-gray-400 ml-1 mb-1">Evening Address :</h1>
           <input
             type="text"
             placeholder="Evening Address"
-            className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+            className="w-full px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
             value={eveningAddress}
             onChange={(e) => setEveningAddress(e.target.value)}
-          />
+            />
+            </div>
         )}
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Phone No :</h1>
         <input
           type="tel"
           placeholder="Phone Number"
-          className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+          className="w-full px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
           value={mob}
           maxLength={10}
           onChange={(e) => setMob(e.target.value)}
-        />
+          />
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Balance :</h1>
         <input
           type="number"
           placeholder="User's Balance"
-          className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+          className="w-full px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
           value={balance}
           onChange={(e) => setBalance(e.target.value)}
         />
-
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Due Tiffins :</h1>
         <input
           type="number"
           placeholder="Due Tiffins"
-          className="px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
+          className="w-full px-5 py-4 outline-none border-[2px] border-gray-200 rounded-lg"
           value={dueTiffins}
           onChange={(e) => setDueTiffins(e.target.value)}
-        />
+          />
+          </div>
         <button
           onClick={handleUpdate}
           className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}

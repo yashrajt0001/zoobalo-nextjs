@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { createErrorMessage } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 interface MyComponentProps {
   name: "admin" | "kitchenHead" | "areaManager";
@@ -53,8 +54,7 @@ export const ShowLogin = ({ name }: MyComponentProps) => {
       console.log("ext:", extractedPart);
       return router.push(extractedPart);
     } catch (error: any) {
-      // todo: show toast error
-      console.log(createErrorMessage(error));
+      toast.error(createErrorMessage(error));
     } finally {
       setisLoading(false);
     }

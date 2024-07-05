@@ -50,6 +50,7 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -61,6 +62,8 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl">Update Agent:</h1>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Name :</h1>
         <input
           type="text"
           name="name"
@@ -69,8 +72,11 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
             setDeliveryAgentName(e.target.value);
           }}
           placeholder="Name"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Phone No :</h1>
         <input
           type="text"
           name="phone"
@@ -79,8 +85,11 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
             setDeliveryAgentMob(e.target.value);
           }}
           placeholder="Phone No."
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Partner Code :</h1>
         <input
           type="text"
           name="partnerCode"
@@ -89,8 +98,9 @@ const UpdateAgentModal: FC<UpdateAgentModalProps> = ({}) => {
             setDeliveryAgentPartnerCode(e.target.value);
           }}
           placeholder="Partner Code"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+          </div>
         <button
           onClick={handleAgentCreation}
           className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"

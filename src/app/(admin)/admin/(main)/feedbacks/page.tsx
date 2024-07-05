@@ -7,7 +7,6 @@ import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createErrorMessage } from "@/lib/utils";
 
-
 const page = () => {
   const [isFetchloading, setIsFetchloading] = useState(false);
   const [results, setResults] = useState([]);
@@ -85,7 +84,7 @@ const page = () => {
   return (
     <div className="flex h-[calc(100vh-65px)]">
       <div className="flex-1 overflow-y-auto">
-        <div className="ml-10 mt-4 pb-8">
+        <div className="pl-10 pt-4 pb-8 bg-white min-h-full">
           <div className="flex justify-between w-1/2 items-center">
             <h1 className=" mt-6 text-3xl mb-5">
               Total Feedbacks: {results.length}
@@ -102,7 +101,7 @@ const page = () => {
               </div>
               {feedbackId != 0 && (
                 <div className="w-[40%] ml-12 -mt-14">
-                  <div className="sticky top-24 z-10 bg-white flex flex-col gap-3">
+                  <div className="sticky top-24 z-10 flex flex-col gap-3">
                     <h1 className="text-3xl">Send Response:</h1>
                     <input
                       type="text"

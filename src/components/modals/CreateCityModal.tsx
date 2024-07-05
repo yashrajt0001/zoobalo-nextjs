@@ -11,7 +11,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { createErrorMessage } from "@/lib/utils";
 
-
 interface CreateCityModalProps {}
 
 const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
@@ -22,6 +21,7 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
   const [cityLoader, setCityLoader] = useState(false);
   const [stateId, setStateId] = useState("");
   const [states, setStates] = useState([]);
+  const [securityDeposit, setSecurityDeposit] = useState("");
 
   useEffect(() => {
     async function getAllStates() {
@@ -49,6 +49,7 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
         {
           name: cityName,
           stateId: parseInt(stateId),
+          security: parseInt(securityDeposit),
         },
         {
           headers: {
@@ -56,6 +57,7 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -75,7 +77,7 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
             setCityName(e.target.value);
           }}
           placeholder="City Name"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          className="p-5 w-full outline-none border-[2px] border-gray-200 rounded-lg"
         />
         <select
           name="stateId"
@@ -92,6 +94,16 @@ const CreateCityModal: FC<CreateCityModalProps> = ({}) => {
             </option>
           ))}
         </select>
+        <input
+          type="number"
+          name="security"
+          value={securityDeposit}
+          onChange={(e) => {
+            setSecurityDeposit(e.target.value);
+          }}
+          placeholder="Security Deposit Amount"
+          className="p-5 w-full outline-none border-[2px] border-gray-200 rounded-lg"
+        />
         <button
           onClick={handleCityCreation}
           className="flex items-center px-6 py-2 rounded-lg text-xl text-white bg-green-500 w-fit"

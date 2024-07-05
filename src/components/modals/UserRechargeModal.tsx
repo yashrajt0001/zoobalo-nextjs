@@ -39,6 +39,7 @@ const UserRechargeModal: FC<UserRechargeModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -49,7 +50,8 @@ const UserRechargeModal: FC<UserRechargeModalProps> = ({}) => {
   return (
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="z-10 bg-white flex flex-col gap-2">
-        {/* <h1 className="text-3xl">Recharge:</h1> */}
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Amount :</h1>
         <input
           type="number"
           value={amount}
@@ -59,7 +61,8 @@ const UserRechargeModal: FC<UserRechargeModalProps> = ({}) => {
           }}
           placeholder="Amount"
           className="p-5 mt-4 w-[100%] outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          />
+          </div>
         <button
           onClick={handleDone}
           className={`px-4 py-2 flex items-center rounded-lg text-xl text-white bg-green-500 w-fit`}

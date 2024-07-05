@@ -56,6 +56,7 @@ const KitchenHeadUpdateModal: FC<KitchenHeadUpdateModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {
@@ -67,6 +68,8 @@ const KitchenHeadUpdateModal: FC<KitchenHeadUpdateModalProps> = ({}) => {
     <Modal open={isModalOpen} onClose={onClose}>
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl">Update:</h1>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Name :</h1>
         <input
           type="text"
           name="name"
@@ -75,8 +78,11 @@ const KitchenHeadUpdateModal: FC<KitchenHeadUpdateModalProps> = ({}) => {
             setKitchenHeadName(e.target.value);
           }}
           placeholder="Name"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Username :</h1>
         <input
           type="text"
           name="username"
@@ -85,8 +91,11 @@ const KitchenHeadUpdateModal: FC<KitchenHeadUpdateModalProps> = ({}) => {
             setKitchenHeadUsername(e.target.value);
           }}
           placeholder="Username"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Password :</h1>
         <input
           type="text"
           name="password"
@@ -95,8 +104,11 @@ const KitchenHeadUpdateModal: FC<KitchenHeadUpdateModalProps> = ({}) => {
             setKitchenHeadPassword(e.target.value);
           }}
           placeholder="Password"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
+        <div>
+        <h1 className="text-base text-gray-400 ml-1 mb-1">Phone No :</h1>
         <input
           type="text"
           name="phone"
@@ -105,8 +117,9 @@ const KitchenHeadUpdateModal: FC<KitchenHeadUpdateModalProps> = ({}) => {
             setKitchenHeadPhone(e.target.value);
           }}
           placeholder="Phone Number"
-          className=" p-5 outline-none border-[2px] border-gray-200 rounded-lg"
-        />
+          className="w-full p-5 outline-none border-[2px] border-gray-200 rounded-lg"
+          />
+        </div>
         <select
           onChange={(e) => {
             setKitchenHeadStatus(e.target.value);

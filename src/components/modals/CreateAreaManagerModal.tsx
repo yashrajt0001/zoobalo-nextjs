@@ -122,6 +122,7 @@ const CreateAreaManagerModal: FC<CreateAreaManagerModalProps> = ({}) => {
           },
         }
       );
+      onClose();
     } catch (error: any) {
       toast.error(createErrorMessage(error));
     } finally {

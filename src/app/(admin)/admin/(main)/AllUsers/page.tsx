@@ -253,7 +253,7 @@ const page = () => {
     <div className="flex h-[calc(100vh-65px)]">
       <div className="flex-1 overflow-y-auto">
         <div className="w-[100%] pb-8">
-          <div className="flex sticky top-0 px-4 gap-12 border-b border-gray-300">
+          <div className="flex sticky bg-slate-800 top-0 px-4 gap-12 border-b border-gray-300">
             <button
               className={`py-3 ${
                 selectedTab == 0 ? "border-b-2 border-blue-400" : ""
@@ -262,7 +262,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 0 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 0 ? "text-blue-400" : "text-white"
                 }`}
               >
                 All Users
@@ -276,7 +276,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 1 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 1 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Subscribed
@@ -290,7 +290,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 2 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 2 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Cancelled
@@ -304,7 +304,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 3 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 3 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Paused
@@ -319,7 +319,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 4 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 4 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Unsubscribed
@@ -334,7 +334,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 5 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 5 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Pending
@@ -348,7 +348,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 6 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 6 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Low Balance
@@ -362,7 +362,7 @@ const page = () => {
             >
               <h1
                 className={`text-xl ${
-                  selectedTab == 7 ? "text-blue-400" : "text-gray-400"
+                  selectedTab == 7 ? "text-blue-400" : "text-white"
                 }`}
               >
                 Addons
