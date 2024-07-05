@@ -1,5 +1,3 @@
-import AdminNavbar from "@/components/AdminNavbar";
-import ModalProvider from "@/components/providers/model-provider";
 import { FC } from "react";
 
 interface layoutProps {

@@ -18,31 +18,52 @@ import CreateKitchenHeadModal from "../modals/CreateKitchenHeadModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const [user, setUser] = useState<null | string>();
 
   useEffect(() => {
     setIsMounted(true);
+    console.log('hii')
   }, []);
 
+  
+  useEffect(() => {
+    setUser(localStorage.getItem("user") || null);
+    console.log('changed')
+  }, [localStorage.getItem("user")]);
+
+  console.log(user)
+  
   if (!isMounted) {
     return null;
   }
-
   return (
     <>
-      <CreateAreaManagerModal />
-      <CreateCityModal />
-      <CreateStateModal />
-      <UserUpdateModal />
-      <KitchenHeadUpdateModal />
-      <KitchenUpdateModal />
-      <UpdateAreaManagerModal />
-      <CreateKitchenModal />
-      <CreateAgentModal />
-      <UpdateAgentModal />
-      <UserRechargeModal />
-      <AssignAgentModal />
-      <AssignAgentDemoDeliveryModal />
-      <CreateKitchenHeadModal />
+      {user === "admin" && (
+        <>
+          <CreateAreaManagerModal />
+          <CreateCityModal />
+          <CreateStateModal />
+          <UserUpdateModal />
+          <KitchenHeadUpdateModal />
+          <KitchenUpdateModal />
+          <UpdateAreaManagerModal />{" "}
+        </>
+      )}
+      {user === "areaManager" && (
+        <>
+          <CreateKitchenModal />
+          <CreateAgentModal />
+          <UpdateAgentModal />
+          <CreateKitchenHeadModal />
+        </>
+      )}
+      {user === "kitchenHead" && (
+        <>
+          <UserRechargeModal />
+          <AssignAgentModal />
+          <AssignAgentDemoDeliveryModal />
+        </>
+      )}
     </>
   );
 };
