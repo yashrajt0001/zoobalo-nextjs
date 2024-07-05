@@ -1,20 +1,16 @@
 "use client";
 
-import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import UserContext, { UserContextType } from "@/contextApi/user/UserContext";
 import { PopoverClose } from "@radix-ui/react-popover";
 import axios from "axios";
 import {
-  Ellipsis,
   EllipsisIcon,
-  EllipsisVertical,
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
@@ -34,8 +30,6 @@ const page = () => {
   const [totalUsers, setTotalUsers] = useState(0); // state that holds total user's number
   const [tempResults, setTempResults] = useState([]); // temp results stores all users which helps in searching user
   const [selectedTab, setSelectedTab] = useState(0);
-  const [showDropDown, setShowDropDown] = useState(null);
-  const [removeLoader, setRemoveLoader] = useState(0);
 
   const { onOpen } = useModal();
 
@@ -433,10 +427,6 @@ const page = () => {
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="p-2">
-                              {/* <div className="font-semibold text-base mb-2">
-                              Actions
-                            </div>
-                            <Separator/> */}
                               <PopoverClose className="flex flex-col w-full items-center">
                                 <Button
                                   onClick={() => {
@@ -448,7 +438,7 @@ const page = () => {
                                     setTiming(
                                       user.order.length > 1
                                         ? "BOTH"
-                                        : user.order[0].tiffinTime
+                                        : user.order[0]?.tiffinTime
                                     );
                                     setDueTiffins(user.order[0].dueTiffin);
                                     onOpen("userUpdate");
@@ -468,18 +458,6 @@ const page = () => {
                                     Tiffin history
                                   </Button>
                                 </Link>
-                                {/* <Button
-                                className="w-full flex justify-start"
-                                variant="ghost"
-                              >
-                                Recharge history
-                              </Button>
-                              <Button
-                                className="w-full flex justify-start"
-                                variant="ghost"
-                              >
-                                Add subscription
-                              </Button> */}
                               </PopoverClose>
                             </PopoverContent>
                           </Popover>
@@ -488,12 +466,6 @@ const page = () => {
                     );
                   })}
                 </div>
-
-                {/* {userName != "" && (
-              <div className="w-[40%] ml-12 -mt-14">
-                
-              </div>
-            )} */}
               </div>
             ) : (
               <>
@@ -502,7 +474,6 @@ const page = () => {
                   <h1 className="w-[24%] text-center">Phone</h1>
                   <h1 className="w-[24%] text-center">Balance</h1>
                   <h1 className="w-[24%] text-center">Tiffin Time</h1>
-                  {/* <h1 className="w-[20%] text-center"></h1> */}
                 </div>
                 <div className="flex flex-col pr-[4%]">
                   {results.map((user: any) => {

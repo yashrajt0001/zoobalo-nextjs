@@ -22,17 +22,16 @@ const ModalProvider = () => {
 
   useEffect(() => {
     setIsMounted(true);
-    console.log('hii')
+    console.log("hii");
   }, []);
 
-  
   useEffect(() => {
     setUser(localStorage.getItem("user") || null);
-    console.log('changed')
-  }, [localStorage.getItem("user")]);
+    console.log("changed");
+  }, []);
 
-  console.log(user)
-  
+  console.log(user);
+
   if (!isMounted) {
     return null;
   }
@@ -52,13 +51,13 @@ const ModalProvider = () => {
       {user === "areaManager" && (
         <>
           <CreateKitchenModal />
-          <CreateAgentModal />
-          <UpdateAgentModal />
           <CreateKitchenHeadModal />
         </>
       )}
       {user === "kitchenHead" && (
         <>
+          <CreateAgentModal />
+          <UpdateAgentModal />
           <UserRechargeModal />
           <AssignAgentModal />
           <AssignAgentDemoDeliveryModal />

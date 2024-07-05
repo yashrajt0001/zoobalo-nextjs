@@ -1,10 +1,7 @@
 "use client";
 
-import { ChangeEvent, FC, useEffect, useState } from "react";
-import { Dialog, DialogDescription, DialogTitle } from "../ui/dialog";
-import { Input } from "../ui/input";
+import { FC, useEffect, useState } from "react";
 import { useModal } from "@/hooks/use-modal-store";
-import { DialogContent } from "@radix-ui/react-dialog";
 import Modal from "../ui/modal";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";

@@ -15,6 +15,7 @@ const page = () => {
   const [loader, setLoader] = useState(false);
   const [searchinput, setSearchinput] = useState("");
   const [totalRequests, setTotalRequests] = useState(0);
+  console.log(kitchens)
 
   useEffect(() => {
     async function getAllRequest() {
@@ -46,7 +47,8 @@ const page = () => {
             },
           }
         );
-        setKitchens(res.data.kitchens);
+
+        setKitchens(res.data);
       } catch (error: any) {
         toast.error(createErrorMessage(error));
       }
