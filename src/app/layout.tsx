@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import ModalProvider from "@/components/providers/model-provider";
+import Maintainance from "@/components/Maintainance";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -32,11 +33,12 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <UserState>
+        {/* <UserState>
           <Toaster containerClassName="text-3xl" position="bottom-center" />
           <ModalProvider />
           {children}
-        </UserState>
+        </UserState> */}
+        <Maintainance/>
       </body>
     </html>
   );
